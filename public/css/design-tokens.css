@@ -1,0 +1,831 @@
+/**
+ * MINSUANSCORE DESIGN TOKENS
+ * Global design system for consistent, professional UI
+ * 
+ * Architecture:
+ * 1. Color tokens (light + dark themes)
+ * 2. Typography tokens
+ * 3. Spacing rhythm tokens
+ * 4. Shadow system
+ * 5. Rounded corners
+ * 6. Component utilities
+ * 7. Animations
+ * 8. Dark mode overrides
+ */
+
+/* ============================================================
+   COLOR TOKENS - LIGHT THEME (DEFAULT)
+   ============================================================ */
+
+:root {
+    /* PRIMARY COLORS - Forest Green */
+    --color-primary: #103F32;
+    --color-primary-50: #F0F5F3;
+    --color-primary-100: #E0EBE6;
+    --color-primary-200: #C2D7CE;
+    --color-primary-300: #A3C3B5;
+    --color-primary-400: #85AF9D;
+    --color-primary-500: #236B55;
+    --color-primary-600: #1A4D3E;
+    --color-primary-700: #103F32;
+    --color-primary-800: #082C25;
+    --color-primary-900: #001A15;
+
+    /* SECONDARY COLORS - Emerald */
+    --color-secondary: #236B55;
+    --color-secondary-50: #F5F8F7;
+    --color-secondary-100: #E6F1EB;
+    --color-secondary-200: #D1E8DC;
+    --color-secondary-300: #B3DCC7;
+    --color-secondary-400: #94D0B2;
+    --color-secondary-500: #236B55;
+    --color-secondary-600: #1B503F;
+    --color-secondary-700: #133A2C;
+    --color-secondary-800: #0C2519;
+    --color-secondary-900: #051006;
+
+    /* ACCENT COLORS */
+    --color-accent-gold: #F4C84E;
+    --color-accent-gold-light: #FFF8E7;
+    --color-accent-gold-dark: #D4A636;
+
+    /* SEMANTIC COLORS */
+    --color-success: #10B981;
+    --color-success-light: #D1F4E8;
+    --color-success-dark: #047857;
+    
+    --color-warning: #F59E0B;
+    --color-warning-light: #FEF3C7;
+    --color-warning-dark: #D97706;
+    
+    --color-danger: #EF4444;
+    --color-danger-light: #FEE2E2;
+    --color-danger-dark: #DC2626;
+    
+    --color-info: #3B82F6;
+    --color-info-light: #DBEAFE;
+    --color-info-dark: #1D4ED8;
+
+    /* NEUTRAL COLORS */
+    --color-white: #FFFFFF;
+    --color-neutral-50: #F8FAF7;
+    --color-neutral-100: #F0F5F2;
+    --color-neutral-200: #E0EAEB;
+    --color-neutral-300: #D1DFE1;
+    --color-neutral-400: #B3C4C8;
+    --color-neutral-500: #8FA7AB;
+    --color-neutral-600: #6B8A8F;
+    --color-neutral-700: #475E63;
+    --color-neutral-800: #2D3B41;
+    --color-neutral-900: #263A33;
+
+    /* BACKGROUND & SURFACE */
+    --color-background: #F8FAF7;
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F5F8F6;
+    --color-surface-muted: #E6F1EB;
+    --color-surface-overlay: rgba(255, 255, 255, 0.95);
+
+    /* TEXT COLORS */
+    --color-text-primary: #263A33;
+    --color-text-secondary: #6B8A8F;
+    --color-text-tertiary: #8FA7AB;
+    --color-text-inverse: #FFFFFF;
+    --color-text-muted: #B3C4C8;
+
+    /* BORDER COLORS */
+    --color-border-light: rgba(16, 63, 50, 0.08);
+    --color-border-base: rgba(16, 63, 50, 0.12);
+    --color-border-medium: rgba(16, 63, 50, 0.2);
+    --color-border-strong: rgba(16, 63, 50, 0.3);
+
+    /* ============================================================
+       TYPOGRAPHY TOKENS
+       ============================================================ */
+
+    /* Font Families */
+    --font-family-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    --font-family-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
+
+    /* Font Weights */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+
+    /* Font Sizes - Scale */
+    --font-size-xs: 0.75rem;        /* 12px */
+    --font-size-sm: 0.875rem;       /* 14px */
+    --font-size-base: 1rem;         /* 16px */
+    --font-size-lg: 1.125rem;       /* 18px */
+    --font-size-xl: 1.25rem;        /* 20px */
+    --font-size-2xl: 1.5rem;        /* 24px */
+    --font-size-3xl: 1.875rem;      /* 30px */
+    --font-size-4xl: 2.25rem;       /* 36px */
+    --font-size-5xl: 3rem;          /* 48px */
+
+    /* Line Heights */
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+    --line-height-loose: 2;
+
+    /* Letter Spacing */
+    --letter-spacing-tight: -0.02em;
+    --letter-spacing-normal: 0;
+    --letter-spacing-wide: 0.02em;
+    --letter-spacing-wider: 0.05em;
+
+    /* ============================================================
+       SPACING RHYTHM TOKENS
+       ============================================================ */
+
+    --space-0: 0;
+    --space-1: 0.25rem;     /* 4px */
+    --space-2: 0.5rem;      /* 8px */
+    --space-3: 0.75rem;     /* 12px */
+    --space-4: 1rem;        /* 16px */
+    --space-5: 1.25rem;     /* 20px */
+    --space-6: 1.5rem;      /* 24px */
+    --space-8: 2rem;        /* 32px */
+    --space-10: 2.5rem;     /* 40px */
+    --space-12: 3rem;       /* 48px */
+    --space-16: 4rem;       /* 64px */
+    --space-20: 5rem;       /* 80px */
+    --space-24: 6rem;       /* 96px */
+
+    /* ============================================================
+       SHADOW TOKENS - REALISTIC ELEVATION
+       ============================================================ */
+
+    /* Subtle shadow (very small elements, 1px elevation) */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    /* Small shadow (inputs, small cards, 2px elevation) */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+    /* Base shadow (cards, 4px elevation) */
+    --shadow-base: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    /* Medium shadow (modals, 8px elevation) */
+    --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.12);
+
+    /* Large shadow (dropdowns, tooltips, 12px elevation) */
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.15);
+
+    /* Extra large shadow (notifications, full-screen overlays) */
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+    /* Focus ring (accessibility) */
+    --shadow-focus: 0 0 0 3px rgba(35, 107, 85, 0.1), 0 0 0 2px var(--color-primary);
+
+    /* ============================================================
+       ROUNDED CORNERS TOKENS
+       ============================================================ */
+
+    --radius-none: 0;
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-base: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+    --radius-2xl: 16px;
+    --radius-3xl: 20px;
+    --radius-full: 9999px;
+
+    /* ============================================================
+       TRANSITION & ANIMATION TOKENS
+       ============================================================ */
+
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slower: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Z-index scale */
+    --z-dropdown: 1000;
+    --z-modal-overlay: 2000;
+    --z-modal: 2100;
+    --z-notification: 3000;
+    --z-navbar: 100;
+    --z-sidebar: 50;
+}
+
+/* ============================================================
+   DARK MODE THEME OVERRIDES
+   ============================================================ */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* DARK MODE BACKGROUND & SURFACE */
+        --color-background: #0F1E19;
+        --color-surface: #152A23;
+        --color-surface-hover: #1B332B;
+        --color-surface-muted: #1B332B;
+        --color-surface-overlay: rgba(21, 42, 35, 0.95);
+
+        /* DARK MODE TEXT */
+        --color-text-primary: #EDF5F1;
+        --color-text-secondary: #B3C4C8;
+        --color-text-tertiary: #8FA7AB;
+        --color-text-inverse: #0F1E19;
+        --color-text-muted: #6B8A8F;
+
+        /* DARK MODE BORDER */
+        --color-border-light: rgba(237, 245, 241, 0.08);
+        --color-border-base: rgba(237, 245, 241, 0.12);
+        --color-border-medium: rgba(237, 245, 241, 0.2);
+        --color-border-strong: rgba(237, 245, 241, 0.3);
+
+        /* DARK MODE EMERALD (ADJUSTED FOR CONTRAST) */
+        --color-secondary: #4D9D7B;
+
+        /* DARK MODE SEMANTIC */
+        --color-success: #10B981;
+        --color-warning: #F59E0B;
+        --color-danger: #EF4444;
+        --color-info: #60A5FA;
+    }
+}
+
+/* ============================================================
+   SHARED COMPONENT UTILITIES
+   ============================================================ */
+
+/* Typography Utilities */
+.text-h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-h2 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-h3 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+}
+
+.text-h4 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+}
+
+.text-h5 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+}
+
+.text-body {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+}
+
+.text-body-sm {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+}
+
+.text-body-xs {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+}
+
+.text-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+}
+
+.text-label-xs {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+}
+
+.text-muted {
+    color: var(--color-text-secondary);
+}
+
+.text-primary {
+    color: var(--color-text-primary);
+}
+
+.text-success {
+    color: var(--color-success);
+}
+
+.text-warning {
+    color: var(--color-warning);
+}
+
+.text-danger {
+    color: var(--color-danger);
+}
+
+.text-info {
+    color: var(--color-info);
+}
+
+/* Spacing Utilities */
+.m-0 { margin: var(--space-0); }
+.m-1 { margin: var(--space-1); }
+.m-2 { margin: var(--space-2); }
+.m-3 { margin: var(--space-3); }
+.m-4 { margin: var(--space-4); }
+.m-6 { margin: var(--space-6); }
+.m-8 { margin: var(--space-8); }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+.my-4 { margin-top: var(--space-4); margin-bottom: var(--space-4); }
+
+.p-0 { padding: var(--space-0); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-6 { padding: var(--space-6); }
+.p-8 { padding: var(--space-8); }
+
+.px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+
+/* Card Utilities */
+.card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-base);
+    transition: all var(--transition-normal);
+}
+
+.card:hover {
+    border-color: var(--color-border-medium);
+    box-shadow: var(--shadow-md);
+}
+
+.card-sm {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+}
+
+.card-lg {
+    padding: var(--space-8);
+    border-radius: var(--radius-3xl);
+}
+
+/* Button Base Utilities */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    border: none;
+    border-radius: var(--radius-base);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.btn:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-600);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    background-color: var(--color-primary-800);
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background-color: var(--color-surface-muted);
+    color: var(--color-primary);
+    border: 1px solid var(--color-border-medium);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-secondary-100);
+    border-color: var(--color-primary);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--color-primary-50);
+}
+
+.btn-ghost {
+    background-color: transparent;
+    color: var(--color-text-primary);
+    border: none;
+}
+
+.btn-ghost:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-text-inverse);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-danger-dark);
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+}
+
+.btn-success:hover {
+    background-color: var(--color-success-dark);
+    transform: translateY(-1px);
+}
+
+.btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-xs);
+}
+
+.btn-lg {
+    padding: var(--space-4) var(--space-6);
+    font-size: var(--font-size-base);
+    border-radius: var(--radius-md);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Form Utilities */
+.form-group {
+    margin-bottom: var(--space-6);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--color-border-base);
+    border-radius: var(--radius-base);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-sans);
+    transition: all var(--transition-fast);
+}
+
+.form-control::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+.form-control:hover {
+    border-color: var(--color-border-medium);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+}
+
+.form-control.is-invalid {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Alert Utilities */
+.alert {
+    padding: var(--space-4);
+    border-radius: var(--radius-base);
+    border: 1px solid;
+    margin-bottom: var(--space-4);
+}
+
+.alert-success {
+    background-color: var(--color-success-light);
+    border-color: var(--color-success);
+    color: var(--color-success-dark);
+}
+
+.alert-warning {
+    background-color: var(--color-warning-light);
+    border-color: var(--color-warning);
+    color: var(--color-warning-dark);
+}
+
+.alert-danger {
+    background-color: var(--color-danger-light);
+    border-color: var(--color-danger);
+    color: var(--color-danger-dark);
+}
+
+.alert-info {
+    background-color: var(--color-info-light);
+    border-color: var(--color-info);
+    color: var(--color-info-dark);
+}
+
+/* Grid & Flexbox Utilities */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive Grid */
+@media (max-width: 768px) {
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+    .grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Border Utilities */
+.border {
+    border: 1px solid var(--color-border-base);
+}
+
+.border-t {
+    border-top: 1px solid var(--color-border-base);
+}
+
+.border-b {
+    border-bottom: 1px solid var(--color-border-base);
+}
+
+.rounded {
+    border-radius: var(--radius-base);
+}
+
+.rounded-lg {
+    border-radius: var(--radius-lg);
+}
+
+.rounded-2xl {
+    border-radius: var(--radius-2xl);
+}
+
+.rounded-full {
+    border-radius: var(--radius-full);
+}
+
+/* Shadow Utilities */
+.shadow-sm {
+    box-shadow: var(--shadow-sm);
+}
+
+.shadow {
+    box-shadow: var(--shadow-base);
+}
+
+.shadow-md {
+    box-shadow: var(--shadow-md);
+}
+
+.shadow-lg {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Opacity Utilities */
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+/* Display Utilities */
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .visible-desktop-only {
+        display: block;
+    }
+}
+
+/* ============================================================
+   ANIMATION DEFINITIONS
+   ============================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animation Utility Classes */
+.animate-fade-in {
+    animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp var(--transition-normal) ease-out;
+}
+
+.animate-slide-down {
+    animation: slideDown var(--transition-normal) ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* MinSuansCore design-system contract (shared component aliases) */
+:root {
+    --ms-forest: var(--color-primary, #103F32);
+    --ms-emerald: var(--color-secondary, #236B55);
+    --ms-gold: var(--color-accent-gold, #F4C84E);
+    --ms-mint: var(--color-secondary-100, #E6F1EB);
+    --ms-cream: var(--color-background, #F8FAF7);
+    --ms-ink: var(--color-text-primary, #263A33);
+    --ms-muted: var(--color-text-secondary, #708179);
+    --ms-border: var(--color-border-light, rgba(16, 63, 50, .14));
+    --ms-radius-card: var(--radius-2xl, 1.25rem);
+    --ms-radius-control: var(--radius-lg, .75rem);
+    --ms-shadow-card: 0 16px 42px rgba(16, 63, 50, .075);
+    --ms-shadow-elevated: 0 18px 48px rgba(16, 63, 50, .14);
+    --ms-ease-standard: cubic-bezier(.4, 0, .2, 1);
+    --ms-ease-emphasis: cubic-bezier(.22, 1, .36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --transition-fast: 0ms;
+        --transition-normal: 0ms;
+        --transition-slow: 0ms;
+        --transition-slower: 0ms;
+    }
+}

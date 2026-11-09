@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MAGI avatar motion preview</title>
+    <link rel="stylesheet" href="../../css/magi-avatar.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 24px; background: #f5f8f5; color: #173f33; font: 15px/1.5 system-ui, sans-serif; }
+        main { width: min(720px, 100%); margin: 0 auto; }
+        h1 { margin: 0 0 5px; font-size: 22px; }
+        .note { margin: 0 0 20px; color: #60746c; font-size: 13px; }
+        .demo-chat { overflow: hidden; border: 1px solid #dfe9e2; border-radius: 18px; background: white; box-shadow: 0 16px 45px #173f3312; }
+        .demo-header { display: flex; align-items: center; gap: 12px; min-height: 66px; padding: 12px 18px; border-bottom: 1px solid #e7eee9; }
+        .demo-header img { width: 42px; height: 42px; object-fit: contain; }
+        .demo-header strong, .demo-header small { display: block; }
+        .demo-header small { color: #788b82; font-size: 12px; }
+        .demo-messages { display: grid; gap: 18px; padding: 24px 18px; }
+        .demo-message { display: flex; align-items: flex-start; gap: 10px; }
+        .demo-avatar { display: grid; flex: 0 0 36px; width: 36px; height: 36px; place-items: center; border-radius: 50%; background: #103f32; }
+        .demo-bubble { max-width: min(82%, 560px); padding: 12px 15px; border: 1px solid #e1eae3; border-radius: 14px 14px 14px 4px; color: #334a40; }
+        .demo-tools { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px; border-top: 1px solid #e7eee9; background: #fbfcfb; }
+        .demo-tools button { border: 1px solid #d7e3db; border-radius: 9px; padding: 8px 12px; background: white; color: #164a3a; cursor: pointer; font: inherit; font-size: 13px; }
+        .demo-tools button:hover, .demo-tools button:focus-visible { border-color: #55927b; outline: 2px solid #c8e5d7; outline-offset: 1px; }
+        @media (max-width: 480px) { body { padding: 14px; } .demo-messages { padding: 18px 12px; } .demo-bubble { max-width: calc(100% - 46px); } }
+    </style>
+</head>
+<body>
+<main>
+    <h1>MAGI living-avatar preview</h1>
+    <p class="note">One static header emblem; one clipped, frame-stepped mascot beside an assistant message. Use the controls to preview request states.</p>
+    <section class="demo-chat" aria-label="MAGI avatar preview">
+        <header class="demo-header">
+            <img src="magi-avatar-static.png" width="42" height="42" alt="">
+            <div><strong>MAGI</strong><small>Your MAGI wellness companion</small></div>
+        </header>
+        <div class="demo-messages">
+            <article class="demo-message">
+                <span class="demo-avatar">
+                    <span class="magi-avatar magi-avatar--sm is-visible" data-magi-avatar data-state="idle" data-animated="true" role="img" aria-label="MAGI AI companion">
+                        <img class="magi-avatar__static" src="magi-avatar-static.png" width="31" height="31" alt="" aria-hidden="true">
+                        <span class="magi-avatar__motion" aria-hidden="true">
+                            <img class="magi-avatar__frames" src="magi-sprite.png" width="248" height="31" alt="" aria-hidden="true">
+                        </span>
+                    </span>
+                </span>
+                <div class="demo-bubble">Hi. I'm here with you. What would feel helpful to talk through?</div>
+            </article>
+            <div class="demo-tools" aria-label="Avatar animation state controls">
+                <button type="button" data-avatar-state="idle">Calm / idle</button>
+                <button type="button" data-avatar-state="thinking">Thinking</button>
+                <button type="button" data-avatar-state="responding">Reply arrives</button>
+            </div>
+        </div>
+    </section>
+</main>
+<script>
+    const avatar = document.querySelector('[data-magi-avatar]');
+    document.querySelectorAll('[data-avatar-state]').forEach(button => {
+        button.addEventListener('click', () => { avatar.dataset.state = button.dataset.avatarState; });
+    });
+    document.addEventListener('animationend', event => {
+        if (event.animationName === 'magi-avatar-frames' && avatar.dataset.state === 'responding') {
+            avatar.dataset.state = 'idle';
+        }
+    });
+</script>
+</body>
+</html>

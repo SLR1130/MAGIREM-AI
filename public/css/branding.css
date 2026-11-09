@@ -1,0 +1,70 @@
+/* Shared MAGIREM AI logo treatment. Image pixels and proportions come from the supplied logo. */
+.magirem-logo {
+    display: block;
+    flex: 0 0 auto;
+    object-fit: contain;
+}
+
+.magirem-logo--emblem {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+}
+
+.magirem-logo--full {
+    width: min(100%, 12rem);
+    height: auto;
+    aspect-ratio: 1229 / 1171;
+    border-radius: 5.1%;
+}
+
+.student-topbar-mark,
+.msc-brand__mark,
+.sidebar-brand-icon,
+.counselor-brand-mark,
+.admin-sidebar-brand-mark {
+    overflow: hidden;
+}
+
+.student-topbar-mark .magirem-logo,
+.msc-brand__mark .magirem-logo,
+.sidebar-brand-icon .magirem-logo,
+.counselor-brand-mark .magirem-logo,
+.admin-sidebar-brand-mark .magirem-logo {
+    width: 100%;
+    height: 100%;
+}
+
+.msa-brand-lockup .msa-brand-logo-full {
+    width: clamp(7.5rem, 12vw, 9rem);
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 14px 32px rgba(8, 53, 44, .18);
+}
+
+.msc-home-footer {
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.msc-home-footer .msc-home-footer__brand {
+    width: clamp(8rem, 16vw, 11rem);
+    height: auto;
+}
+
+.navbar-logo .magirem-logo {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar-logo {
+    border-radius: 12px !important;
+    background: #103f32 !important;
+    box-shadow: 0 4px 12px rgba(16, 63, 50, .22) !important;
+}
+
+@media (max-width: 640px) {
+    .msa-brand-lockup .msa-brand-logo-full {
+        width: clamp(6.5rem, 24vw, 7.5rem);
+    }
+}

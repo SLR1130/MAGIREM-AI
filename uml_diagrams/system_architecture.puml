@@ -1,0 +1,93 @@
+@startuml MinsuanScore_System_Architecture
+!theme plain
+title MinsuanScore AI - System Architecture Overview
+
+package "Client Layer" {
+  [Web Browser] as browser
+  [Mobile App] as mobile
+  [Admin Dashboard] as admin
+}
+
+package "Presentation Layer" {
+  [Load Balancer] as lb
+  [Web Server] as web
+  [API Gateway] as api
+}
+
+package "Application Layer" {
+  [Authentication Service] as auth
+  [AI Chat Controller] as chat
+  [Appointment Manager] as appt
+  [Crisis Detection] as crisis
+  [Analytics Engine] as analytics
+}
+
+package "Business Logic Layer" {
+  [Emotion Analysis] as emotion
+  [Mental Health Monitoring] as monitoring
+  [Counseling Services] as counseling
+  [Resource Management] as resources
+  [User Management] as users
+}
+
+package "Data Access Layer" {
+  [Database Repository] as db_repo
+  [Cache Manager] as cache
+  [File Storage] as files
+}
+
+package "External Services" {
+  [ML Processing Engine] as ml
+  [Email Service] as email
+  [SMS Service] as sms
+  [Cloud Storage] as cloud
+}
+
+package "Infrastructure" {
+  [MySQL Database] as mysql
+  [Redis Cache] as redis
+  [Application Logs] as logs
+  [Security Manager] as security
+}
+
+' Client connections
+browser --> lb : HTTPS
+mobile --> api : REST API
+admin --> web : Admin Interface
+
+' Presentation layer
+lb --> web
+web --> auth
+web --> chat
+web --> appt
+
+' Application layer connections
+chat --> emotion
+chat --> crisis
+appt --> counseling
+auth --> users
+
+' Business logic connections
+emotion --> ml : AI Processing
+crisis --> email : Alerts
+crisis --> sms : Emergency
+monitoring --> analytics
+
+' Data access
+emotion --> db_repo
+counseling --> db_repo
+users --> db_repo
+resources --> db_repo
+analytics --> cache
+files --> cloud
+
+' Infrastructure
+db_repo --> mysql
+cache --> redis
+security --> logs
+
+note right of ml : "Python-based\\nML/AI Engine"
+note right of mysql : "Compressed Schema\\n6 Core Tables"
+note right of crisis : "Real-time Crisis\\nDetection & Response"
+
+@enduml

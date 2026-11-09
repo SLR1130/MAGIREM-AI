@@ -1,0 +1,107 @@
+{
+  "dataset_id": "magirem-six-class-phase3-synthetic-candidates-v1",
+  "candidate_cases": 192,
+  "source_groups": 48,
+  "languages": {
+    "ENGLISH": 48,
+    "FILIPINO": 48,
+    "TAGALOG": 48,
+    "TAGLISH": 48
+  },
+  "provisional_intended_label_counts_not_ground_truth": {
+    "joy": 32,
+    "sadness": 32,
+    "anxiety": 32,
+    "anger": 32,
+    "grief": 32,
+    "neutral": 32
+  },
+  "provisional_label_by_language": {
+    "sadness": {
+      "ENGLISH": 8,
+      "FILIPINO": 8,
+      "TAGALOG": 8,
+      "TAGLISH": 8
+    },
+    "joy": {
+      "ENGLISH": 8,
+      "FILIPINO": 8,
+      "TAGALOG": 8,
+      "TAGLISH": 8
+    },
+    "anxiety": {
+      "ENGLISH": 8,
+      "FILIPINO": 8,
+      "TAGALOG": 8,
+      "TAGLISH": 8
+    },
+    "anger": {
+      "ENGLISH": 8,
+      "FILIPINO": 8,
+      "TAGALOG": 8,
+      "TAGLISH": 8
+    },
+    "neutral": {
+      "ENGLISH": 8,
+      "FILIPINO": 8,
+      "TAGALOG": 8,
+      "TAGLISH": 8
+    },
+    "grief": {
+      "ENGLISH": 8,
+      "FILIPINO": 8,
+      "TAGALOG": 8,
+      "TAGLISH": 8
+    }
+  },
+  "exact_normalized_duplicates_within_candidate_set": 0,
+  "cross_group_near_duplicate_pairs_at_or_above_0_85": [],
+  "all_language_variants_kept_in_same_holdout_group": true,
+  "expression_type_counts_not_adjudicated": {
+    "direct_positive": 20,
+    "indirect_positive": 8,
+    "short_direct": 4,
+    "direct_low_mood": 8,
+    "direct_disappointment": 8,
+    "indirect_hurt": 8,
+    "indirect_low_mood": 4,
+    "direct_homesick": 4,
+    "anticipatory_worry": 4,
+    "negation_contrast": 4,
+    "future_uncertainty": 12,
+    "uncertainty_waiting": 4,
+    "anticipatory_nervousness": 4,
+    "fear_related_anxiety": 4,
+    "injustice": 4,
+    "boundary_violation": 8,
+    "unfair_blame": 4,
+    "unfair_change": 4,
+    "irritation": 8,
+    "sarcastic_anger": 4,
+    "bereavement": 24,
+    "bereavement_anniversary": 8,
+    "factual_logistical": 32
+  },
+  "provenance": {
+    "source_type": "new AI-authored synthetic scenarios",
+    "authoring_date": "2026-11-09",
+    "source_corpus": null,
+    "identifiable_student_messages_used": false,
+    "human_reviewed_count": 0,
+    "intended_labels_are_provisional": true
+  },
+  "external_training_corpus_overlap_check": "not_run_in_prep; requires approved de-identified corpus",
+  "human_reviewed_count": 0,
+  "annotation_state": "AI-authored provisional stimuli; no independent labels yet",
+  "pinned_production_weights_sha256": "76700A16D018EB4619F342A12E7B0E3976E17EE64C46E435F204B6516A6E5EBF",
+  "candidate_bank_sha256": "209fb97548b9ec0dc631067851881d76053d256ced6d2755d23971497d67d42d",
+  "blind_case_id_map_sha256": "93887D4233AD7A5D41B109B8AE8493E0AA78B93E62E78D0496EBBE4710DA47C0",
+  "reviewer_case_id_scheme": "random opaque per-utterance IDs stored in a private mapping file; no scenario-family/language suffix",
+  "reviewer_forms_exclude_provisional_labels_and_group_ids": true,
+  "score_requires_completed_review_manifest_and_sidecar": true,
+  "blind_forms": [
+    "reviewer_a_blind.csv",
+    "reviewer_b_blind.csv"
+  ],
+  "adjudication_template": "adjudication_template.csv"
+}

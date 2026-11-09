@@ -1,0 +1,93 @@
+@startuml MinsuanScore_Component_Diagram
+!theme plain
+title MinsuanScore AI - System Component Architecture
+
+package "Presentation Layer" {
+  component [Web UI] as webui
+  component [Mobile API] as mobileapi
+  component [Admin Dashboard] as admin
+}
+
+package "Application Services" {
+  component [Authentication Service] as auth
+  component [AI Chat Service] as chat
+  component [Appointment Service] as appt
+  component [Crisis Management] as crisis
+  component [Analytics Service] as analytics
+}
+
+package "Business Logic" {
+  component [Emotion Analysis] as emotion
+  component [Mental Health Monitoring] as monitoring  
+  component [Counseling Services] as counseling
+  component [Resource Management] as resources
+  component [User Management] as users
+}
+
+package "Data Access" {
+  component [Database Repository] as repo
+  component [Cache Manager] as cache
+  component [File Storage] as files
+}
+
+package "External Services" {
+  component [ML Processing Engine] as ml
+  component [Email Service] as email
+  component [SMS Gateway] as sms
+  component [Cloud Storage] as cloud
+}
+
+package "Infrastructure" {
+  database "MySQL Database" as mysql
+  database "Redis Cache" as redis
+  cloud "File System" as filesystem
+}
+
+' Interfaces
+interface "IAuthentication" as iauth
+interface "IEmotionDetection" as iemotion
+interface "ICrisisManagement" as icrisis
+interface "IDataRepository" as irepo
+interface "INotification" as inotify
+interface "IAnalytics" as ianalytics
+
+' Presentation layer connections
+webui --> iauth
+webui --> chat
+webui --> appt
+mobileapi --> iauth
+mobileapi --> chat
+admin --> analytics
+
+' Service layer connections
+auth - iauth
+chat --> iemotion
+chat --> icrisis
+appt --> counseling
+crisis - icrisis
+analytics - ianalytics
+
+' Business logic connections
+emotion - iemotion
+emotion --> ml
+crisis --> inotify
+monitoring --> ianalytics
+counseling --> irepo
+users --> irepo
+
+' Data access connections
+repo - irepo
+repo --> mysql
+cache --> redis
+files --> filesystem
+files --> cloud
+
+' External service connections
+email - inotify
+sms - inotify
+
+note right of ml : "Python-based\\nMachine Learning\\nProcessing Engine"
+note right of mysql : "Compressed Schema\\n6 Core Tables\\n20 Total Tables"
+note right of crisis : "Real-time Crisis\\nDetection & Alert\\nManagement"
+
+@enduml

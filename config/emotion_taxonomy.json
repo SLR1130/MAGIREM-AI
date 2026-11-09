@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "alias_revision": "2026-10-25-secondary-evidence-v1",
+  "categories": [
+    {"key": "positive_wellbeing", "label": "Positive & Well-being", "order": 1},
+    {"key": "sadness_disconnection", "label": "Sadness & Disconnection", "order": 2},
+    {"key": "anxiety_stress", "label": "Anxiety & Stress", "order": 3},
+    {"key": "anger_aversion", "label": "Anger & Aversion", "order": 4},
+    {"key": "shame_self_doubt", "label": "Shame & Self-Doubt", "order": 5},
+    {"key": "disengagement_confusion", "label": "Disengagement & Confusion", "order": 6},
+    {"key": "neutral", "label": "Neutral", "order": 7},
+    {"key": "context_dependent", "label": "Context-Dependent", "order": 8}
+  ],
+  "emotions": [
+    {"key": "happiness_joy", "label": "Happiness / Joy", "category_key": "positive_wellbeing", "aliases": ["happiness", "happy", "joy", "happiness/joy"]},
+    {"key": "excitement", "label": "Excitement", "category_key": "positive_wellbeing", "aliases": ["excited", "excitement", "nasasabik", "sabik"]},
+    {"key": "calmness", "label": "Calmness", "category_key": "positive_wellbeing", "aliases": ["calm", "calmness"]},
+    {"key": "contentment", "label": "Contentment", "category_key": "positive_wellbeing", "aliases": ["contented", "contentment"]},
+    {"key": "hope_optimism", "label": "Hope / Optimism", "category_key": "positive_wellbeing", "aliases": ["hope", "hopeful", "optimism", "optimistic", "hope/optimism"]},
+    {"key": "pride", "label": "Pride", "category_key": "positive_wellbeing", "aliases": ["pride", "proud", "ipinagmamalaki"]},
+    {"key": "curiosity", "label": "Curiosity", "category_key": "positive_wellbeing", "aliases": ["curious", "curiosity"]},
+    {"key": "gratitude", "label": "Gratitude", "category_key": "positive_wellbeing", "aliases": ["grateful", "gratitude"]},
+    {"key": "love_affection", "label": "Love / Affection", "category_key": "positive_wellbeing", "aliases": ["love", "affection", "love/affection"]},
+    {"key": "relief", "label": "Relief", "category_key": "positive_wellbeing", "aliases": ["relief", "relieved"]},
+    {"key": "confidence", "label": "Confidence", "category_key": "positive_wellbeing", "aliases": ["confident", "confidence"]},
+
+    {"key": "sadness", "label": "Sadness", "category_key": "sadness_disconnection", "aliases": ["sad", "sadness", "malungkot", "lungkot"]},
+    {"key": "grief", "label": "Grief", "category_key": "sadness_disconnection", "aliases": ["grief", "grieving", "nagluluksa", "namatayan"]},
+    {"key": "disappointment", "label": "Disappointment", "category_key": "sadness_disconnection", "aliases": ["disappointed", "disappointment"]},
+    {"key": "loneliness", "label": "Loneliness", "category_key": "sadness_disconnection", "aliases": ["lonely", "loneliness", "mag-isa", "nag-iisa"]},
+    {"key": "homesickness", "label": "Homesickness", "category_key": "sadness_disconnection", "aliases": ["homesick", "homesickness", "miss ko ang bahay", "miss ko ang pamilya", "miss my family"]},
+    {"key": "hopelessness", "label": "Hopelessness", "category_key": "sadness_disconnection", "aliases": ["hopeless", "hopelessness"]},
+    {"key": "rejection_emotional_hurt", "label": "Rejection / Emotional Hurt", "category_key": "sadness_disconnection", "aliases": ["rejection", "rejected", "emotional hurt", "rejection/emotional hurt"]},
+
+    {"key": "anxiety", "label": "Anxiety", "category_key": "anxiety_stress", "aliases": ["anxious", "anxiety", "kinakabahan", "kaba", "nervous"]},
+    {"key": "fear", "label": "Fear", "category_key": "anxiety_stress", "aliases": ["fear", "afraid", "scared", "natatakot", "takot"]},
+    {"key": "stress", "label": "Stress", "category_key": "anxiety_stress", "aliases": ["stress", "stressed", "pressured", "pressure", "napepressure"]},
+    {"key": "overwhelm", "label": "Overwhelm", "category_key": "anxiety_stress", "aliases": ["overwhelmed", "overwhelm"]},
+
+    {"key": "anger", "label": "Anger", "category_key": "anger_aversion", "aliases": ["angry", "anger"]},
+    {"key": "frustration", "label": "Frustration", "category_key": "anger_aversion", "aliases": ["frustrated", "frustration"]},
+    {"key": "jealousy_envy", "label": "Jealousy / Envy", "category_key": "anger_aversion", "aliases": ["jealous", "jealousy", "envy", "envious", "jealousy/envy"]},
+    {"key": "disgust", "label": "Disgust", "category_key": "anger_aversion", "aliases": ["disgust", "disgusted"]},
+
+    {"key": "shame", "label": "Shame", "category_key": "shame_self_doubt", "aliases": ["shame", "ashamed", "nahihiya", "hiya"]},
+    {"key": "guilt", "label": "Guilt", "category_key": "shame_self_doubt", "aliases": ["guilt", "guilty", "nagiguilty", "nakokonsensya", "konsensya"]},
+    {"key": "insecurity_self_doubt", "label": "Insecurity / Self-Doubt", "category_key": "shame_self_doubt", "aliases": ["insecurity", "insecure", "self-doubt", "self doubt", "nagda-doubt", "nagdu-duda", "duda", "nag-aalinlangan"]},
+
+    {"key": "boredom", "label": "Boredom", "category_key": "disengagement_confusion", "aliases": ["bored", "boredom"]},
+    {"key": "confusion", "label": "Confusion", "category_key": "disengagement_confusion", "aliases": ["confused", "confusion"]},
+
+    {"key": "neutral", "label": "Neutral", "category_key": "neutral", "aliases": ["neutral"]},
+
+    {"key": "surprise", "label": "Surprise", "category_key": "context_dependent", "aliases": ["surprise", "surprised"]},
+    {"key": "compassion_empathy", "label": "Compassion / Empathy", "category_key": "context_dependent", "aliases": ["compassion", "empathetic", "empathy", "compassion/empathy"]},
+    {"key": "anticipation", "label": "Anticipation", "category_key": "context_dependent", "aliases": ["anticipation", "anticipating"]}
+  ]
+}

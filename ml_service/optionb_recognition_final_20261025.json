@@ -1,0 +1,31 @@
+{
+  "evaluation_id": "optionb-recognition-unseen-20261025-v1",
+  "purpose": "Previously unseen evaluation after development comparison; not used for tuning.",
+  "cases": [
+    {"id":"final-excite-01","key":"excitement","text":"I am buzzing to see the finished stage tonight.","expected_status":"clear","language":"en"},
+    {"id":"final-excite-02","key":"excitement","text":"Sobrang ganado akong pumunta sa event mamaya.","expected_status":"clear","language":"fil"},
+    {"id":"final-anticipate-01","key":"anticipation","text":"I am waiting for next month's announcement with quiet expectation.","expected_status":"clear","language":"en"},
+    {"id":"final-anticipate-02","key":"anticipation","text":"Abang ako sa resulta ng scholarship sa susunod na linggo.","expected_status":"clear","language":"fil"},
+    {"id":"final-overwhelm-01","key":"overwhelm","text":"The list is so long that I freeze before choosing a first task.","expected_status":"clear","language":"en"},
+    {"id":"final-overwhelm-02","key":"overwhelm","text":"Hindi ko ma-process ang dami ng kailangan ngayong araw.","expected_status":"clear","language":"taglish"},
+    {"id":"final-anxiety-01","key":"anxiety","text":"I fear the phone will ring with bad news.","expected_status":"clear","language":"en"},
+    {"id":"final-anxiety-02","key":"anxiety","text":"Kinakabahan ako baka bumagsak ang interview.","expected_status":"clear","language":"fil"},
+    {"id":"final-frustration-01","key":"frustration","text":"The printer jams each time I submit the form.","expected_status":"clear","language":"en"},
+    {"id":"final-frustration-02","key":"frustration","text":"Nakakainis na hindi sumusunod ang code.","expected_status":"clear","language":"fil"},
+    {"id":"final-stress-01","key":"stress","text":"Weeks of back-to-back obligations are draining me.","expected_status":"clear","language":"en"},
+    {"id":"final-stress-02","key":"stress","text":"Laging may deadline kaya pagod at pressured ako.","expected_status":"clear","language":"taglish"},
+    {"id":"final-guilt-01","key":"guilt","text":"I keep wishing I had apologized sooner for what I said.","expected_status":"clear","language":"en"},
+    {"id":"final-guilt-02","key":"guilt","text":"Masama ang loob ko sa sarili ko dahil hindi ako tumulong.","expected_status":"clear","language":"fil"},
+    {"id":"final-shame-01","key":"shame","text":"I feel exposed whenever I remember that public mistake.","expected_status":"clear","language":"en"},
+    {"id":"final-shame-02","key":"shame","text":"Gusto kong magtago kapag pinag-uusapan nila ang mali ko.","expected_status":"clear","language":"fil"},
+    {"id":"final-mixed-01","key":"excitement","expected_secondary_keys":["anxiety"],"expected_status":"mixed","text":"I am eager for the new role, yet I worry I will disappoint everyone.","language":"en"},
+    {"id":"final-mixed-02","key":"overwhelm","expected_secondary_keys":["anxiety"],"expected_status":"mixed","text":"Overwhelmed ako sa tasks at kinakabahan sa deadline bukas.","language":"taglish"},
+    {"id":"final-mixed-03","key":"pride","expected_secondary_keys":["insecurity_self_doubt"],"expected_status":"mixed","text":"I am proud of the result, although I still doubt whether it is good enough.","language":"en"},
+    {"id":"final-mixed-04","key":"happiness_joy","expected_secondary_keys":["homesickness"],"expected_status":"mixed","text":"Masaya ako sa bagong friends pero nami-miss ko pa rin ang bahay.","language":"taglish"},
+    {"id":"final-uncertain-01","key":null,"expected_status":"uncertain","text":"Maybe it is worry, maybe it is tiredness; I cannot tell yet.","language":"en"},
+    {"id":"final-uncertain-02","key":null,"expected_status":"uncertain","text":"Hindi ko alam kung anong nararamdaman ko tungkol dito.","language":"fil"},
+    {"id":"final-other-01","key":null,"expected_status":"attributed_other","expected_attribution":true,"expected_attribution_scope":"other","expected_other_keys":["sadness"],"text":"My roommate is hurting after the news; I am only asking how to support her.","language":"en"},
+    {"id":"final-neutral-01","key":"neutral","expected_status":"clear","text":"My reaction to the timetable is neutral; I have no particular feeling about it.","language":"en"}
+  ]
+}
+

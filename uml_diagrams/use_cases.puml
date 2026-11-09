@@ -1,0 +1,105 @@
+@startuml MinsuanScore_Use_Cases
+!theme plain
+title MinsuanScore AI - Use Case Diagram
+
+left to right direction
+
+actor "Student" as student
+actor "Counselor" as counselor
+actor "Administrator" as admin
+actor "AI System" as ai #lightblue
+
+rectangle "MinsuanScore AI System" {
+  
+  package "Authentication & Profile" {
+    usecase "Register Account" as register
+    usecase "Login/Logout" as login
+    usecase "Update Profile" as profile
+    usecase "Manage Privacy" as privacy
+  }
+  
+  package "AI Interaction" {
+    usecase "Start Chat Session" as chat
+    usecase "Send Message" as message
+    usecase "Receive AI Response" as response
+    usecase "View Chat History" as history
+  }
+  
+  package "Mental Health Monitoring" {
+    usecase "Complete Mood Check-in" as mood
+    usecase "View Wellbeing Dashboard" as dashboard
+    usecase "Track Progress" as progress
+    usecase "Receive Alerts" as alerts
+  }
+  
+  package "Counseling Services" {
+    usecase "Browse Counselors" as browse
+    usecase "Schedule Appointment" as schedule
+    usecase "Message Counselor" as counsel_msg
+    usecase "Conduct Session" as session
+  }
+  
+  package "Resource Access" {
+    usecase "Browse Coping Strategies" as coping
+    usecase "Access Emergency Resources" as emergency
+    usecase "Use Reflection Tools" as reflection
+    usecase "Participate in Community" as community
+  }
+  
+  package "Assessment & Analytics" {
+    usecase "Complete Assessment" as assessment
+    usecase "View Results" as results
+    usecase "Generate Reports" as reports
+    usecase "Monitor System Performance" as performance
+  }
+  
+  package "Crisis Management" {
+    usecase "Detect Crisis" as detect
+    usecase "Send Crisis Alert" as crisis_alert
+    usecase "Respond to Crisis" as crisis_response
+  }
+}
+
+' Student relationships
+student --> register
+student --> login
+student --> profile
+student --> privacy
+student --> chat
+student --> message
+student --> mood
+student --> dashboard
+student --> browse
+student --> schedule
+student --> coping
+student --> assessment
+
+' Counselor relationships
+counselor --> login
+counselor --> counsel_msg
+counselor --> session
+counselor --> crisis_response
+counselor --> reports
+
+' Administrator relationships
+admin --> login
+admin --> performance
+admin --> reports
+
+' AI System relationships
+ai --> response
+ai --> detect
+ai --> alerts
+
+' Include relationships
+chat .> message : <<include>>
+message .> response : <<include>>
+detect .> crisis_alert : <<include>>
+crisis_alert .> crisis_response : <<include>>
+
+' Extend relationships
+mood ..> alerts : <<extend>>
+assessment ..> results : <<extend>>
+browse ..> schedule : <<extend>>
+
+@enduml

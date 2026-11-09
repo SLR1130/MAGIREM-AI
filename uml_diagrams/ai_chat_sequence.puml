@@ -1,0 +1,70 @@
+@startuml MinsuanScore_AI_Chat_Sequence
+!theme plain
+title MinsuanScore AI - AI Chat Interaction Sequence
+
+actor Student as student
+participant "Web Interface" as web
+participant "AI Chat Controller" as controller
+participant "Emotion Detection Service" as emotion
+participant "ML Service" as ml
+participant "Chat History Service" as history
+participant "Crisis Detection" as crisis
+participant "Database" as db
+
+student -> web : Enter message
+activate web
+
+web -> controller : POST /api/chat/message
+activate controller
+
+controller -> history : getConversationHistory(userId, limit=5)
+activate history
+history -> db : SELECT recent messages
+activate db
+db --> history : conversation data
+deactivate db
+history --> controller : recent messages
+deactivate history
+
+controller -> emotion : analyzeMessage(message, context)
+activate emotion
+
+emotion -> ml : POST /analyze
+note right : Send message + conversation context
+activate ml
+ml -> ml : Process with NLP models
+ml -> ml : Detect emotion & confidence
+ml -> ml : Assess crisis indicators
+ml --> emotion : {emotion, confidence, crisis_level}
+deactivate ml
+
+emotion -> emotion : Validate results
+emotion -> emotion : Generate response strategy
+emotion --> controller : {emotion_data, response_type}
+deactivate emotion
+
+alt Crisis Level >= HIGH
+    controller -> crisis : triggerCrisisAlert(userId, crisisData)
+    activate crisis
+    crisis -> db : Log crisis event
+    crisis -> crisis : Notify counselor
+    crisis -> crisis : Send emergency protocols
+    crisis --> controller : alert_sent
+    deactivate crisis
+end
+
+controller -> controller : Generate AI response
+controller -> history : saveMessage(userId, message, response, metadata)
+activate history
+history -> db : INSERT conversation record
+deactivate history
+
+controller --> web : {success: true, response, emotion, actions}
+deactivate controller
+
+web --> student : Display AI response
+deactivate web
+
+note over student, db : If crisis detected, counselor receives immediate notification
+
+@enduml

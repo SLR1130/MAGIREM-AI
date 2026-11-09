@@ -1,0 +1,179 @@
+@startuml MinsuanScore_Class_Diagram
+!theme plain
+title MinsuanScore AI - Core Class Structure
+
+abstract class User {
+  # id: Long
+  # name: String
+  # email: String
+  # password: String
+  # role: UserRole
+  # isActive: Boolean
+  # createdAt: DateTime
+  # updatedAt: DateTime
+  --
+  + authenticate(): Boolean
+  + updateProfile(): void
+  + getPermissions(): List<Permission>
+  + isAuthorized(action: String): Boolean
+  {abstract} + getSpecificData(): Object
+}
+
+class Student {
+  - studentId: String
+  - program: String
+  - yearLevel: String
+  - privacySettings: JSON
+  --
+  + startChatSession(): ChatSession
+  + submitMoodCheckin(mood: MoodData): void
+  + scheduleAppointment(counselor: Counselor): Appointment
+  + accessResources(category: String): List<Resource>
+  + getSpecificData(): StudentProfile
+}
+
+class Counselor {
+  - licenseNumber: String
+  - specialization: String
+  - availability: Schedule
+  - maxStudents: Integer
+  --
+  + reviewStudentData(student: Student): StudentProfile
+  + respondToMessage(message: Message): void
+  + createTreatmentPlan(student: Student): TreatmentPlan
+  + handleCrisis(crisis: CrisisEvent): CrisisResponse
+  + getSpecificData(): CounselorProfile
+}
+
+class Administrator {
+  - adminLevel: AdminLevel
+  - permissions: List<Permission>
+  --
+  + manageUsers(): void
+  + generateReports(): List<Report>
+  + configureSystem(): void
+  + monitorPerformance(): SystemMetrics
+  + getSpecificData(): AdminProfile
+}
+
+class EmotionalEntry {
+  - id: Long
+  - userId: Long
+  - sessionId: String
+  - entryType: EntryType
+  - content: String
+  - aiResponse: String
+  - detectedEmotion: String
+  - confidenceScore: Double
+  - crisisLevel: CrisisLevel
+  - timestamp: DateTime
+  --
+  + analyzeEmotion(): EmotionResult
+  + detectCrisis(): CrisisLevel
+  + generateResponse(): String
+  + saveEntry(): Boolean
+}
+
+class AIService {
+  - modelVersion: String
+  - apiEndpoint: String
+  - responseTime: Long
+  - accuracy: Double
+  --
+  + processMessage(message: String): AIResponse
+  + detectEmotion(text: String): EmotionResult
+  + generateResponse(context: Context): String
+  + analyzeContext(history: List<Message>): Context
+  + updateModel(): void
+}
+
+class MentalHealthMonitoring {
+  - id: Long
+  - userId: Long
+  - date: Date
+  - moodScore: Integer
+  - stressLevel: Integer
+  - anxietyLevel: Integer
+  - overallWellbeing: Double
+  - trendDirection: TrendDirection
+  --
+  + calculateWellbeingScore(): Double
+  + detectPatterns(): List<Pattern>
+  + generateAlerts(): List<Alert>
+  + trackProgress(): ProgressReport
+}
+
+class CounselingService {
+  - id: Long
+  - studentId: Long
+  - counselorId: Long
+  - serviceType: ServiceType
+  - status: ServiceStatus
+  - scheduledAt: DateTime
+  - priority: Priority
+  --
+  + scheduleAppointment(): Boolean
+  + sendMessage(content: String): void
+  + updateStatus(status: ServiceStatus): void
+  + generateReport(): ServiceReport
+}
+
+class SupportResource {
+  - id: Long
+  - resourceType: ResourceType
+  - category: Category
+  - title: String
+  - content: String
+  - effectivenessRating: Double
+  - usageCount: Integer
+  --
+  + getByCategory(category: Category): List<SupportResource>
+  + updateRating(rating: Double): void
+  + trackUsage(): void
+  + validateContent(): Boolean
+}
+
+' Inheritance relationships
+User <|-- Student
+User <|-- Counselor  
+User <|-- Administrator
+
+' Composition relationships
+Student "1" *-- "many" EmotionalEntry : creates
+Student "1" *-- "many" MentalHealthMonitoring : has
+Student "1" *-- "many" CounselingService : requests
+
+Counselor "1" *-- "many" CounselingService : provides
+Counselor "1" *-- "many" SupportResource : creates
+
+' Association relationships
+EmotionalEntry --> AIService : processed by
+CounselingService --> AIService : may use
+MentalHealthMonitoring --> AIService : analyzed by
+
+' Dependency relationships
+AIService ..> EmotionalEntry : analyzes
+CounselingService ..> MentalHealthMonitoring : references
+
+enum UserRole {
+  STUDENT
+  COUNSELOR
+  ADMINISTRATOR
+}
+
+enum CrisisLevel {
+  NONE
+  LOW
+  MODERATE
+  HIGH
+  CRITICAL
+}
+
+enum ServiceType {
+  APPOINTMENT
+  MESSAGE
+  ALERT
+  CRISIS
+}
+
+@enduml

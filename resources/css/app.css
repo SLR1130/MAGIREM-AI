@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Purple Theme for Mental Health Awareness */
+:root {
+    --purple-50: #faf5ff;
+    --purple-100: #f3e8ff;
+    --purple-200: #e9d5ff;
+    --purple-300: #d8b4fe;
+    --purple-400: #c084fc;
+    --purple-500: #a855f7;
+    --purple-600: #9333ea;
+    --purple-700: #7e22ce;
+    --purple-800: #6b21a8;
+    --purple-900: #581c87;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--purple-50) 0%, var(--purple-100) 100%);
+    min-height: 100vh;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--purple-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--purple-400);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--purple-600);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Focus states for accessibility */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+    outline: 3px solid var(--purple-400);
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn-purple,
+    form {
+        display: none;
+    }
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .navbar a {
+        margin: 0.5rem 0;
+    }
+    
+    .container {
+        padding: 0 0.5rem;
+    }
+}

@@ -1,0 +1,5 @@
+﻿<script>
+window.authUserId = {{auth()->id()}};
+window.authUserInitial = '{{substr(auth()->user()->name,0,1)}}';
+</script>
+<script src="/js/counselor-chat.js"></script>

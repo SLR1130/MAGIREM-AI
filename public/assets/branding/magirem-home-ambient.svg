@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" fill="none" aria-hidden="true">
+<defs>
+  <linearGradient id="canvas" x1="0" y1="0" x2="1410" y2="920" gradientUnits="userSpaceOnUse"><stop stop-color="#FCFCF9"/><stop offset=".48" stop-color="#F9FCF8"/><stop offset="1" stop-color="#EDF6EE"/></linearGradient>
+  <radialGradient id="sage"><stop stop-color="#A9CEB4" stop-opacity=".43"/><stop offset=".55" stop-color="#B5D7BC" stop-opacity=".21"/><stop offset="1" stop-color="#BDDCC5" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gold"><stop stop-color="#E8D9AE" stop-opacity=".41"/><stop offset="1" stop-color="#F3E7CD" stop-opacity="0"/></radialGradient>
+  <radialGradient id="wash"><stop stop-color="#D9EDDE" stop-opacity=".55"/><stop offset="1" stop-color="#E3F1E7" stop-opacity="0"/></radialGradient>
+  <linearGradient id="floor" x1="310" y1="690" x2="1200" y2="900"><stop stop-color="#F4F7EF"/><stop offset="1" stop-color="#D9E9DE"/></linearGradient>
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" stitchTiles="stitch"/></filter>
+</defs>
+<rect width="1440" height="900" fill="url(#canvas)"/>
+<ellipse cx="1170" cy="422" rx="620" ry="520" fill="url(#sage)"/>
+<ellipse cx="1337" cy="120" rx="345" ry="275" fill="url(#wash)"/>
+<ellipse cx="50" cy="770" rx="480" ry="350" fill="url(#gold)"/>
+<path d="M0 828C220 750 382 782 560 819C790 866 935 755 1142 755C1260 755 1372 782 1440 816V900H0V828Z" fill="url(#floor)" opacity=".48"/>
+<circle cx="1128" cy="456" r="316" stroke="#99C0A7" stroke-opacity=".23" stroke-width="1.5"/>
+<circle cx="1128" cy="456" r="265" stroke="#9EBFA7" stroke-opacity=".18" stroke-width="1.5"/>
+<circle cx="1128" cy="456" r="220" stroke="#92BCA0" stroke-opacity=".13" stroke-width="1"/>
+<g stroke="#739E7D" stroke-linecap="round" stroke-linejoin="round" opacity=".24">
+  <path d="M-18 885C48 840 79 790 106 690" stroke-width="2.5"/>
+  <path d="M27 834C-7 816 -4 778 10 769C38 786 42 813 27 834Z" fill="#A1C3A7" stroke-width="1.5"/>
+  <path d="M60 796C38 766 57 734 77 735C88 764 79 787 60 796Z" fill="#B0D1B5" stroke-width="1.5"/>
+  <path d="M91 740C68 714 84 678 102 679C112 705 110 727 91 740Z" fill="#96BC9E" stroke-width="1.5"/>
+  <path d="M80 772C105 750 137 760 143 780C116 792 97 791 80 772Z" fill="#9FBFA4" stroke-width="1.5"/>
+  <path d="M-22 853C5 842 19 852 30 870" stroke-width="2"/>
+</g>
+<g stroke="#77A186" stroke-linecap="round" opacity=".16">
+ <path d="M1443 174C1395 178 1356 203 1335 240" stroke-width="2"/>
+ <path d="M1400 178C1381 145 1359 146 1351 155C1360 175 1381 182 1400 178Z" fill="#B3D0B6"/>
+ <path d="M1371 194C1363 220 1334 229 1314 223C1328 204 1348 190 1371 194Z" fill="#A2C5AC"/>
+</g>
+<g fill="#D8B669" opacity=".82">
+ <circle cx="995" cy="320" r="3.4"/><circle cx="1265" cy="242" r="3"/><circle cx="1322" cy="653" r="2.6"/><circle cx="1049" cy="686" r="2.9"/><circle cx="872" cy="503" r="2.1"/>
+ <path d="M1304 328l4.6 11.4L1320 344l-11.4 4.6L1304 360l-4.6-11.4L1288 344l11.4-4.6L1304 328Z" opacity=".62"/>
+ <path d="M917 228l3.2 8 8 3.2-8 3.2-3.2 8-3.2-8-8-3.2 8-3.2 3.2-8Z" opacity=".52"/>
+</g>
+<rect width="1440" height="900" filter="url(#grain)" opacity=".017" style="mix-blend-mode:multiply"/>
+</svg>

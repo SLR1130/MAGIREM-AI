@@ -1,0 +1,50 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="white"/>
+  
+  <!-- Left green figure -->
+  <circle cx="280" cy="200" r="35" fill="#4CAF50"/>
+  <path d="M 280 240 Q 250 280 240 340 Q 235 370 250 390" stroke="#4CAF50" stroke-width="45" fill="none" stroke-linecap="round"/>
+  
+  <!-- Right blue figure -->
+  <circle cx="420" cy="180" r="40" fill="#1976D2"/>
+  <path d="M 420 225 Q 450 270 460 330 Q 465 360 450 390" stroke="#1976D2" stroke-width="50" fill="none" stroke-linecap="round"/>
+  
+  <!-- Heart shape -->
+  <path d="M 350 280 C 350 260 335 250 320 250 C 305 250 295 260 295 275 C 295 295 320 320 350 345 C 380 320 405 295 405 275 C 405 260 395 250 380 250 C 365 250 350 260 350 280 Z" fill="#FFC107" stroke="#FFC107" stroke-width="2"/>
+  
+  <!-- Book/Sun inside heart -->
+  <circle cx="350" cy="290" r="20" fill="#FFA500"/>
+  <line x1="330" y1="290" x2="370" y2="290" stroke="#FFA500" stroke-width="3"/>
+  <line x1="350" y1="270" x2="350" y2="310" stroke="#FFA500" stroke-width="3"/>
+  <line x1="335" y1="280" x2="365" y2="280" stroke="#FFA500" stroke-width="2"/>
+  <line x1="335" y1="300" x2="365" y2="300" stroke="#FFA500" stroke-width="2"/>
+  
+  <!-- Left leaves -->
+  <ellipse cx="220" cy="280" rx="15" ry="35" fill="#4CAF50" transform="rotate(-45 220 280)"/>
+  <ellipse cx="200" cy="320" rx="12" ry="30" fill="#66BB6A" transform="rotate(-30 200 320)"/>
+  <ellipse cx="210" cy="360" rx="12" ry="28" fill="#4CAF50" transform="rotate(-15 210 360)"/>
+  
+  <!-- Right curve -->
+  <path d="M 480 200 Q 520 250 520 350" stroke="#1976D2" stroke-width="35" fill="none" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Stars -->
+  <g fill="#FFC107">
+    <!-- Large star -->
+    <path d="M 520 150 L 530 175 L 556 175 L 535 192 L 545 217 L 520 200 L 495 217 L 505 192 L 484 175 L 510 175 Z"/>
+    <!-- Medium star -->
+    <path d="M 570 200 L 577 218 L 596 218 L 581 228 L 588 246 L 570 236 L 552 246 L 559 228 L 544 218 L 563 218 Z"/>
+    <!-- Small star -->
+    <path d="M 540 240 L 545 252 L 558 252 L 548 259 L 553 271 L 540 264 L 527 271 L 532 259 L 522 252 L 535 252 Z"/>
+  </g>
+  
+  <!-- Text: MinSuansCore -->
+  <text x="400" y="480" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle">
+    <tspan fill="#4CAF50">MinS</tspan><tspan fill="#1976D2">uansCore</tspan>
+  </text>
+  
+  <!-- Tagline -->
+  <text x="400" y="540" font-family="Arial, sans-serif" font-size="32" fill="#666666" text-anchor="middle">
+    Student Mental Wellness Hub
+  </text>
+</svg>

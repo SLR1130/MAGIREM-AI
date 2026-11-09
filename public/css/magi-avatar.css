@@ -1,0 +1,126 @@
+.magi-avatar {
+    --magi-frame-duration: 90ms;
+    position: relative;
+    display: inline-block;
+    flex: 0 0 auto;
+    inline-size: var(--magi-avatar-size, 32px);
+    block-size: var(--magi-avatar-size, 32px);
+    min-inline-size: 0;
+    min-block-size: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    isolation: isolate;
+    vertical-align: middle;
+    contain: layout style paint;
+    background: #053e36;
+}
+
+.magi-avatar--sm { --magi-avatar-size: 31px; }
+.magi-avatar--md { --magi-avatar-size: 42px; }
+.magi-avatar--lg { --magi-avatar-size: 54px; }
+
+.magi-avatar::before {
+    position: absolute;
+    z-index: 0;
+    inset: 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244, 200, 78, .36), rgba(77, 157, 123, .16) 52%, transparent 76%);
+    content: "";
+    opacity: 0;
+    transform: scale(.94);
+    transition: opacity .22s ease, transform .22s ease;
+    pointer-events: none;
+}
+
+.magi-avatar__static,
+.magi-avatar__motion,
+.magi-avatar__canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+}
+
+.magi-avatar__static {
+    z-index: 2;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.magi-avatar__motion {
+    z-index: 1;
+    display: none;
+    border-radius: 50%;
+    overflow: hidden;
+    transform-origin: 50% 55%;
+}
+
+.magi-avatar__canvas {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.magi-avatar[data-animated="true"]::before {
+    opacity: .38;
+    animation: magi-avatar-idle-glow 4.2s ease-in-out infinite;
+}
+
+.magi-avatar[data-animated="true"] .magi-avatar__motion { display: none; }
+.magi-avatar[data-animated="true"][data-rendered="true"] .magi-avatar__static { display: none; }
+.magi-avatar[data-animated="true"][data-rendered="true"] .magi-avatar__motion { display: block; }
+
+/* The viewport is always circular, so the square source sheet never creates a visible edge. */
+.message-avatar > .magi-avatar { inline-size: 100%; block-size: 100%; }
+
+.magi-avatar[data-state="thinking"] { --magi-frame-duration: 80ms; }
+.magi-avatar[data-state="thinking"]::before,
+.magi-avatar[data-state="responding"]::before {
+    opacity: .78;
+    transform: scale(1.06);
+    animation: magi-avatar-glow 1.8s ease-in-out infinite;
+}
+.magi-avatar[data-state="responding"] { --magi-frame-duration: 70ms; }
+.magi-avatar[data-state="error"]::before { opacity: .12; animation: none; }
+.magi-avatar[data-state="error"] .magi-avatar__motion { display: none; animation: none; }
+.magi-avatar[data-state="error"] .magi-avatar__static { display: block; }
+
+.magi-avatar[data-error="true"] .magi-avatar__motion { display: none !important; }
+.magi-avatar[data-error="true"] .magi-avatar__static { display: block !important; }
+
+.magi-avatar[data-animated="true"]::before { animation-play-state: paused; }
+.magi-avatar[data-animated="true"].is-visible::before { animation-play-state: running; }
+
+.magi-avatar-template { display: none !important; }
+
+.magi-typing-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #587067;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+@keyframes magi-avatar-glow {
+    0%, 100% { opacity: .56; transform: scale(.98); }
+    50% { opacity: .88; transform: scale(1.1); }
+}
+
+@keyframes magi-avatar-idle-glow {
+    0%, 100% { opacity: .28; transform: scale(.94); }
+    50% { opacity: .5; transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .magi-avatar::before { animation: none !important; transition: none; }
+    .magi-avatar[data-animated="true"] .magi-avatar__motion {
+        display: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+    .magi-avatar__static { display: block !important; }
+}

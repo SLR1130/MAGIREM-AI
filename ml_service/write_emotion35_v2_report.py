@@ -1,0 +1,19 @@
+"""Write the v2 research retraining report from measured artifacts."""
+import argparse, json
+from pathlib import Path
+if __name__=="__main__":
+    p=argparse.ArgumentParser(); p.add_argument("--v1",type=Path,required=True); p.add_argument("--v2",type=Path,required=True); a=p.parse_args()
+    old=json.loads((a.v1/"evaluation.json").read_text(encoding="utf-8")); new=json.loads((a.v2/"evaluation.json").read_text(encoding="utf-8")); lang=json.loads((a.v2/"language_metrics.json").read_text(encoding="utf-8")); fresh=json.loads((a.v2/"fresh_cases_predictions.json").read_text(encoding="utf-8")); cfg=json.loads((a.v2/"training_config.json").read_text(encoding="utf-8")); m=old["metrics"]; n=new["metrics"]
+    lines=["# Emotion35 v2 research retraining report","","## Hardware and training","",f"- Interpreter: `.venv\\Scripts\\python.exe`; torch CUDA: `{cfg.get('cuda')}`; GPU: `{cfg.get('gpu_name')}`.",f"- RTX 3050 peak allocated VRAM: {cfg.get('peak_cuda_memory_bytes',0)/1024/1024:.0f} MiB; training wall time: {json.loads((a.v2/'metrics.json').read_text())['training_wall_seconds']:.1f}s.","- Two epochs, batch size 8, masked BCE with capped sqrt observed-negative/positive weights (cap 6). Unknown labels stayed masked; observed negatives were penalized.","- Separate checkpoint; v1 and six-class production artifacts were not overwritten.","","## Same-protocol comparison","",f"- v1: micro-F1 {m['micro_f1']:.4f}, macro-F1 {m['macro_f1']:.4f}, exact-set {m['exact_match_accuracy']:.4f}, sample-F1 {m['sample_f1']:.4f}.",f"- v2: micro-F1 {n['micro_f1']:.4f}, macro-F1 {n['macro_f1']:.4f}, exact-set {n['exact_match_accuracy']:.4f}, sample-F1 {n['sample_f1']:.4f}.",f"- v2 GPU test inference: {new['inference_seconds']:.2f}s for {new['test_records']} records ({new['inference_ms_per_record']:.2f}ms/record). Thresholds were calibrated on validation only.","","## Language results (same test split)",""]
+    for k,v in lang.items(): lines.append(f"- {k}: {v['records']} records; micro-F1 {v['metrics']['micro_f1']:.4f}; macro-F1 {v['metrics']['macro_f1']:.4f}.")
+    lines += ["","## Key per-label v2 results","","| Emotion | Support | Precision | Recall | F1 | Predicted positives |","|---|---:|---:|---:|---:|---:|"]
+    for label in ["shame","guilt","stress","overwhelm","homesickness","pride","anxiety","excitement","anticipation"]:
+        x=n["per_label"][label]; lines.append(f"| {label} | {x['support']} | {x['precision']:.3f} | {x['recall']:.3f} | {x['f1']:.3f} | {x['predicted_positive']} |")
+    lines += ["","## Fresh synthetic demonstration","","Twelve fresh English/Filipino/Taglish cases were run after training. Full probabilities, thresholds, and accepted labels are in `fresh_cases_predictions.json`.",""]
+    for x in fresh["cases"]:
+        accepted=", ".join(f"{z['emotion']} ({z['probability']:.3f}/{z['threshold']:.2f})" for z in x["accepted_detailed_emotions"]) or "none"
+        top=", ".join(f"{z['emotion']} {z['probability']:.3f}" for z in x["top_predictions"][:3])
+        lines.append(f"- `{x['id']}` expected {', '.join(x['expected_focus'])}; accepted: {accepted}; top: {top}.")
+    lines += ["","## Decision","","The v2 objective correction is a meaningful improvement over v1, and the GPU path is verified. Recognition is still not deployment-ready: Filipino micro-F1 is 0.069, mixed synthetic exact-set accuracy is 0, homesickness/stress remain weak, and several fresh cases are misclassified or rejected. Keep the checkpoint isolated; obtain reviewed multilingual data and run an independent holdout before any activation.","","Production six-class model, Gemma chat, crisis detection, counselor escalation, consent, and Admin analytics remain unchanged and disabled for this model."]
+    (a.v2/"V2_REPORT.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+    print(a.v2/"V2_REPORT.md")

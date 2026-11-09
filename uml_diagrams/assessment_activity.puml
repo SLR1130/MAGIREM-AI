@@ -1,0 +1,67 @@
+@startuml MinsuanScore_Assessment_Activity
+!theme plain
+title MinsuanScore AI - Mental Health Assessment Process
+
+|Student|
+start
+:Access assessment portal;
+:Select assessment type\n(stress/anxiety/depression/wellbeing);
+
+|System|
+:Load appropriate questionnaire;
+:Initialize assessment session;
+
+|Student|
+repeat
+  :Read question;
+  :Provide response\n(scale 1-10 or multiple choice);
+  |System|
+  :Validate response;
+  :Store response;
+repeat while (More questions?) is (yes)
+->no;
+
+|Student|
+:Submit completed assessment;
+
+|System|
+:Calculate raw scores;
+
+|AI Analysis Engine|
+:Process responses with ML models;
+:Generate interpretation;
+:Calculate risk indicators;
+
+if (Crisis indicators detected?) then (yes)
+  |Crisis Management|
+  :Trigger immediate counselor alert;
+  :Log crisis event;
+  :Initiate emergency protocols;
+else (no)
+endif
+
+|System|
+:Generate assessment report;
+:Update student mental health profile;
+:Calculate trend analysis;
+
+fork
+  :Display results to student;
+fork again
+  :Generate personalized recommendations;
+fork again
+  :Update analytics dashboard;
+fork again
+  :Schedule follow-up if needed;
+end fork
+
+|Student|
+if (Want counselor consultation?) then (yes)
+  :Redirect to appointment scheduling;
+  stop
+else (no)
+  :Save results and recommendations;
+  stop
+endif
+
+@enduml

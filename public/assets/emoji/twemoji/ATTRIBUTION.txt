@@ -1,0 +1,12 @@
+Twemoji artwork attribution
+
+The self-hosted PNG emoji artwork in this directory is from
+emoji-datasource-twitter 15.0.1 (Twitter/Twemoji artwork).
+
+Artwork is licensed under Creative Commons Attribution 4.0 International
+(CC BY 4.0): https://creativecommons.org/licenses/by/4.0/ .
+Twemoji project/source: https://github.com/twitter/twemoji .
+
+The artwork files are distributed unchanged. The asset filenames are derived
+from the Unicode code points selected in the Emoji Mart picker; the original
+Unicode sequence remains the composition's stored sticker value.

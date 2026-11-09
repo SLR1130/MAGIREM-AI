@@ -1,0 +1,8 @@
+{
+  "sadness": 0,
+  "joy": 1,
+  "anxiety": 2,
+  "anger": 3,
+  "neutral": 4,
+  "grief": 5
+}

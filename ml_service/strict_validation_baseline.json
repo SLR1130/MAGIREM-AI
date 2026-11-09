@@ -1,0 +1,725 @@
+{
+  "validation_type": "strict_behavioral",
+  "status": "BASELINE",
+  "passed": 8,
+  "failed": 10,
+  "total": 18,
+  "results": {
+    "E1": {
+      "status": "FAIL",
+      "expected": "anxiety",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B2: Trained differs from semantic/unified. Trust unified: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "anxiety",
+          "normalized_emotion": "anxiety",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "anxiety",
+          "normalized_emotion": "anxiety",
+          "confidence": 1.0,
+          "language": "english",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "anxiety",
+          "confidence": 0.44438299536705017,
+          "top_3_probabilities": {
+            "anxiety": 0.44438299536705017,
+            "sadness": 0.3504787087440491,
+            "anger": 0.06665962189435959
+          }
+        },
+        "vader": {
+          "compound": -0.34,
+          "pos": 0.0,
+          "neg": 0.375,
+          "neu": 0.625
+        }
+      }
+    },
+    "E2": {
+      "status": "PASS",
+      "expected": "neutral",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B2: Trained differs from semantic/unified. Trust unified: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "sadness",
+          "normalized_emotion": "sadness",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "sadness",
+          "normalized_emotion": "sadness",
+          "confidence": 1.0,
+          "language": "english",
+          "negation_detected": true,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.4653070271015167,
+          "top_3_probabilities": {
+            "sadness": 0.4653070271015167,
+            "anxiety": 0.17939113080501556,
+            "joy": 0.12972556054592133
+          }
+        },
+        "vader": {
+          "compound": 0.0139,
+          "pos": 0.282,
+          "neg": 0.276,
+          "neu": 0.442
+        }
+      }
+    },
+    "E3": {
+      "status": "FAIL",
+      "expected": "anger",
+      "fusion_emotion": "neutral",
+      "confidence": 0.9,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "anger",
+          "normalized_emotion": "anger",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "anger",
+          "normalized_emotion": "anger",
+          "confidence": 1.0,
+          "language": "english",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "anger",
+          "confidence": 0.5484286546707153,
+          "top_3_probabilities": {
+            "anger": 0.5484286546707153,
+            "sadness": 0.13141821324825287,
+            "grief": 0.11315999925136566
+          }
+        },
+        "vader": {
+          "compound": -0.5719,
+          "pos": 0.0,
+          "neg": 0.425,
+          "neu": 0.575
+        }
+      }
+    },
+    "E4": {
+      "status": "FAIL",
+      "expected": "sadness",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B2: Trained differs from semantic/unified. Trust unified: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "sadness",
+          "normalized_emotion": "sadness",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "sadness",
+          "normalized_emotion": "sadness",
+          "confidence": 1.0,
+          "language": "english",
+          "negation_detected": true,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.5229818820953369,
+          "top_3_probabilities": {
+            "sadness": 0.5229818820953369,
+            "grief": 0.15075242519378662,
+            "anxiety": 0.14629913866519928
+          }
+        },
+        "vader": {
+          "compound": -0.2551,
+          "pos": 0.0,
+          "neg": 0.302,
+          "neu": 0.698
+        }
+      }
+    },
+    "E5": {
+      "status": "PASS",
+      "expected": "grief",
+      "fusion_emotion": "grief",
+      "confidence": 0.85,
+      "uncertain_flag": false,
+      "reason": "Death context + trained grief signal → grief (0.85)",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "happiness",
+          "normalized_emotion": "joy",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "happiness",
+          "normalized_emotion": "neutral",
+          "confidence": 1.0,
+          "language": "english",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "grief",
+          "confidence": 0.5818818211555481,
+          "top_3_probabilities": {
+            "grief": 0.5818818211555481,
+            "joy": 0.1394723504781723,
+            "sadness": 0.11083346605300903
+          }
+        },
+        "vader": {
+          "compound": -0.2247,
+          "pos": 0.0,
+          "neg": 0.213,
+          "neu": 0.787
+        }
+      }
+    },
+    "E6": {
+      "status": "FAIL",
+      "expected": "joy",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B2: Trained differs from semantic/unified. Trust unified: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "english",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "joy",
+          "confidence": 0.32864832878112793,
+          "top_3_probabilities": {
+            "joy": 0.32864832878112793,
+            "anxiety": 0.22421151399612427,
+            "sadness": 0.19691148400306702
+          }
+        },
+        "vader": {
+          "compound": 0.7269,
+          "pos": 0.67,
+          "neg": 0.0,
+          "neu": 0.33
+        }
+      }
+    },
+    "T1": {
+      "status": "FAIL",
+      "expected": "sadness",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.3986303210258484,
+          "top_3_probabilities": {
+            "sadness": 0.3986303210258484,
+            "anxiety": 0.25157231092453003,
+            "grief": 0.1221943348646164
+          }
+        },
+        "vader": {
+          "compound": 0.0,
+          "pos": 0.0,
+          "neg": 0.0,
+          "neu": 1.0
+        }
+      }
+    },
+    "T2": {
+      "status": "PASS",
+      "expected": "neutral",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.6611109375953674,
+          "top_3_probabilities": {
+            "sadness": 0.6611109375953674,
+            "anxiety": 0.13219156861305237,
+            "anger": 0.09248838573694229
+          }
+        },
+        "vader": {
+          "compound": 0.0,
+          "pos": 0.0,
+          "neg": 0.0,
+          "neu": 1.0
+        }
+      }
+    },
+    "T3": {
+      "status": "FAIL",
+      "expected": "anger",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B2: Trained differs from semantic/unified. Trust unified: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "english",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.5125979781150818,
+          "top_3_probabilities": {
+            "sadness": 0.5125979781150818,
+            "joy": 0.19326061010360718,
+            "anxiety": 0.11194952577352524
+          }
+        },
+        "vader": {
+          "compound": 0.0,
+          "pos": 0.0,
+          "neg": 0.0,
+          "neu": 1.0
+        }
+      }
+    },
+    "T4": {
+      "status": "FAIL",
+      "expected": "anxiety",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.2568409740924835,
+          "top_3_probabilities": {
+            "sadness": 0.2568409740924835,
+            "anxiety": 0.22711579501628876,
+            "joy": 0.1979033201932907
+          }
+        },
+        "vader": {
+          "compound": 0.0,
+          "pos": 0.0,
+          "neg": 0.0,
+          "neu": 1.0
+        }
+      }
+    },
+    "T5": {
+      "status": "PASS",
+      "expected": "grief",
+      "fusion_emotion": "grief",
+      "confidence": 0.6,
+      "uncertain_flag": false,
+      "reason": "Death context detected → grief (uncertain signals)",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.58858722448349,
+          "top_3_probabilities": {
+            "sadness": 0.58858722448349,
+            "anger": 0.13533741235733032,
+            "grief": 0.12513504922389984
+          }
+        },
+        "vader": {
+          "compound": -0.296,
+          "pos": 0.0,
+          "neg": 0.348,
+          "neu": 0.652
+        }
+      }
+    },
+    "T6": {
+      "status": "PASS",
+      "expected": "neutral",
+      "fusion_emotion": "neutral",
+      "confidence": 0.9,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 1.0,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.5711976289749146,
+          "top_3_probabilities": {
+            "sadness": 0.5711976289749146,
+            "anxiety": 0.15730996429920197,
+            "joy": 0.1069435402750969
+          }
+        },
+        "vader": {
+          "compound": 0.2263,
+          "pos": 0.322,
+          "neg": 0.0,
+          "neu": 0.678
+        }
+      }
+    },
+    "X1": {
+      "status": "FAIL",
+      "expected": "anxiety",
+      "fusion_emotion": "neutral",
+      "confidence": 0.95,
+      "uncertain_flag": false,
+      "reason": "Case A: Full agreement. All signals agree on neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "anxiety",
+          "normalized_emotion": "anxiety",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "anxiety",
+          "normalized_emotion": "anxiety",
+          "confidence": 1.0,
+          "language": "english",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "neutral",
+          "confidence": 0.6375176310539246,
+          "top_3_probabilities": {
+            "neutral": 0.6375176310539246,
+            "anxiety": 0.22168132662773132,
+            "joy": 0.04700895771384239
+          }
+        },
+        "vader": {
+          "compound": -0.25,
+          "pos": 0.0,
+          "neg": 0.286,
+          "neu": 0.714
+        }
+      }
+    },
+    "X2": {
+      "status": "PASS",
+      "expected": "neutral",
+      "fusion_emotion": "neutral",
+      "confidence": 0.9,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "sadness",
+          "normalized_emotion": "sadness",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "sadness",
+          "normalized_emotion": "sadness",
+          "confidence": 1.0,
+          "language": "taglish",
+          "negation_detected": true,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.49275413155555725,
+          "top_3_probabilities": {
+            "sadness": 0.49275413155555725,
+            "joy": 0.2572520077228546,
+            "grief": 0.09030802547931671
+          }
+        },
+        "vader": {
+          "compound": 0.3724,
+          "pos": 0.299,
+          "neg": 0.0,
+          "neu": 0.701
+        }
+      }
+    },
+    "X3": {
+      "status": "FAIL",
+      "expected": "anger",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "english",
+          "negation_detected": true,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "anger",
+          "confidence": 0.5400896072387695,
+          "top_3_probabilities": {
+            "anger": 0.5400896072387695,
+            "sadness": 0.17595888674259186,
+            "grief": 0.10492153465747833
+          }
+        },
+        "vader": {
+          "compound": -0.3182,
+          "pos": 0.0,
+          "neg": 0.247,
+          "neu": 0.753
+        }
+      }
+    },
+    "X4": {
+      "status": "FAIL",
+      "expected": "sadness",
+      "fusion_emotion": "neutral",
+      "confidence": 0.7,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "joy",
+          "confidence": 0.5223341584205627,
+          "top_3_probabilities": {
+            "joy": 0.5223341584205627,
+            "sadness": 0.1945282518863678,
+            "grief": 0.12893450260162354
+          }
+        },
+        "vader": {
+          "compound": 0.0,
+          "pos": 0.0,
+          "neg": 0.0,
+          "neu": 1.0
+        }
+      }
+    },
+    "X5": {
+      "status": "PASS",
+      "expected": "grief",
+      "fusion_emotion": "grief",
+      "confidence": 0.6,
+      "uncertain_flag": false,
+      "reason": "Death context detected → grief (uncertain signals)",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 0.6,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "sadness",
+          "confidence": 0.6276144981384277,
+          "top_3_probabilities": {
+            "sadness": 0.6276144981384277,
+            "anxiety": 0.1079283058643341,
+            "joy": 0.10514116287231445
+          }
+        },
+        "vader": {
+          "compound": -0.1531,
+          "pos": 0.0,
+          "neg": 0.151,
+          "neu": 0.849
+        }
+      }
+    },
+    "X6": {
+      "status": "PASS",
+      "expected": "neutral",
+      "fusion_emotion": "neutral",
+      "confidence": 0.9,
+      "uncertain_flag": false,
+      "reason": "Case B1: Trained weak or language gap. Trust unified/semantic: neutral",
+      "signals": {
+        "semantic": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 1.0
+        },
+        "unified": {
+          "raw_emotion": "neutral",
+          "normalized_emotion": "neutral",
+          "confidence": 1.0,
+          "language": "taglish",
+          "negation_detected": false,
+          "sarcasm_detected": false
+        },
+        "trained": {
+          "emotion": "joy",
+          "confidence": 0.48747119307518005,
+          "top_3_probabilities": {
+            "joy": 0.48747119307518005,
+            "neutral": 0.16965973377227783,
+            "sadness": 0.12513010203838348
+          }
+        },
+        "vader": {
+          "compound": 0.6249,
+          "pos": 0.63,
+          "neg": 0.0,
+          "neu": 0.37
+        }
+      }
+    }
+  },
+  "category_stats": {
+    "negation": {
+      "passed": 3,
+      "failed": 0,
+      "total": 3
+    },
+    "grief": {
+      "passed": 3,
+      "failed": 0,
+      "total": 3
+    },
+    "anger": {
+      "passed": 0,
+      "failed": 3,
+      "total": 3
+    },
+    "anxiety": {
+      "passed": 0,
+      "failed": 3,
+      "total": 3
+    },
+    "sadness": {
+      "passed": 0,
+      "failed": 3,
+      "total": 3
+    },
+    "neutral_positive": {
+      "passed": 2,
+      "failed": 1,
+      "total": 3
+    }
+  }
+}
