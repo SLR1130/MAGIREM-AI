@@ -810,10 +810,6 @@
         if (resultsHeading) resultsHeading.textContent = data.query ? `Results for “${data.query}”` : (data.category ? `Results in ${data.category}` : 'Featured local resources');
         if (resultsDescription) resultsDescription.textContent = hasContext ? 'Browse everything together or narrow by source. Counts reflect results returned by each source.' : 'Local educational resources approved for students within MAGIREM AI.';
         if (resultCount) { resultCount.textContent = `${total} ${total === 1 ? 'resource' : 'resources'}`; resultCount.hidden = !hasContext; }
-        if (!preserveOptIns) {
-            if (publicSources) publicSources.checked = Boolean(data.public_requested);
-            if (videoSources) videoSources.checked = Boolean(data.videos_requested);
-        }
         if (clearButton) clearButton.hidden = input.value.trim() === '';
         const hasProviderError = (data.errors || []).length > 0;
         if (overallEmpty) {
@@ -828,9 +824,13 @@
         }
         renderRelated(data.related_topics);
         updateCategoryUI(); applySourceTab();
-        if (historyMode === 'push') updateUrl(data.query || '', Boolean(data.public_requested), Boolean(data.videos_requested), true);
-        else if (historyMode === 'replace') updateUrl(data.query || '', Boolean(data.public_requested), Boolean(data.videos_requested));
-        setStatus(hasProviderError ? 'Library results are current; an optional source may be unavailable.' : total ? `${total} ${total === 1 ? 'resource' : 'resources'} found across the selected sources.` : 'Search completed.');
+        const urlPublic = preserveOptIns ? publicSources.checked : Boolean(data.public_requested);
+        const urlVideos = preserveOptIns ? videoSources.checked : Boolean(data.videos_requested);
+        if (historyMode === 'push') updateUrl(data.query || '', urlPublic, urlVideos, true);
+        else if (historyMode === 'replace') updateUrl(data.query || '', urlPublic, urlVideos);
+        setStatus(!input.value.trim() && (publicSources.checked || videoSources.checked)
+            ? 'Enter a topic and press Search to use your selected sources.'
+            : hasProviderError ? 'Library results are current; an optional source may be unavailable.' : total ? `${total} ${total === 1 ? 'resource' : 'resources'} found across the selected sources.` : 'Search completed.');
     }
     async function search({includePublic = false, includeVideos = false, historyMode = 'replace', preserveOptIns = false} = {}) {
         clearTimeout(debounceTimer); const sequence = ++requestSequence;
@@ -842,17 +842,36 @@
             if (!response.ok) throw new Error(`Search request failed (${response.status}).`);
             const data = await response.json(); if (sequence !== requestSequence) return; render(data, preserveOptIns || !input.value.trim(), historyMode);
         } catch (error) {
-            if (error.name === 'AbortError') return;
+            if (sequence !== requestSequence || error.name === 'AbortError') return;
             localGrid.removeAttribute('aria-busy'); if (preservedLocalNodes.length) localGrid.replaceChildren(...preservedLocalNodes); setStatus('We could not update the resource search right now. Your current results are still available.', 'error');
-        } finally { if (sequence === requestSequence) button.disabled = false; }
+        } finally { if (sequence === requestSequence) { pendingController = null; button.disabled = false; } }
     }
-    function localDebouncedSearch() { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => search({includePublic: false, includeVideos: false, preserveOptIns: true}), 400); }
+    function cancelPendingSearch() {
+        clearTimeout(debounceTimer);
+        ++requestSequence;
+        if (pendingController) pendingController.abort();
+        pendingController = null;
+        localGrid.removeAttribute('aria-busy');
+        if (preservedLocalNodes.length) localGrid.replaceChildren(...preservedLocalNodes);
+        preservedLocalNodes = [];
+        button.disabled = false;
+    }
+    function localDebouncedSearch() {
+        cancelPendingSearch();
+        if (publicSources.checked || videoSources.checked) {
+            setStatus(input.value.trim()
+                ? 'Press Search to search your selected sources. Nothing is sent while you type.'
+                : 'Enter a topic and press Search to use your selected sources.');
+            return;
+        }
+        debounceTimer = setTimeout(() => search({includePublic: false, includeVideos: false, preserveOptIns: true}), 400);
+    }
 
     input.addEventListener('input', localDebouncedSearch);
     form.addEventListener('submit', (event) => { event.preventDefault(); search({includePublic: publicSources.checked, includeVideos: videoSources.checked, historyMode: 'push'}); });
-    publicSources.addEventListener('change', () => { setStatus(publicSources.checked ? 'Trusted web articles will be searched when you submit.' : 'Web sources are off; library search stays within MAGIREM AI.'); });
-    videoSources.addEventListener('change', () => { setStatus(videoSources.checked ? 'YouTube will be searched when you submit. Only this query is sent.' : 'YouTube search is off.'); });
-    clearButton.addEventListener('click', () => { input.value = ''; publicSources.checked = false; videoSources.checked = false; category = ''; search({includePublic: false, includeVideos: false, historyMode: 'push'}); input.focus(); });
+    publicSources.addEventListener('change', () => { cancelPendingSearch(); setStatus(publicSources.checked ? 'Trusted web articles will be searched when you submit.' : 'Web articles are off. Press Search to update results.'); });
+    videoSources.addEventListener('change', () => { cancelPendingSearch(); setStatus(videoSources.checked ? 'YouTube will be searched when you submit. Only this query is sent.' : 'YouTube is off. Press Search to update results.'); });
+    clearButton.addEventListener('click', () => { input.value = ''; category = ''; search({includePublic: false, includeVideos: false, preserveOptIns: true, historyMode: 'push'}); input.focus(); });
     document.addEventListener('click', (event) => {
         const articleLink = event.target.closest('[data-open-article]');
         if (articleLink && articleDialog?.showModal) { event.preventDefault(); openArticle(articleLink); return; }
@@ -863,7 +882,7 @@
         if (event.target.closest('[data-close-video]')) { closeVideo(); return; }
         if (event.target.closest('[data-close-article]')) { closeArticle(); return; }
         const topic = event.target.closest('[data-topic]');
-        if (topic) { event.preventDefault(); input.value = topic.dataset.topic; category = ''; publicSources.checked = false; videoSources.checked = false; search({includePublic: false, includeVideos: false, historyMode: 'push'}); form.scrollIntoView({behavior: 'smooth', block: 'start'}); return; }
+        if (topic) { event.preventDefault(); input.value = topic.dataset.topic; category = ''; search({includePublic: publicSources.checked, includeVideos: videoSources.checked, historyMode: 'push'}); form.scrollIntoView({behavior: 'smooth', block: 'start'}); return; }
         const filter = event.target.closest('[data-category]');
         if (filter) { event.preventDefault(); category = filter.dataset.category || ''; search({includePublic: publicSources.checked, includeVideos: videoSources.checked, historyMode: 'push'}); }
     });
