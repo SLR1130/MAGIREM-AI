@@ -821,6 +821,21 @@ Reference only details in the conversation. Be specific. Keep casual replies con
         msg = (message or '').lower()
         out = (response or '').strip().lower()
 
+        # An illness is not a death. Only the student's own statements can
+        # establish a loss; prior assistant hallucinations cannot establish it.
+        user_turns = [str((turn or {}).get('user') or '') for turn in (history or [])
+                      if isinstance(turn, dict)]
+        user_turns.append(message or '')
+        user_context = ' '.join(user_turns).lower()
+        illness = re.search(r'\b(?:sick|ill|unwell|injured|hospitali[sz]ed|nagkasakit|maysakit|may sakit|masakit|nasa ospital)\b', user_context)
+        death_pattern = r'\b(?:died|passed away|has died|namatay|pumanaw)\b'
+        speculative_pattern = r"\b(?:might|may|could|will|if|afraid|worried|fear|not|didn't|hindi|baka|sana)\b.{0,35}\b(?:die|died|pass away|namatay|mamatay|pumanaw)\b"
+        asserted_loss = any(re.search(death_pattern, turn, re.I) and not re.search(speculative_pattern, turn, re.I)
+                            for turn in user_turns)
+        claimed_loss = re.search(r"\b(?:(?:losing|lost|lose) (?:a|your|the|my) (?:pet|dog|cat|companion)|(?:your|the|his|her) (?:pet|dog|cat|mother|father|friend) (?:died|passed away|is dead)|(?:condolences|pagkamatay|namatay ang))\b", out)
+        if illness and claimed_loss and not asserted_loss:
+            return 'unsupported_loss_assumption'
+
         # A financial continuation must not be redirected into an unrelated
         # emotion check merely because earlier history contained distress.
         financial_request = bool(re.search(
@@ -1320,6 +1335,11 @@ Reference only details in the conversation. Be specific. Keep casual replies con
 
             # LANGUAGE-AWARE SYSTEM PROMPT
             system_prompt_short = self.get_system_prompt_for_language(detected_language, emotion, confidence, intent_type, emotion_for_tone)
+            system_prompt_short += (
+                '\n\nFACTUAL CONTINUITY: Use the student’s stated facts, not assumptions or '
+                'earlier assistant guesses. Illness or injury does not imply death or loss. '
+                'Distinguish a fear or possibility from an event that happened; ask if unclear.'
+            )
             request_mode = self._request_mode(message, conversation_history)
             # Project provenance is relevant to identity questions, not every
             # ordinary chat turn. Keeping it conditional reduces prompt prefill
@@ -1587,6 +1607,11 @@ Reference only details in the conversation. Be specific. Keep casual replies con
                         recovery_instruction += (
                             ' ACADEMIC-FIRST-PASS RECOVERY: The student gave an immediate exam deadline. Give two to four ordered review actions now before any optional question. Do not invent calendar details, clock times, or study-hour availability.'
                         )
+                    if quality_retry_reason == 'unsupported_loss_assumption':
+                        recovery_instruction += (
+                            ' FACT RECOVERY: The student described illness or injury, not a confirmed death. '
+                            'Do not offer condolences or assume anyone or any animal died. Respond to the stated situation.'
+                        )
                     if quality_retry_reason == 'invented_calendar_schedule':
                         recovery_instruction += (
                             ' DEADLINE RECOVERY: Keep the plan tied to the stated immediate deadline. Do not invent a weekday, clock time, or study-hours schedule. Give an ordered review strategy and ask for availability only as an optional follow-up.'
@@ -1654,6 +1679,10 @@ Reference only details in the conversation. Be specific. Keep casual replies con
                         reason=quality_retry_reason, model=self.model,
                         applied=quality_retry_applied,
                     )
+                    if quality_retry_reason == 'unsupported_loss_assumption' and not quality_retry_applied:
+                        response_text = ('Ayokong magpalagay tungkol sa nangyari. Kumusta na ngayon?' if detected_language in {'tl', 'taglish'}
+                                         else "I don't want to assume what happened. How are things right now?")
+                        response_origin = 'grounding_fallback'
                     if ((quality_retry_reason or '').startswith('numeric_') or quality_retry_reason in {'food_budget_unsupported_claim', 'financial_context_override', 'financial_summary_incomplete'}) and not quality_retry_applied:
                         numeric_fallback = numeric_fallback_response(message, conversation_history)
                         if numeric_fallback:

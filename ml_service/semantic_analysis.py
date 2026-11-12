@@ -155,10 +155,10 @@ class SemanticAnalyzer:
                     'having a good day', 'doing good', 'really well', 'doing really well'
                 ],
                 'indicators': {
-                    'achievement': ['got', 'passed', 'made', 'succeeded', 'won', 'accomplished'],
+                    'achievement': ['passed my exam', 'passed the exam', 'succeeded', 'won', 'accomplished'],
                     # FIX 5: Add positive social/event indicators
-                    'positive_event': ['made my day', 'whole day', 'made my whole day', 'friends surprised', 'surprise party'],
-                    'connection': ['with friends', 'with family', 'love them', 'care', 'spending time'],
+                    'positive_event': ['made my day', 'made my whole day', 'friends surprised', 'surprise party'],
+                    'connection': ['love them', 'spending time'],
                 }
             },
             'anger': {
@@ -265,7 +265,7 @@ class SemanticAnalyzer:
         normalized_text = self._normalize_slang(text)
         
         # Core analyses - use normalized text for emotion detection
-        emotion_probs = self.calculate_emotion_probabilities(normalized_text)
+        emotion_probs, evidence = self.calculate_emotion_probabilities(normalized_text, include_evidence=True)
         emotion_intensity = self.calculate_emotion_intensity(text)
         tone_analysis = self.analyze_tone(text)
         crisis_semantics = self.analyze_crisis_semantics(text)
@@ -288,7 +288,8 @@ class SemanticAnalyzer:
                 'dominant': dominant_emotion,
                 'confidence': confidence,
                 'intensity': emotion_intensity,
-                'scores': emotion_probs
+                'scores': emotion_probs,
+                'supported_labels': evidence,
             },
             'tone': tone_analysis,
             'crisis_semantic_analysis': crisis_semantics,
@@ -300,7 +301,7 @@ class SemanticAnalyzer:
         
         return result
     
-    def calculate_emotion_probabilities(self, text: str) -> Dict[str, float]:
+    def calculate_emotion_probabilities(self, text: str, include_evidence: bool = False) -> Dict[str, float]:
         """
         Calculate probability distribution across all emotion classes
         Not just dominant, but all classes
@@ -448,6 +449,12 @@ class SemanticAnalyzer:
             if score_key in scores:
                 scores[score_key] = min(1.0, score)
         
+        # A single weak contextual indicator is not enough to override the ML
+        # classifier. Record label support without exposing matched text.
+        supported_labels = [label for label, sources in emotion_sources.items()
+                            if any(source.startswith(('explicit_keyword:', 'semantic_failure_pattern'))
+                                   for source in sources)]
+
         # DIAGNOSTIC LOGGING: Print raw scores before normalization and negation handling
         # Don't print the message itself (may contain emoji that causes cp1252 encoding error)
         print(f"\n[SEMANTIC_RAW_SCORES] msg_len={len(text)}")
@@ -544,7 +551,7 @@ class SemanticAnalyzer:
         print(f"[SEMANTIC_NORMALIZED] happiness={scores['happiness']:.0%}, sadness={scores['sadness']:.0%}, "
               f"anxiety={scores['anxiety']:.0%}, anger={scores['anger']:.0%}, neutral={scores['neutral']:.0%}")
         
-        return scores
+        return (scores, supported_labels) if include_evidence else scores
     
     def calculate_emotion_intensity(self, text: str) -> float:
         """

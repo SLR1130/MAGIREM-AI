@@ -1002,7 +1002,7 @@ def chat():
         
         # Reuse Laravel's trained /analyze result when available; otherwise classify here.
         laravel_emotion_method = str(laravel_emotion_analysis.get('method', ''))
-        if laravel_emotion_method.startswith('ml_server') and laravel_emotion_analysis.get('emotion'):
+        if laravel_emotion_method == 'ml_server_trained' and laravel_emotion_analysis.get('emotion'):
             trained_result = {
                 'emotion': laravel_emotion_analysis.get('emotion', 'neutral'),
                 'confidence': float(laravel_emotion_analysis.get('confidence', 0.0)),
@@ -1018,7 +1018,9 @@ def chat():
         
         if trained_result:
             trained_emotion = trained_result['emotion']
-            trained_confidence = trained_result['confidence']
+            trained_confidence = float(trained_result['confidence'])
+            if trained_confidence > 1:
+                trained_confidence /= 100.0
             emotion_inference_time = trained_result.get('inference_time_ms')
             emotion_probabilities = trained_result.get('probabilities', {})
             sys.stderr.write(f"[TRACE_TRAINED_EXTRACTED] trained_emotion={trained_emotion}, trained_confidence={trained_confidence}\n")
@@ -1056,9 +1058,19 @@ def chat():
                 print(f"[EMOTION_ROUTING] trained_emotion={trained_emotion}, trained_confidence={trained_confidence:.4f}, threshold={GRIEF_PRESERVATION_THRESHOLD}, margin={grief_margin:.4f}, decision=trained_model_low_confidence_grief")
                 sys.stderr.flush()
             else:
-                # Confidence too low - fall back to semantic analysis
-                sys.stderr.write(f"decision=semantic_fallback\n")
-                print(f"[EMOTION_ROUTING] trained_emotion={trained_emotion}, trained_confidence={trained_confidence:.4f}, threshold={CONFIDENCE_THRESHOLD}, decision=semantic_fallback")
+                # Only explicit semantic evidence can override an uncertain ML
+                # prediction. Normalized heuristic scores alone are not proof.
+                semantic_emotion = (semantic_result or {}).get('emotion', {})
+                supported = semantic_emotion.get('supported_labels', [])
+                candidate = (unified_result.emotion.get('primary')
+                             if unified_result and unified_result.emotion
+                             else semantic_emotion.get('dominant'))
+                candidate_key = 'happiness' if candidate == 'joy' else candidate
+                if candidate_key not in supported:
+                    emotion = trained_emotion
+                    emotion_confidence = trained_confidence
+                    emotion_source = 'trained_model_low_confidence'
+                sys.stderr.write(f"decision={emotion_source or 'semantic_fallback'}\n")
                 sys.stderr.flush()
         
         # If trained model was unavailable OR confidence was too low, use semantic analysis
@@ -1508,6 +1520,7 @@ def chat():
                 'routed_to': (
                     'trained_model' if emotion_source == 'trained_model' and trained_confidence >= 0.50
                     else 'trained_model_low_confidence_grief' if emotion_source == 'trained_model_low_confidence_grief'
+                    else 'trained_model_low_confidence' if emotion_source == 'trained_model_low_confidence'
                     else 'semantic_fallback'
                 )
             }
