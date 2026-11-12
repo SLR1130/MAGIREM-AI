@@ -202,6 +202,7 @@
     @media (max-width: 900px) {
         .student-topbar { position: sticky; }
         .student-topbar-inner { min-height: 68px; padding: 0 16px; gap: 12px; }
+        .student-topbar-actions { margin-left: auto; }
         .student-topbar-menu { display: inline-grid; }
         .student-topnav {
             position: absolute;
@@ -311,10 +312,7 @@
         </nav>
 
         <div class="student-topbar-actions">
-            <button type="button" class="student-topbar-icon" onclick="toggleNotifications()" aria-label="Open notifications" aria-controls="notificationPanel">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-4-5.7V5a2 2 0 1 0-4 0v.3A6 6 0 0 0 6 11v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1"/></svg>
-                @if(isset($unreadCount) && $unreadCount > 0)<span class="student-topbar-badge">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>@endif
-            </button>
+            @include('components.notification-dropdown')
             <button type="button" class="student-topbar-profile" data-account-menu-open aria-label="Open account menu">
                 <span class="student-topbar-avatar">
                     @if(auth()->user()->profile_picture)<img src="{{ asset(auth()->user()->profile_picture) }}" alt="{{ auth()->user()->name }}">@else{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}@endif

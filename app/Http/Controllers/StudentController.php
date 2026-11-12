@@ -291,6 +291,10 @@ class StudentController extends Controller
                 ]);
             }
 
+            if ($request->boolean('journal_origin')) {
+                return redirect()->route('student.journal')->with('success', 'Reflection saved.');
+            }
+
             return redirect()->route('student.insights')->with('success', 'Message sent successfully!');
             
         } catch (\Exception $e) {
@@ -1739,15 +1743,18 @@ class StudentController extends Controller
             return back()->withErrors(['counselor_id' => 'That counselor is not currently available for requests.']);
         }
 
-        \App\Models\Appointment::create([
-            'student_id' => Auth::id(),
-            'counselor_id' => $request->counselor_id,
-            'category' => $request->category,
-            'description' => $request->description,
-            'preferred_date' => $request->preferred_date,
-            'appointment_date' => $request->preferred_date ?? now()->addDays(3),
-            'status' => 'pending',
-        ]);
+        DB::transaction(function () use ($request) {
+            $appointment = \App\Models\Appointment::create([
+                'student_id' => Auth::id(),
+                'counselor_id' => $request->counselor_id,
+                'category' => $request->category,
+                'description' => $request->description,
+                'preferred_date' => $request->preferred_date,
+                'appointment_date' => $request->preferred_date ?? now()->addDays(3),
+                'status' => 'pending',
+            ]);
+            \App\Services\NotificationService::appointmentRequested($appointment);
+        });
 
         return back()->with('success', 'Counseling request submitted successfully!');
     }
@@ -1926,8 +1933,9 @@ class StudentController extends Controller
     {
         $notifications = \App\Models\Notification::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->take(20)
-            ->get();
+            ->get(['id', 'user_id', 'type', 'title', 'message', 'icon', 'link', 'is_read', 'priority', 'created_at', 'updated_at']);
         
         $unreadCount = \App\Models\Notification::where('user_id', Auth::id())
             ->where('is_read', false)
@@ -1936,7 +1944,7 @@ class StudentController extends Controller
         return response()->json([
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
-        ]);
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     /**
@@ -2007,17 +2015,20 @@ class StudentController extends Controller
             'time_slot' => 'nullable|string',
         ]);
 
-        \App\Models\Appointment::create([
-            'student_id' => Auth::id(),
-            'counselor_id' => null, // Will be assigned when counselor approves
-            'category' => $request->category,
-            'reason' => $request->reason,
-            'notes' => $request->reason, // Store reason in notes field too
-            'preferred_date' => $request->preferred_date,
-            'time_slot' => $request->time_slot,
-            'status' => 'pending',
-            'appointment_date' => $request->preferred_date ?? now()->addDays(3), // Default 3 days from now
-        ]);
+        DB::transaction(function () use ($request) {
+            $appointment = \App\Models\Appointment::create([
+                'student_id' => Auth::id(),
+                'counselor_id' => null, // Will be assigned when counselor approves
+                'category' => $request->category,
+                'reason' => $request->reason,
+                'notes' => $request->reason, // Store reason in notes field too
+                'preferred_date' => $request->preferred_date,
+                'time_slot' => $request->time_slot,
+                'status' => 'pending',
+                'appointment_date' => $request->preferred_date ?? now()->addDays(3), // Default 3 days from now
+            ]);
+            \App\Services\NotificationService::appointmentRequested($appointment);
+        });
 
         return redirect()->route('student.request-appointment')
             ->with('success', 'Appointment request submitted successfully! A counselor will review and confirm your appointment soon.');

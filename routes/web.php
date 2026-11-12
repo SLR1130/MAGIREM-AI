@@ -256,6 +256,7 @@ Route::middleware(['auth', 'secure.auth'])->group(function () {
             Route::post('/account-verification/{user}/reject', [\App\Http\Controllers\AccountVerificationController::class, 'reject'])->whereNumber('user')->name('account-verification.reject');
             Route::post('/account-verification/{user}/request-information', [\App\Http\Controllers\AccountVerificationController::class, 'requestInformation'])->whereNumber('user')->name('account-verification.request-information');
             Route::post('/account-verification/{user}/suspend', [\App\Http\Controllers\AccountVerificationController::class, 'suspend'])->whereNumber('user')->name('account-verification.suspend');
+            Route::post('/account-verification/{user}/owner-invitation/email', [AccountOnboardingController::class, 'confirmCounselorGmailAndSendInvitation'])->whereNumber('user')->middleware('throttle:3,10')->name('account-verification.owner-invitation');
             Route::post('/users/{user}/invitation/resend', [AccountOnboardingController::class, 'resendInvitation'])->whereNumber('user')->middleware('throttle:3,10')->name('users.invitation.resend');
             Route::post('/account-verification/{user}/invitation/in-person', [AccountOnboardingController::class, 'createInPersonInvitation'])->whereNumber('user')->middleware('throttle:3,10')->name('account-verification.invitation.in-person');
         });

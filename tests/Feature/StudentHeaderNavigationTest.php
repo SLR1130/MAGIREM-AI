@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Appointment;
 use App\Models\EmotionalEntry;
 use App\Models\User;
+use App\Services\EmotionDetectionService;
+use App\Services\InternalMemoryAuthClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -135,10 +137,14 @@ class StudentHeaderNavigationTest extends TestCase
 
         $this->actingAs($student)->get(route('student.journal'))
             ->assertOk()
-            ->assertSee('Your private space')
-            ->assertSee('Put your thoughts into words. Every reflection starts with a moment.')
+            ->assertSee('Your space to reflect')
+            ->assertSee('Take a moment. Write what happened, what you felt, or what you need.')
+            ->assertSee('home-path-journal-v1.webp')
+            ->assertSee('<details class="journal-prompt-disclosure">', false)
+            ->assertSee('How saving works')
             ->assertSee('name="entry_text"', false)
             ->assertSee('name="entry_title"', false)
+            ->assertSee('name="journal_origin" value="1"', false)
             ->assertSee('/student/store-entry', false)
             ->assertSee('data-reflection-prompt', false)
             ->assertSee('Free Write')
@@ -171,6 +177,35 @@ class StudentHeaderNavigationTest extends TestCase
             ->assertSee('Reading day')
             ->assertSee('Calm')
             ->assertSee('Private entry');
+    }
+
+    public function test_new_journal_reflection_returns_to_journal_after_save(): void
+    {
+        $student = User::factory()->create(['role' => 'student']);
+
+        $this->mock(EmotionDetectionService::class, function ($mock): void {
+            $mock->shouldReceive('detectEmotion')->once()->andReturn([
+                'emotion' => 'neutral',
+                'confidence' => 0.8,
+                'crisis_level' => 'none',
+                'needs_counselor' => false,
+            ]);
+        });
+        $this->mock(InternalMemoryAuthClient::class, function ($mock): void {
+            $mock->shouldReceive('memoryAuthorizedFor')->once()->andReturn(false);
+            $mock->shouldReceive('post')->once()->andReturn(['response' => 'A supportive reflection.']);
+        });
+
+        $this->actingAs($student)->post(route('student.store-entry'), [
+            'journal_origin' => '1',
+            'entry_text' => 'I finished my reading today.',
+            'entry_title' => 'Reading day',
+        ])->assertRedirect(route('student.journal'));
+
+        $this->assertDatabaseHas('emotional_entries', [
+            'user_id' => $student->id,
+            'entry_text' => 'I finished my reading today.',
+        ]);
     }
     public function test_student_can_update_an_owned_journal_entry_without_new_ai_analysis(): void
     {

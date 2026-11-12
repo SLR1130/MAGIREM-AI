@@ -61,7 +61,8 @@ class AccountInvitationService
 
         $token = bin2hex(random_bytes(32));
         $expiresAt = now()->addHours(max(1, (int) config('services.account_verification.invitation_ttl_hours', 24)));
-        $invitation = DB::transaction(function () use ($user, $reviewerId, $method, $recipient, $token, $expiresAt): AccountInvitation {
+        $shouldQueueEmail = true;
+        $invitation = DB::transaction(function () use ($user, $reviewerId, $method, $recipient, $token, $expiresAt, &$shouldQueueEmail): AccountInvitation {
             $lockedUser = User::query()->lockForUpdate()->findOrFail($user->id);
             $lockedReviewer = User::query()->find($reviewerId);
             if (!$lockedReviewer?->canReviewAccountVerification()) {
@@ -71,6 +72,27 @@ class AccountInvitationService
                 || $lockedUser->password_setup_completed_at !== null
             ) {
                 throw new InvalidArgumentException('This account is no longer eligible for owner activation.');
+            }
+
+            // A double-click or repeated form submission must not revoke the
+            // only usable link and stack another queued Gmail job. Reuse the
+            // same still-pending email invitation for this confirmed address.
+            if ($method === 'email') {
+                $pending = AccountInvitation::query()
+                    ->where('user_id', $lockedUser->id)
+                    ->where('delivery_method', 'email')
+                    ->where('recipient_email', $recipient)
+                    ->whereNull('accepted_at')
+                    ->whereNull('revoked_at')
+                    ->where('expires_at', '>', now())
+                    ->orderByDesc('id')
+                    ->lockForUpdate()
+                    ->first();
+                $pendingStatus = $pending?->emailDelivery()->value('status');
+                if ($pending && in_array($pendingStatus, ['queued', 'sending', 'retrying'], true)) {
+                    $shouldQueueEmail = false;
+                    return $pending;
+                }
             }
 
             AccountInvitation::query()
@@ -104,7 +126,9 @@ class AccountInvitationService
         $activationUrl = $baseUrl . route('account.activate', [], false) . '#invitation=' . rawurlencode($token);
         $deliveryStatus = 'in_person';
         if ($method === 'email') {
-            $deliveryStatus = $this->emails->queueAccountInvitation($user->fresh(), $invitation, $activationUrl) ? 'queued' : 'failed';
+            $deliveryStatus = !$shouldQueueEmail
+                ? 'queued'
+                : ($this->emails->queueAccountInvitation($user->fresh(), $invitation, $activationUrl) ? 'queued' : 'failed');
         }
 
         return [

@@ -10,7 +10,6 @@
                     <a class='msc-home-text-link' href='{{ $guest ? route('login') : route('student.coping-toolkit') }}'>{{ $guest ? 'I already have an account' : 'Explore coping tools' }} <span aria-hidden='true'>&nearr;</span></a>
                 </div>
             </div>
-            <img class='msc-home-closing__foliage' src='{{ asset('assets/branding/magirem-foreground-foliage.webp') }}' alt='' loading='lazy' decoding='async' width='1672' height='941' aria-hidden='true'>
         </div>
     </div>
 </section>

@@ -8,6 +8,58 @@ use Illuminate\Support\Collection;
 
 class NotificationService
 {
+    /** Notify only explicitly authorized reviewers without exposing applicant details. */
+    public static function accountApplicationSubmitted(User $applicant): void
+    {
+        if (!config('services.account_verification.reviewer_authorization_approved', false)) {
+            return;
+        }
+
+        $reviewerIds = array_unique(array_map('intval', (array) config('services.account_verification.reviewer_user_ids', [])));
+        $link = route('admin.account-verification.show', $applicant, false);
+        foreach (User::query()->whereIn('id', $reviewerIds)->get() as $reviewer) {
+            if (!$reviewer->canReviewAccountVerification()) {
+                continue;
+            }
+            Notification::firstOrCreate([
+                'user_id' => $reviewer->id,
+                'type' => 'account_verification',
+                'title' => 'New student application',
+                'link' => $link,
+            ], [
+                'message' => 'A student application is awaiting Guidance Office review.',
+                'is_read' => false,
+                'priority' => 'normal',
+            ]);
+        }
+    }
+
+    /** Notify eligible counselors about a pending request without sharing its contents. */
+    public static function appointmentRequested($appointment): void
+    {
+        $counselors = User::query()->where('role', 'counselor')->where('is_active', true);
+        if ($appointment->counselor_id) {
+            $counselors->whereKey($appointment->counselor_id);
+        }
+
+        $link = route('counselor.appointments', ['request' => $appointment->id], false);
+        foreach ($counselors->get() as $counselor) {
+            if (!$counselor->isApproved()) {
+                continue;
+            }
+            Notification::firstOrCreate([
+                'user_id' => $counselor->id,
+                'type' => 'appointment',
+                'title' => 'New appointment request',
+                'link' => $link,
+            ], [
+                'message' => 'A counseling appointment request is awaiting review.',
+                'is_read' => false,
+                'priority' => 'normal',
+            ]);
+        }
+    }
+
     /**
      * Create a notification for a specific user
      */

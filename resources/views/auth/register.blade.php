@@ -192,6 +192,27 @@
 .mreg-privacy-details .mreg-privacy{margin-top:9px}
 @media(max-width:560px){.mreg-wizard-progress{padding:10px}.mreg-wizard-steps{gap:2px}.mreg-wizard-steps li{flex-direction:column;gap:3px;text-align:center;font-size:8px}.mreg-wizard-steps li span{width:20px;height:20px;flex-basis:20px}.mreg-wizard-progress-meta{margin-bottom:8px}.mreg-wizard-actions{gap:7px}.mreg-wizard-actions .mreg-button{min-width:86px;padding:0 11px}.mreg-wizard-feedback{font-size:9px}.mreg-review-grid{grid-template-columns:1fr 1fr;gap:6px}.mreg-review-item{padding:7px}.mreg-review-item dd{font-size:9px}}
 @media(max-width:560px){.mreg-review-summary{grid-template-columns:1fr;margin:13px 12px 8px}.mreg-wizard-step>.mreg-help{margin-right:12px;margin-left:12px}.mreg-privacy-details{margin-right:12px;margin-left:12px}.mreg-wizard-actions{position:sticky;bottom:0;z-index:3;padding:10px 0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px)}}
+/* Compact the existing split wizard on laptop and desktop; phone styles stay unchanged. */
+@media (min-width:901px) {
+    .mreg { padding:34px; }
+    .mreg-shell { width:min(1120px,100%); min-height:650px; grid-template-columns:43% 57%; border-radius:30px; }
+    .mreg-brand { padding:28px; }
+    .mreg-brand-copy { padding:26px 0; }
+    .mreg-brand-copy h2 { font-size:clamp(30px,2.7vw,38px); }
+    .mreg-brand-copy p { margin-top:12px; line-height:1.55; }
+    .mreg-brand-feature { padding:9px 11px; }
+    .mreg-form-panel { padding:26px 30px; }
+    .mreg-top { min-height:0; margin:0 0 18px; }
+    .mreg-header { padding:0 0 14px; }
+    .mreg-header h1 { margin:8px 0 6px; font-size:clamp(27px,2.6vw,33px); }
+    .mreg-header p { line-height:1.5; }
+    .mreg-wizard-progress { margin-bottom:12px; padding:10px 12px; }
+    .mreg-section { margin-top:10px; }
+    .mreg-section-head { padding-top:10px; }
+    .mreg-grid { gap:10px 14px; padding:10px 0 2px; }
+    .mreg-wizard-actions { margin-top:12px; padding-top:11px; }
+    .mreg footer { margin-top:12px; }
+}
 </style>
 
 <style>

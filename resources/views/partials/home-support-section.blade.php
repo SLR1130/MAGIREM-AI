@@ -1,7 +1,7 @@
 <section class='msc-home-support msc-home-support--story' id='{{ $guest ? 'mscPublicSupport' : 'mscStudentSupport' }}' aria-labelledby='{{ $guest ? 'mscPublicSupportTitle' : 'mscStudentSupportTitle' }}'>
     <div class='msc-support-story'>
         <div class='msc-support-story__visual' data-msc-reveal data-msc-tilt aria-hidden='true'>
-            <img src='{{ asset('images/wellness/home-guidance-conversation-v1.webp') }}' alt='' loading='lazy' decoding='async' width='1200' height='676'>
+            <img src='{{ asset('images/wellness/home-daylight-guidance-1600.webp') }}' alt='' loading='lazy' decoding='async' width='1600' height='1067'>
             <span class='msc-support-story__visual-label'>Guidance &amp; support</span>
         </div>
         <div class='msc-support-story__content' data-msc-reveal style='--msc-reveal-order:1'>

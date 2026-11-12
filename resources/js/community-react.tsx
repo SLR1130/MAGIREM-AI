@@ -13,10 +13,10 @@ import StarterKit from '@tiptap/starter-kit';
 import { TextStyleKit } from '@tiptap/extension-text-style';
 import TextAlign from '@tiptap/extension-text-align';
 import {
-    AlignCenter, AlignLeft, AlignRight, ArrowUpRight, Bold, Check, ChevronDown, ChevronRight, CircleHelp, FileImage,
-    Flag, Heart, Heading2, ImagePlus, Italic, Lightbulb, List, ListOrdered, LoaderCircle, Lock,
+    AlignCenter, AlignLeft, AlignRight, ArrowUpRight, Bold, Brain, BookOpen, Check, ChevronDown, ChevronRight, CircleHelp, FileImage,
+    Flag, Heart, HeartHandshake, Heading2, ImagePlus, Italic, Lightbulb, List, ListOrdered, LoaderCircle, Lock,
     EyeOff, MessageCircle, MoreHorizontal, Pencil, Pin, Plus, Redo2, RotateCcw, Search, Send, ShieldCheck,
-    Smile, Sparkles, Strikethrough, Trash2, Underline, Undo2, Users, Video, X,
+    Smile, Sparkles, Sprout, Strikethrough, ThumbsUp, Trash2, Underline, Undo2, Users, Video, X,
 } from 'lucide-react';
 import '@uppy/core/css/style.min.css';
 import '@uppy/dashboard/css/style.min.css';
@@ -65,7 +65,7 @@ type Feed = {
 type Query = Feed['filters'];
 
 const reactionMeta: { key: Reaction; label: string; icon: React.ReactNode }[] = [
-    { key: 'like', label: 'Like', icon: <Check size={14} /> },
+    { key: 'like', label: 'Like', icon: <ThumbsUp size={14} /> },
     { key: 'heart', label: 'Heart', icon: <Heart size={14} /> },
     { key: 'support', label: 'Support', icon: <Sparkles size={14} /> },
     { key: 'heard', label: 'Heard', icon: <MessageCircle size={14} /> },
@@ -124,6 +124,16 @@ function relativeTime(value: string | null): string {
     return `${Math.floor(seconds / 86400)}d ago`;
 }
 
+function CommunityCategoryIcon({ categoryKey, size = 15 }: { categoryKey: string; size?: number }) {
+    const Icon = categoryKey === 'academic' ? BookOpen
+        : categoryKey === 'mental-health' ? Brain
+        : categoryKey === 'relationships' ? HeartHandshake
+        : categoryKey === 'motivation' ? Sprout
+        : categoryKey === 'general' ? MessageCircle
+        : Sparkles;
+    return <Icon className="mc-category-icon" size={size} strokeWidth={1.8} aria-hidden="true" focusable="false" />;
+}
+
 function CommunityHeader({ feed, onCompose, onView }: { feed: Feed; onCompose: () => void; onView: (view: 'feed' | 'mine') => void }) {
     return <header className="mc-card mc-header">
         <div className="mc-header-row"><div><div className="mc-eyebrow">A shared space for the MinSU community</div><h1>Community Circle</h1><p>Share what is on your mind. Everyday posts appear in the feed without waiting for approval; safety holds are used only when a post needs a closer look.</p></div>
@@ -133,10 +143,10 @@ function CommunityHeader({ feed, onCompose, onView }: { feed: Feed; onCompose: (
 }
 function CommunitySidebar({ feed, onCompose, onView, onCategory }: { feed: Feed; onCompose: () => void; onView: (view: 'feed' | 'mine') => void; onCategory: (category: string) => void }) {
     const popular = Object.entries(feed.stats.by_category ?? {}).filter(([, count]) => count > 0).slice(0, 4);
-    return <aside className="mc-card mc-rail" aria-label="Community navigation"><div className="mc-brand"><span className="mc-brand-mark">✦</span><div><strong>Circle</strong><small>MinSU community</small></div></div>
+    return <aside className="mc-card mc-rail" aria-label="Community navigation"><div className="mc-brand"><span className="mc-brand-mark"><Sparkles size={18} strokeWidth={1.8} aria-hidden="true" /></span><div><strong>Circle</strong><small>MinSU community</small></div></div>
         <div className="mc-nav-label">Your space</div><nav className="mc-nav"><button aria-current={feed.filters.view === 'feed' ? 'page' : undefined} onClick={() => onView('feed')}><Users size={16} />Community feed</button><button aria-current={feed.filters.view === 'mine' ? 'page' : undefined} onClick={() => onView('mine')}><Pencil size={16} />My posts</button></nav>
         {feed.viewer.can_interact && <button className="mc-create" onClick={onCompose}>Create post <ArrowUpRight size={14} /></button>}
-        {popular.length > 0 && <><div className="mc-nav-label">Active topics</div><nav className="mc-nav">{popular.map(([key, count]) => <button key={key} onClick={() => onCategory(key)}><Sparkles size={15} />{feed.categories.find(c => c.key === key)?.label ?? key}<span style={{ marginLeft: 'auto' }}>{count}</span></button>)}</nav></>}
+        {popular.length > 0 && <><div className="mc-nav-label">Active topics</div><nav className="mc-nav">{popular.map(([key, count]) => <button key={key} onClick={() => onCategory(key)}><CommunityCategoryIcon categoryKey={key} />{feed.categories.find(c => c.key === key)?.label ?? key}<span style={{ marginLeft: 'auto' }}>{count}</span></button>)}</nav></>}
         <p className="mc-rail-note"><strong>A space to feel heard.</strong><br />Share at your pace. Anonymous student authors remain private from other members.</p>
     </aside>;
 }
@@ -145,7 +155,7 @@ function CommunityFilters({ feed, onQuery }: { feed: Feed; onQuery: (next: Parti
     useEffect(() => setSearch(feed.filters.q), [feed.filters.q]);
     const submit = (event: FormEvent) => { event.preventDefault(); onQuery({ q: search, view: 'feed' }); };
     return <><form className="mc-card mc-toolbar" onSubmit={submit}><div className="mc-search"><Search /><input aria-label="Search discussions" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search discussions" /></div><select className="mc-select" aria-label="Sort community posts" value={feed.filters.sort} onChange={e => onQuery({ sort: e.target.value, view: 'feed' })}><option value="recent">Most recent</option><option value="popular">Most supported</option></select><select className="mc-select" aria-label="Filter by campus" value={feed.filters.campus ?? ''} onChange={e => onQuery({ campus: e.target.value || null, view: 'feed' })}><option value="">All campuses</option>{feed.campuses.map(c => <option key={c}>{c}</option>)}</select></form>
-        <div className="mc-topic-row" aria-label="Filter discussions by topic"><button className="mc-chip" data-active={feed.filters.category === 'all'} onClick={() => onQuery({ category: 'all', view: 'feed' })}>All topics</button>{feed.categories.map(category => <button key={category.key} className="mc-chip" data-active={feed.filters.category === category.key} onClick={() => onQuery({ category: category.key, view: 'feed' })}>{category.icon} {category.label}</button>)}</div>
+        <div className="mc-topic-row" aria-label="Filter discussions by topic"><button className="mc-chip" data-active={feed.filters.category === 'all'} onClick={() => onQuery({ category: 'all', view: 'feed' })}>All topics</button>{feed.categories.map(category => <button key={category.key} className="mc-chip" data-active={feed.filters.category === category.key} onClick={() => onQuery({ category: category.key, view: 'feed' })}><CommunityCategoryIcon categoryKey={category.key} />{category.label}</button>)}</div>
     </>;
 }
 function AdminFeedControls({ feed, onModeration }: { feed: Feed; onModeration: (moderation: NonNullable<Query['moderation']>) => void }) {
@@ -383,7 +393,7 @@ function CommunityPostCard({ post, feed, onReload, onEdit, onToast }: { post: Po
     return <motion.article layout={!reduced} initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mc-card mc-post" id={`community-post-${post.id}`}>
         <div className="mc-post-top"><PostAuthor post={post} /><Popover.Root><Popover.Trigger asChild><button className="mc-icon-button" aria-label="Post options"><MoreHorizontal size={17} /></button></Popover.Trigger><Popover.Portal><Popover.Content className="mc-menu" sideOffset={6}>{post.is_owner && <><button onClick={() => onEdit(post)}><Pencil size={13} /> Edit post</button><button disabled={busy} onClick={remove}><Trash2 size={13} /> Remove post</button></>}<button onClick={() => onToast('Use the report button below to notify authorized moderators.')}><CircleHelp size={13} /> Safety help</button></Popover.Content></Popover.Portal></Popover.Root></div>
         {feed.viewer.can_moderate && (post.moderation_status === 'pending' || post.moderation_status === 'flagged') && <div className="mc-moderation-notice"><ShieldCheck size={15} /><span><strong>{post.moderation_status === 'flagged' ? 'Safety hold' : 'Awaiting review'}</strong> · This is held for a specific review reason; ordinary posts publish immediately.</span></div>}
-        <div className="mc-post-body">{post.title && <h2>{post.title}</h2>}{postContent}<div className="mc-post-tags"><span className="mc-tag">{post.category_icon} {post.category_label}</span>{post.support_label && <span className="mc-tag">{post.support_label}</span>}{post.post_format === 'visual' && <span className="mc-tag"><ImagePlus size={11} /> Visual post</span>}</div></div>
+        <div className="mc-post-body">{post.title && <h2>{post.title}</h2>}{postContent}<div className="mc-post-tags"><span className="mc-tag"><CommunityCategoryIcon categoryKey={post.category} size={13} />{post.category_label}</span>{post.support_label && <span className="mc-tag">{post.support_label}</span>}{post.post_format === 'visual' && <span className="mc-tag"><ImagePlus size={11} /> Visual post</span>}</div></div>
         {feed.viewer.can_moderate && <div className="mc-moderation-actions" aria-label={`Admin controls for post ${post.id}`}>
             {post.is_approved && <button type="button" disabled={busy} className="mc-text-button" onClick={() => void moderate('pin')}><Pin size={13} />{post.is_pinned ? 'Unpin' : 'Pin'}</button>}
             {post.is_approved && <button type="button" disabled={busy} className="mc-text-button mc-moderation-hide" onClick={() => void moderate('hide')}><EyeOff size={13} />Hide from feed</button>}

@@ -1,0 +1,47 @@
+{
+  "retrieved_on": "2026-11-12",
+  "usage": "Illustrative homepage stock photography; not MinSU facilities, students, counselors, or patients.",
+  "processing": "Provider WebP conversion, responsive width variants, hero crop to 16:9; no AI generation.",
+  "photos": [
+    {
+      "photographer": "Ales Krivec",
+      "title": "Photo of green grass field at sunrise",
+      "source": "https://unsplash.com/photos/photo-of-green-grass-field-at-sunrise-4miBe6zg5r0",
+      "image_source": "https://images.unsplash.com/photo-1434725039720-aaad6dd32dfe",
+      "license_url": "https://unsplash.com/license",
+      "files": ["home-daylight-hero-960.webp", "home-daylight-hero-1920.webp", "home-daylight-hero-3840.webp"]
+    },
+    {
+      "photographer": "ergonofis",
+      "title": "A white desk with a laptop on top of it",
+      "source": "https://unsplash.com/photos/a-white-desk-with-a-laptop-on-top-of-it-hPCFOFtmNls",
+      "image_source": "https://images.unsplash.com/photo-1623177579213-7efd042e73c0",
+      "license_url": "https://unsplash.com/license",
+      "files": ["home-daylight-workspace-1600.webp"]
+    },
+    {
+      "photographer": "JESHOOTS.COM",
+      "title": "An open empty notebook on a white desk",
+      "source": "https://unsplash.com/photos/an-open-empty-notebook-on-a-white-desk-next-to-an-iphone-and-a-macbook-pUAM5hPaCRI",
+      "image_source": "https://images.unsplash.com/photo-1488998427799-e3362cec87c3",
+      "license_url": "https://unsplash.com/license",
+      "files": ["home-daylight-journal-1600.webp"]
+    },
+    {
+      "photographer": "Julia Ivanina",
+      "title": "Two people toasting with fruit on a picnic blanket",
+      "source": "https://unsplash.com/photos/two-people-toasting-with-fruit-on-a-picnic-blanket-Qf17ez87hLg",
+      "image_source": "https://images.unsplash.com/photo-1636374934784-e37ac0d98983",
+      "license_url": "https://unsplash.com/license",
+      "files": ["home-daylight-community-1600.webp"]
+    },
+    {
+      "photographer": "Inspirative Studio",
+      "title": "Two armchairs in a room",
+      "source": "https://www.pexels.com/photo/two-armchairs-in-a-room-8066334/",
+      "image_source": "https://images.pexels.com/photos/8066334/pexels-photo-8066334.jpeg",
+      "license_url": "https://www.pexels.com/license/",
+      "files": ["home-daylight-guidance-1600.webp"]
+    }
+  ]
+}

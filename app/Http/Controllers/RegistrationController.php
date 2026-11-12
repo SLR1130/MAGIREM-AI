@@ -6,6 +6,7 @@ use App\Models\AccountVerificationAudit;
 use App\Models\User;
 use App\Models\PrivacySetting;
 use App\Services\AccountVerificationEmailService;
+use App\Services\NotificationService;
 use App\Services\VerificationDocumentStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -168,6 +169,7 @@ class RegistrationController extends Controller
                     'internal_note' => null,
                     'created_at' => now(),
                 ]);
+                NotificationService::accountApplicationSubmitted($user);
                 return $user;
             });
         } catch (Throwable $exception) {

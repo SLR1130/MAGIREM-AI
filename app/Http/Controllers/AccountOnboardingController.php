@@ -127,7 +127,7 @@ class AccountOnboardingController extends Controller
             $codeQueued ? 'success' : 'warning',
             $user->notification_email
                 ? ($codeQueued
-                    ? 'Your password is set. A one-time code was sent to the confirmed personal Gmail. Verify it to finish setup; Guidance approval remains unchanged.'
+                    ? 'Your password is set. A one-time code is queued for the confirmed personal Gmail; delivery is not confirmed yet. Enter it after it arrives to finish setup. Guidance approval remains unchanged.'
                     : 'Your password is set, but no Gmail code was sent. Use the account setup page to retry after mail delivery is available.')
                 : 'Your password is set. Add your personal Gmail and verify it to finish setup; Guidance approval remains unchanged.'
         );
@@ -172,7 +172,7 @@ class AccountOnboardingController extends Controller
         $queued = $this->emails->issueCode($user->fresh());
         return back()->with(
             $queued ? 'success' : 'warning',
-            $queued ? 'A one-time code was sent. Your Gmail remains unverified until you enter the code.' : 'No code was sent. Your Gmail remains unverified; retry after mail delivery is available.'
+            $queued ? 'A one-time code is queued for your personal Gmail; delivery is not confirmed yet. Your Gmail remains unverified until you enter the code.' : 'No code was queued. Your Gmail remains unverified; retry after mail delivery is available.'
         );
     }
 
@@ -184,12 +184,79 @@ class AccountOnboardingController extends Controller
             && $user->notification_email_confirmed_at && $user->notification_email_confirmed_by, 409);
 
         $result = $this->invitations->issue($user, (int) $request->user()->id, 'email');
-        return back()->with(
-            $result['delivery_status'] === 'queued' ? 'success' : 'warning',
-            $result['delivery_status'] === 'queued'
-                ? 'A new one-time account invitation was queued for the independently confirmed personal Gmail. Any previous invitation was revoked.'
-                : 'The account remains restricted. The invitation could not be queued; no password was sent.'
-        );
+        if ($result['delivery_status'] === 'queued') {
+            // The reviewer receives a persistent bell alert for queueing and a
+            // separate alert after the provider accepts or fails delivery.
+            return back();
+        }
+
+        return back()->with('warning', 'The account remains restricted. The invitation could not be queued; no password was sent.');
+    }
+
+    public function confirmCounselorGmailAndSendInvitation(Request $request, User $user): RedirectResponse
+    {
+        abort_unless($request->user()?->canReviewAccountVerification(), 403);
+        abort_unless($this->isEligibleAdminCreatedCounselor($user), 409, 'Only an approved admin-created counselor who has not set a password can use this setup flow.');
+
+        $validated = $request->validate([
+            'notification_email' => ['required', 'email:rfc', 'max:255', 'regex:/^[^@\s]+@(?:gmail\.com|googlemail\.com)$/i'],
+            'notification_email_contact_confirmed' => ['required', 'accepted'],
+        ], [
+            'notification_email.regex' => 'Enter the counselor\'s personal Gmail address ending in gmail.com or googlemail.com.',
+            'notification_email_contact_confirmed.accepted' => 'Confirm that you independently verified this Gmail belongs to the counselor.',
+        ]);
+
+        $reviewerId = (int) $request->user()->id;
+        $email = mb_strtolower(trim($validated['notification_email']));
+        $alreadyQueued = $user->accountInvitations()
+            ->where('delivery_method', 'email')
+            ->where('recipient_email', $email)
+            ->whereNull('accepted_at')
+            ->whereNull('revoked_at')
+            ->where('expires_at', '>', now())
+            ->whereHas('emailDelivery', static fn ($query) => $query->whereIn('status', ['queued', 'sending', 'retrying']))
+            ->exists();
+        if ($alreadyQueued) {
+            return redirect()->route('admin.account-verification.show', $user)
+                ->with('info', 'A setup invitation for this confirmed Gmail is already queued. No duplicate email or replacement link was created; wait for delivery status to update.');
+        }
+
+        DB::transaction(function () use ($user, $reviewerId, $email): void {
+            $counselor = User::query()->lockForUpdate()->findOrFail($user->id);
+            abort_unless($this->isEligibleAdminCreatedCounselor($counselor), 409);
+
+            $counselor->forceFill([
+                'notification_email' => $email,
+                'notification_email_enabled' => true,
+                'notification_email_confirmed_at' => now(),
+                'notification_email_confirmed_by' => $reviewerId,
+                'notification_email_verified_at' => null,
+                'verification_email_delivery_status' => 'not_requested',
+            ])->save();
+            $counselor->verificationEmail()->delete();
+
+            AccountVerificationAudit::query()->create([
+                'application_user_id' => $counselor->id,
+                'actor_user_id' => $reviewerId,
+                'action' => 'owner_invitation_contact_confirmed',
+                'from_status' => $counselor->approval_status,
+                'to_status' => $counselor->approval_status,
+                'internal_note' => 'Authorized reviewer independently confirmed or updated the approved counselor\'s personal Gmail for first-use setup. Gmail ownership remains unverified until the counselor completes OTP.',
+                'created_at' => now(),
+            ]);
+        });
+
+        try {
+            $result = $this->invitations->issue($user->fresh(), $reviewerId, 'email');
+        } catch (\InvalidArgumentException) {
+            return redirect()->route('admin.account-verification.show', $user)
+                ->with('warning', 'The Gmail association was recorded, but the setup invitation could not be queued. The account remains restricted; check mail configuration before retrying.');
+        }
+
+        $redirect = redirect()->route('admin.account-verification.show', $user->fresh());
+        return $result['delivery_status'] === 'queued'
+            ? $redirect
+            : $redirect->with('warning', 'The Gmail association was recorded, but no setup invitation was queued. The counselor account remains restricted; check email delivery before retrying.');
     }
 
     public function createInPersonInvitation(Request $request, User $user)
@@ -219,5 +286,19 @@ class AccountOnboardingController extends Controller
             && $user->is_active
             && $user->isApproved()
             && in_array($user->requested_role, ['student', 'counselor'], true);
+    }
+
+    private function isEligibleAdminCreatedCounselor(User $user): bool
+    {
+        return $user->role === 'counselor'
+            && $user->requested_role === 'counselor'
+            && $user->approval_status === 'approved'
+            && (bool) $user->is_active
+            && $user->requiresOwnerOnboarding()
+            && $user->password_setup_completed_at === null
+            && $user->approval_submitted_at === null
+            && $user->verificationAudits()
+                ->whereIn('action', ['admin_created_pending', 'admin_created_approved'])
+                ->exists();
     }
 }

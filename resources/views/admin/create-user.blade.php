@@ -37,20 +37,6 @@
     margin-bottom: 20px;
 }
 .acu-header-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
-.acu-page-icon {
-    width: 54px;
-    height: 54px;
-    flex: 0 0 54px;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(35,107,85,.09);
-    border-radius: 17px;
-    background: var(--acu-mint);
-    color: var(--acu-emerald);
-    overflow: hidden;
-}
-.acu-page-icon svg { width: 25px; height: 25px; }
-.acu-page-icon .magirem-logo { width: 100%; height: 100%; }
 .acu-eyebrow {
     display: inline-flex;
     align-items: center;
@@ -127,7 +113,8 @@
 .acu-card-body { padding: 18px 20px 20px; }
 .acu-basic-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 17px 16px; }
 .acu-field { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
-.acu-field--role { grid-column: 1 / -1; max-width: calc(50% - 8px); }
+.acu-field--role { grid-column: auto; max-width: none; }
+.acu-field--email { grid-column: 1 / -1; }
 .acu-field label { color: var(--acu-text); font-size: 12px; line-height: 1.3; font-weight: 760; }
 .acu-required { margin-left: 2px; color: var(--acu-emerald); }
 .acu-control-wrap { position: relative; }
@@ -193,8 +180,6 @@
     .admin-create-user { padding: 14px 12px 28px; }
     .acu-header { align-items: flex-start; flex-direction: column; gap: 14px; margin-bottom: 15px; }
     .acu-header-main { align-items: flex-start; gap: 12px; }
-    .acu-page-icon { width: 46px; height: 46px; flex-basis: 46px; border-radius: 14px; }
-    .acu-page-icon svg { width: 22px; height: 22px; }
     .acu-header h1 { font-size: clamp(27px, 8vw, 36px); }
     .acu-header p { font-size: 12px; }
     .acu-back { width: 100%; }
@@ -212,22 +197,51 @@
     .admin-create-user *, .admin-create-user *::before, .admin-create-user *::after { scroll-behavior: auto!important; animation-duration: .01ms!important; animation-iteration-count: 1!important; transition-duration: .01ms!important; }
 }
 </style>
+@include('admin.partials.workspace-polish')
+<style>
+.admin-create-user [hidden] { display:none !important; }
+@media (max-width:700px) {
+    .admin-create-user { padding:18px 14px 32px; }
+    .admin-create-user .acu-header { display:grid; grid-template-columns:minmax(0,1fr) 44px; align-items:start; gap:10px; margin-bottom:16px; }
+    .admin-create-user .acu-header-main { display:block; min-width:0; }
+    .admin-create-user .acu-header h1 { font-size:clamp(25px,7.2vw,30px); }
+    .admin-create-user .acu-header p { margin-top:6px; font-size:12px; line-height:1.5; }
+    .admin-create-user .acu-back { width:44px; min-width:44px; height:44px; min-height:44px; padding:0; border-radius:12px; }
+    .admin-create-user .acu-back span { display:none; }
+    .admin-create-user .acu-form-grid { grid-template-columns:minmax(0,1fr); gap:10px; }
+    .admin-create-user .acu-card { border-radius:15px; }
+    .admin-create-user .acu-card-head { gap:9px; padding:12px 14px 10px; }
+    .admin-create-user .acu-section-icon { width:30px; height:30px; flex-basis:30px; border-radius:9px; }
+    .admin-create-user .acu-card-head h2 { font-size:15px; }
+    .admin-create-user .acu-card-head p { margin-top:3px; font-size:11px; line-height:1.4; }
+    .admin-create-user .acu-card-body { padding:12px 14px 14px; }
+    .admin-create-user .acu-basic-grid, .admin-create-user #student-fields .acu-role-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .admin-create-user .acu-basic-grid .acu-field--email, .admin-create-user #student-fields .acu-field--wide { grid-column:1 / -1; }
+    .admin-create-user .acu-basic-grid .acu-field--role { grid-column:auto; max-width:none; }
+    .admin-create-user .acu-field { gap:6px; }
+    .admin-create-user .acu-field input, .admin-create-user .acu-field select { min-height:45px; font-size:13px; }
+    .admin-create-user .acu-help, .admin-create-user .acu-verification-note, .admin-create-user .acu-security-note { font-size:11px; line-height:1.5; }
+    .admin-create-user .acu-card--actions { gap:10px; padding:12px 14px; }
+    .admin-create-user .acu-actions-copy { margin:0; font-size:11px; }
+}
+@media (max-width:360px) {
+    .admin-create-user .acu-basic-grid, .admin-create-user #student-fields .acu-role-grid { grid-template-columns:minmax(0,1fr); }
+    .admin-create-user .acu-basic-grid .acu-field--email, .admin-create-user #student-fields .acu-field--wide { grid-column:auto; }
+}
+</style>
 
 <div class="admin-create-user">
     <header class="acu-header">
         <div class="acu-header-main">
-            <span class="acu-page-icon" aria-hidden="true">
-                <x-brand-logo variant="emblem" alt="" />
-            </span>
             <div>
                 <span class="acu-eyebrow">Identity &amp; access</span>
                 <h1>Create new user</h1>
-                <p>Create platform accounts. Student and counselor accounts remain restricted until a designated Guidance reviewer records institutional verification.</p>
+                <p>Student and counselor accounts remain restricted until a designated Guidance reviewer verifies them.</p>
             </div>
         </div>
-        <a class="acu-back" href="{{ route('admin.users') }}">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 12H5m7 7l-7-7 7-7"/></svg>
-            Back to users
+        <a class="acu-back" href="{{ route('admin.users') }}" aria-label="Back to users" title="Back to users">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 12H5m7 7l-7-7 7-7"/></svg>
+            <span>Back to users</span>
         </a>
     </header>
 
@@ -262,22 +276,22 @@
                     <input id="name" name="name" type="text" value="{{ old('name') }}" autocomplete="name" required maxlength="255" placeholder="e.g., Alex Santos" @if($errors->has('name')) aria-invalid="true" aria-describedby="name-error" @endif>
                     @error('name')<p class="acu-field-error" id="name-error">{{ $message }}</p>@enderror
                 </div>
-                <div class="acu-field">
-                    <label for="email"><span id="email-label">Sign-in email</span> <span class="acu-required" aria-hidden="true">*</span></label>
-                    <input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="off" autocapitalize="none" spellcheck="false" required maxlength="255" placeholder="name@minsu.edu.ph" @if($errors->has('email')) aria-invalid="true" aria-describedby="email-help email-error" @else aria-describedby="email-help" @endif>
-                    <p class="acu-help" id="email-help">Student and counselor accounts must use a MinSU institutional @minsu.edu.ph login. Administrator account rules remain unchanged.</p>
-                    @error('email')<p class="acu-field-error" id="email-error">{{ $message }}</p>@enderror
-                </div>
                 <div class="acu-field acu-field--role">
                     <label for="role">User role <span class="acu-required" aria-hidden="true">*</span></label>
                     <select id="role" name="role" required @if($errors->has('role')) aria-invalid="true" aria-describedby="role-help role-error" @else aria-describedby="role-help" @endif>
-                        <option value="" @selected($selectedRole === '') disabled>Select an account role</option>
+                        <option value="" @selected($selectedRole === '') disabled>Select role</option>
                         <option value="student" @selected($selectedRole === 'student')>Student</option>
                         <option value="counselor" @selected($selectedRole === 'counselor')>Counselor</option>
                         <option value="admin" @selected($selectedRole === 'admin')>Administrator</option>
                     </select>
                     <p class="acu-help" id="role-help">Role-specific fields appear below when applicable.</p>
                     @error('role')<p class="acu-field-error" id="role-error">{{ $message }}</p>@enderror
+                </div>
+                <div class="acu-field acu-field--email">
+                    <label for="email"><span id="email-label">Sign-in email</span> <span class="acu-required" aria-hidden="true">*</span></label>
+                    <input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="off" autocapitalize="none" spellcheck="false" required maxlength="255" placeholder="name@minsu.edu.ph" @if($errors->has('email')) aria-invalid="true" aria-describedby="email-help email-error" @else aria-describedby="email-help" @endif>
+                    <p class="acu-help" id="email-help">Student and counselor accounts must use a MinSU institutional @minsu.edu.ph login. Administrator account rules remain unchanged.</p>
+                    @error('email')<p class="acu-field-error" id="email-error">{{ $message }}</p>@enderror
                 </div>
             </div>
         </section>
@@ -311,7 +325,7 @@
             </div>
         </section>
 
-        <section class="acu-card acu-role-card" aria-labelledby="acu-role-title">
+        <section class="acu-card acu-role-card" id="acu-role-card" aria-labelledby="acu-role-title" @if(!in_array($selectedRole, ['student', 'counselor'], true)) hidden @endif>
             <div class="acu-card-head">
                 <span class="acu-section-icon" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13c-1.168-.776-2.754-1.253-4.5-1.253s-3.332.477-4.5 1.253"/></svg></span>
                 <div><h2 id="acu-role-title">Role-specific information</h2><p>Only the selected role’s existing profile fields are shown.</p></div>
@@ -454,6 +468,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const counselorAuthorization = document.getElementById('acu-counselor-authorization');
     const studentPanel = document.getElementById('student-fields');
     const counselorPanel = document.getElementById('counselor-fields');
+    const roleCard = document.getElementById('acu-role-card');
     const studentSet = document.getElementById('student-role-fields');
     const counselorSet = document.getElementById('counselor-role-fields');
     const emptyState = document.getElementById('role-fields-empty');
@@ -470,26 +485,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const isStudent = role === 'student';
         const isCounselor = role === 'counselor';
         const isApplicantRole = isStudent || isCounselor;
+        const isAdmin = role === 'admin';
+        roleCard.hidden = !isApplicantRole;
         studentPanel.hidden = !isStudent;
         counselorPanel.hidden = !isCounselor;
         verificationCard.hidden = !isApplicantRole;
         verificationCard.querySelectorAll('input,select,textarea').forEach(function (control) {
             if (control !== verificationToggle) control.disabled = !isApplicantRole;
         });
-        securityCard.hidden = isApplicantRole;
+        securityCard.hidden = !isAdmin;
         adminPasswordFields.querySelectorAll('input').forEach(function (control) {
-            control.disabled = isApplicantRole;
-            control.required = role === 'admin';
+            control.disabled = !isAdmin;
+            control.required = isAdmin;
         });
         if (verificationToggle) {
             verificationToggle.disabled = !isApplicantRole;
             if (!isApplicantRole) verificationToggle.checked = false;
         }
-        emailLabel.textContent = role === 'admin' ? 'Administrator sign-in email' : 'Institutional sign-in email';
-        emailInput.placeholder = isApplicantRole ? 'name@minsu.edu.ph' : 'Administrator email';
+        emailLabel.textContent = isAdmin ? 'Administrator sign-in email' : (isApplicantRole ? 'Institutional sign-in email' : 'Sign-in email');
+        emailInput.placeholder = isApplicantRole ? 'name@minsu.edu.ph' : (isAdmin ? 'Administrator email' : 'Select a role first');
         emailHelp.textContent = isApplicantRole
             ? 'Student and counselor accounts must use a MinSU institutional @minsu.edu.ph login. Administrator account rules remain unchanged.'
-            : 'This creates a separate administrator account using existing administrator sign-in rules; no reviewer access is granted automatically.';
+            : (isAdmin ? 'This creates a separate administrator account using existing administrator sign-in rules; no reviewer access is granted automatically.' : 'Choose a role to see the email requirements.');
         const directApproval = Boolean(isApplicantRole && verificationToggle?.checked);
         const emailHandoff = directApproval && invitationMethod?.value === 'email';
         if (invitationMethod) {

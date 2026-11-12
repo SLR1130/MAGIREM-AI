@@ -417,6 +417,34 @@
     .au-table td:nth-child(3) { display:none; }
 }
 </style>
+@include('admin.partials.workspace-polish')
+<style>
+/* The existing create-user link becomes a compact floating action on phones. */
+@media (max-width:700px) {
+    .admin-users { padding-bottom:calc(100px + env(safe-area-inset-bottom, 0px)); }
+    .admin-users .au-head { animation:none; }
+    .admin-users .au-create {
+        position:fixed;
+        right:max(16px, env(safe-area-inset-right, 0px));
+        bottom:max(16px, env(safe-area-inset-bottom, 0px));
+        z-index:900;
+        width:auto;
+        max-width:calc(100vw - 32px);
+        min-height:48px;
+        padding:0 18px;
+        border:1px solid rgba(255,255,255,.18);
+        border-radius:999px;
+        box-shadow:0 10px 26px rgba(16,63,50,.24);
+        transition:background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+    .admin-users .au-create svg { width:17px; height:17px; flex:0 0 17px; }
+    .admin-users .au-create:hover { transform:translateY(-2px); }
+    .admin-users .au-create:active { transform:scale(.98); }
+}
+@media (max-width:700px) and (prefers-reduced-motion:reduce) {
+    .admin-users .au-create:hover, .admin-users .au-create:active { transform:none; }
+}
+</style>
 
 @php
     $visibleUsers = $users->getCollection();
@@ -430,22 +458,16 @@
         <div>
             <span class="au-eyebrow">Identity & access</span>
             <h1>User management</h1>
-            <p>Manage platform accounts in a compact directory with role filtering, quick search, and safer account actions.</p>
+            <p>Find accounts, review their status, and manage users from the directory.</p>
         </div>
 
         <a href="{{ route('admin.create-user') }}" class="au-create">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 5v14m7-7H5"/></svg>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 5v14m7-7H5"/></svg>
             Create new user
         </a>
     </header>
 
     <section class="au-summary">
-        <div class="au-context">
-            <small>Account directory</small>
-            <h2>People first, actions second.</h2>
-            <p>The redesigned view uses a structured directory instead of oversized cards, making it easier to scan names, roles, identifiers, and administrative actions.</p>
-        </div>
-
         <article class="au-stat">
             <strong>{{ $users->total() }}</strong>
             <span>Total users</span>
@@ -469,14 +491,14 @@
     <section class="au-controls">
         <label class="au-search">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input id="adminUserSearch" type="search" placeholder="Search name, email, ID, or specialization..." autocomplete="off">
+            <input id="adminUserSearch" type="search" aria-label="Search users on this page" placeholder="Search name, email, ID, or specialization..." autocomplete="off">
         </label>
 
-        <div class="au-tabs" aria-label="Filter users by role">
-            <button type="button" class="au-tab active" data-user-role="all">All <span class="au-tab-count">{{ $users->count() }}</span></button>
-            <button type="button" class="au-tab" data-user-role="student">Students <span class="au-tab-count">{{ $visibleStudents }}</span></button>
-            <button type="button" class="au-tab" data-user-role="counselor">Counselors <span class="au-tab-count">{{ $visibleCounselors }}</span></button>
-            <button type="button" class="au-tab" data-user-role="admin">Admins <span class="au-tab-count">{{ $visibleAdmins }}</span></button>
+        <div class="au-tabs" aria-label="Filter users on this page by role">
+            <button type="button" class="au-tab active" data-user-role="all" aria-pressed="true">All <span class="au-tab-count">{{ $users->count() }}</span></button>
+            <button type="button" class="au-tab" data-user-role="student" aria-pressed="false">Students <span class="au-tab-count">{{ $visibleStudents }}</span></button>
+            <button type="button" class="au-tab" data-user-role="counselor" aria-pressed="false">Counselors <span class="au-tab-count">{{ $visibleCounselors }}</span></button>
+            <button type="button" class="au-tab" data-user-role="admin" aria-pressed="false">Admins <span class="au-tab-count">{{ $visibleAdmins }}</span></button>
         </div>
     </section>
 
@@ -487,7 +509,7 @@
         </div>
 
         @if($users->count() > 0)
-            <div class="au-table-wrap">
+            <div class="au-table-wrap" role="region" aria-label="Account directory; scroll horizontally to view all columns" tabindex="0">
                 <table class="au-table">
                     <thead>
                         <tr>
@@ -615,6 +637,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             tabs.forEach(function (item) {
                 item.classList.toggle('active', item === tab);
+                item.setAttribute('aria-pressed', String(item === tab));
             });
 
             applyUserFilters();

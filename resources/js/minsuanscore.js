@@ -1,3 +1,15 @@
+// Use the actual scrolling ancestor, not .app-main when the student shell makes
+// it overflow:visible. Both the photo depth and reveal observer share this rule.
+const getHomeScrollRoot = (element) => {
+    let ancestor = element.parentElement;
+    while (ancestor && ancestor !== document.body && ancestor !== document.documentElement) {
+        const overflow = window.getComputedStyle(ancestor).overflowY;
+        if (/(auto|scroll)/.test(overflow) && ancestor.scrollHeight > ancestor.clientHeight) return ancestor;
+        ancestor = ancestor.parentElement;
+    }
+    return null;
+};
+
 /**
  * MinSuansCore shared progressive enhancement.
  * Uses native dialog APIs when available and leaves normal links/forms untouched.
@@ -91,13 +103,12 @@
         const status = controls?.querySelector('[data-msc-hero-status]');
         const progress = controls?.querySelector('[data-msc-hero-progress]');
         const announcement = controls?.querySelector('[data-msc-hero-announcement]');
+        const homePage = copy.closest('.msc-home-page');
         if (!eyebrow || !lineOne || !lineTwo || !italic || !description) return;
 
         let index = 0;
         let timer = null;
         let swapTimer = null;
-        let typingTimer = null;
-        let typingRun = 0;
         let paused = false;
 
         const announce = (state) => {
@@ -106,15 +117,7 @@
             }
         };
 
-        const clearTyping = () => {
-            window.clearTimeout(typingTimer);
-            typingRun += 1;
-            [lineOne, lineTwo, italic, description].forEach((element) => element.classList.remove('is-typing'));
-            copy.classList.remove('is-typewriting');
-        };
-
         const paint = (state, shouldAnnounce = false) => {
-            clearTyping();
             eyebrow.textContent = state.eyebrow;
             lineOne.textContent = state.lineOne;
             lineTwo.textContent = state.lineTwo;
@@ -123,50 +126,6 @@
             if (shouldAnnounce) announce(state);
         };
 
-        const typeState = (state) => {
-            clearTyping();
-            const run = typingRun;
-            eyebrow.textContent = state.eyebrow;
-            const sequence = [
-                { element: lineOne, text: state.lineOne, speed: 48, gap: 80 },
-                { element: lineTwo, text: state.lineTwo, speed: 48, gap: 100 },
-                { element: italic, text: state.italic, speed: 44, gap: 150 },
-                { element: description, text: state.description, speed: 20, gap: 0 },
-            ];
-            sequence.forEach(({ element }) => {
-                element.textContent = '';
-                element.classList.remove('is-typing');
-            });
-            copy.classList.add('is-typewriting');
-
-            let sequenceIndex = 0;
-            let characterIndex = 0;
-            const typeNextCharacter = () => {
-                if (run !== typingRun) return;
-                const current = sequence[sequenceIndex];
-                if (!current) {
-                    copy.classList.remove('is-typewriting');
-                    announce(state);
-                    return;
-                }
-
-                current.element.classList.add('is-typing');
-                characterIndex += 1;
-                current.element.textContent = current.text.slice(0, characterIndex);
-
-                if (characterIndex < current.text.length) {
-                    typingTimer = window.setTimeout(typeNextCharacter, current.speed);
-                    return;
-                }
-
-                current.element.classList.remove('is-typing');
-                sequenceIndex += 1;
-                characterIndex = 0;
-                typingTimer = window.setTimeout(typeNextCharacter, current.gap);
-            };
-
-            typingTimer = window.setTimeout(typeNextCharacter, 90);
-        };
 
         const updateControls = () => {
             if (status) {
@@ -199,14 +158,14 @@
             index = (nextIndex + states.length) % states.length;
             updateControls();
             window.clearTimeout(swapTimer);
-            if (reducedQuery?.matches) {
+            if (reducedQuery?.matches || homePage?.dataset.mscMotionPaused === 'true') {
                 paint(states[index], true);
                 copy.classList.remove('is-transitioning');
                 return;
             }
             copy.classList.add('is-transitioning');
             swapTimer = window.setTimeout(() => {
-                typeState(states[index]);
+                paint(states[index], true);
                 copy.classList.remove('is-transitioning');
             }, 220);
         };
@@ -216,7 +175,7 @@
             restartProgress();
             const heroFocused = hero?.contains(document.activeElement) ?? false;
             const heroHovered = hero?.matches(':hover') ?? false;
-            if (reducedQuery?.matches || document.hidden || paused || heroFocused || heroHovered) {
+            if (reducedQuery?.matches || homePage?.dataset.mscMotionPaused === 'true' || document.hidden || paused || heroFocused || heroHovered) {
                 progress?.classList.add('is-paused');
                 return;
             }
@@ -249,88 +208,64 @@
             if (!hero.contains(event.relatedTarget)) schedule();
         });
         document.addEventListener('visibilitychange', schedule);
+        homePage?.addEventListener('msc:motionchange', schedule);
         reducedQuery?.addEventListener?.('change', () => {
             if (reducedQuery.matches) {
                 window.clearTimeout(timer);
                 window.clearTimeout(swapTimer);
                 copy.classList.remove('is-transitioning');
                 paint(states[index]);
-            } else {
-                typeState(states[index]);
             }
             schedule();
         });
-        if (reducedQuery?.matches) {
-            paint(states[index]);
-        } else {
-            typeState(states[index]);
-        }
+        paint(states[index]);
         updateControls();
         schedule();
     });
 
     document.querySelectorAll('[data-msc-hero-art]').forEach((art) => {
-        const stage = art.closest('.msc-home-stage');
-        let pointerFrame = null;
+        const home = art.closest('.msc-home-page');
+        const pauseButton = art.querySelector('[data-msc-scene-pause]');
+        const pauseLabel = art.querySelector('[data-msc-scene-pause-label]');
+        const pauseIcon = art.querySelector('[data-msc-scene-pause-icon]');
+        const scrollRoot = getHomeScrollRoot(art) || window;
         let scrollFrame = null;
-        const scrollRoot = art.closest('.msc-home-page--student')
-            ? (document.querySelector('.app-main') || window)
-            : window;
+        let userPaused = false;
+        const motionAllowed = () => !reducedQuery?.matches
+            && home?.dataset.mscMotionPaused !== 'true' && !document.hidden;
 
-        const updateScrollDepth = () => {
-            if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+        // The photograph stays still; only ambient layers animate while visible.
+        const updateSceneVisibility = () => {
+            if (scrollFrame) return;
             scrollFrame = window.requestAnimationFrame(() => {
-                if (reducedQuery?.matches) {
-                    art.style.setProperty('--msc-art-scroll-y', '0px');
-                    stage?.style.setProperty('--msc-stage-pan-y', '0px');
-                } else {
-                    const bounds = art.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-                    const normalized = Math.max(-1, Math.min(1, ((bounds.top + bounds.height / 2) - viewportHeight / 2) / (viewportHeight / 2)));
-                    art.style.setProperty('--msc-art-scroll-y', `${(-normalized * 30).toFixed(1)}px`);
-                    stage?.style.setProperty('--msc-stage-pan-y', `${(-normalized * 9).toFixed(1)}px`);
-                }
+                const bounds = art.getBoundingClientRect();
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+                const visible = bounds.bottom > 0 && bounds.top < viewportHeight;
+                art.dataset.mscSceneVisible = String(visible && motionAllowed());
                 scrollFrame = null;
             });
         };
-
-        const resetPointerTilt = () => {
-            if (pointerFrame) window.cancelAnimationFrame(pointerFrame);
-            pointerFrame = null;
-            art.style.setProperty('--msc-art-tilt-x', '0deg');
-            art.style.setProperty('--msc-art-tilt-y', '0deg');
-            art.style.setProperty('--msc-art-shift-x', '0px');
-            art.style.setProperty('--msc-art-shift-y', '0px');
-            stage?.style.setProperty('--msc-stage-pan-x', '0px');
-            stage?.style.setProperty('--msc-stage-pan-y', '0px');
+        const syncMotion = () => {
+            const paused = Boolean(reducedQuery?.matches || userPaused);
+            if (home) home.dataset.mscMotionPaused = String(paused);
+            if (pauseButton) {
+                pauseButton.hidden = false;
+                pauseButton.disabled = Boolean(reducedQuery?.matches);
+                pauseButton.setAttribute('aria-pressed', String(paused));
+                pauseButton.setAttribute('aria-label', reducedQuery?.matches ? 'Motion disabled by your reduced-motion preference' : paused ? 'Resume homepage motion' : 'Pause homepage motion');
+            }
+            if (pauseLabel) pauseLabel.textContent = reducedQuery?.matches ? 'Reduced motion' : paused ? 'Resume motion' : 'Pause motion';
+            pauseIcon?.setAttribute('d', paused ? 'm9 5 10 7-10 7V5Z' : 'M9 5v14M15 5v14');
+            updateSceneVisibility();
+            home?.dispatchEvent(new CustomEvent('msc:motionchange'));
         };
 
-        art.addEventListener('pointermove', (event) => {
-            if (event.pointerType === 'touch' || reducedQuery?.matches) return;
-            const bounds = art.getBoundingClientRect();
-            const horizontal = ((event.clientX - bounds.left) / bounds.width) - 0.5;
-            const vertical = ((event.clientY - bounds.top) / bounds.height) - 0.5;
-            if (pointerFrame) window.cancelAnimationFrame(pointerFrame);
-            pointerFrame = window.requestAnimationFrame(() => {
-                // The local foreground, air and distant landscape move at different depths.
-                art.style.setProperty('--msc-art-shift-x', `${(-horizontal * 20).toFixed(1)}px`);
-                art.style.setProperty('--msc-art-shift-y', `${(-vertical * 12).toFixed(1)}px`);
-                art.style.setProperty('--msc-art-tilt-x', `${(vertical * -3.2).toFixed(2)}deg`);
-                art.style.setProperty('--msc-art-tilt-y', `${(horizontal * 4.4).toFixed(2)}deg`);
-                stage?.style.setProperty('--msc-stage-pan-x', `${(horizontal * 7).toFixed(1)}px`);
-                stage?.style.setProperty('--msc-stage-pan-y', `${(vertical * 4).toFixed(1)}px`);
-                pointerFrame = null;
-            });
-        });
-
-        art.addEventListener('pointerleave', resetPointerTilt);
-        scrollRoot.addEventListener('scroll', updateScrollDepth, { passive: true });
-        window.addEventListener('resize', updateScrollDepth, { passive: true });
-        updateScrollDepth();
-        reducedQuery?.addEventListener?.('change', () => {
-            resetPointerTilt();
-            updateScrollDepth();
-        });
+        pauseButton?.addEventListener('click', () => { userPaused = !userPaused; syncMotion(); });
+        scrollRoot.addEventListener('scroll', updateSceneVisibility, { passive: true });
+        window.addEventListener('resize', updateSceneVisibility, { passive: true });
+        document.addEventListener('visibilitychange', syncMotion);
+        reducedQuery?.addEventListener?.('change', syncMotion);
+        syncMotion();
     });
 
     const menu = document.getElementById('mscPublicMenu');
@@ -366,12 +301,10 @@
 
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const revealItems = [...document.querySelectorAll('[data-msc-reveal]')];
-    const studentScrollRoot = home.classList.contains('msc-home-page--student')
-        ? document.querySelector('.app-main')
-        : null;
+    const studentScrollRoot = getHomeScrollRoot(home);
     const scrollBehaviorRoot = studentScrollRoot || document.documentElement;
     const syncScrollBehavior = () => {
-        scrollBehaviorRoot.classList.toggle('msc-home-smooth-scroll', !reducedMotion?.matches);
+        scrollBehaviorRoot.classList.toggle('msc-home-smooth-scroll', !reducedMotion?.matches && home.dataset.mscMotionPaused !== 'true');
     };
 
     syncScrollBehavior();
@@ -387,7 +320,9 @@
         document.documentElement.classList.add('msc-motion-ready');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                entry.target.classList.toggle('is-visible', entry.isIntersecting);
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                revealObserver.unobserve(entry.target);
             });
         }, { root: studentScrollRoot, threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
         revealItems.forEach((item) => revealObserver.observe(item));
@@ -396,6 +331,10 @@
     reducedMotion?.addEventListener?.('change', () => {
         syncScrollBehavior();
         if (reducedMotion.matches) revealEverything();
+    });
+    home.addEventListener('msc:motionchange', () => {
+        syncScrollBehavior();
+        if (home.dataset.mscMotionPaused === 'true') revealEverything();
     });
 
     document.querySelectorAll('[data-msc-pathways]').forEach((pathways) => {
@@ -446,11 +385,12 @@
         });
     });
 
-    if (window.matchMedia?.('(hover: hover) and (pointer: fine)').matches && !reducedMotion?.matches) {
+    if (window.matchMedia?.('(hover: hover) and (pointer: fine)').matches) {
         const surfaces = new Set(document.querySelectorAll('[data-msc-spotlight], [data-msc-tilt]'));
         surfaces.forEach((surface) => {
             let frame = null;
             surface.addEventListener('pointermove', (event) => {
+                if (event.pointerType === 'touch' || reducedMotion?.matches || home.dataset.mscMotionPaused === 'true') return;
                 const bounds = surface.getBoundingClientRect();
                 const localX = event.clientX - bounds.left;
                 const localY = event.clientY - bounds.top;
@@ -460,6 +400,7 @@
                 const vertical = (localY / bounds.height) - .5;
                 if (frame) window.cancelAnimationFrame(frame);
                 frame = window.requestAnimationFrame(() => {
+                    if (reducedMotion?.matches || home.dataset.mscMotionPaused === 'true') { frame = null; return; }
                     if (surface.hasAttribute('data-msc-spotlight')) {
                         surface.style.setProperty('--msc-pointer-x', x);
                         surface.style.setProperty('--msc-pointer-y', y);
@@ -473,13 +414,16 @@
                     frame = null;
                 });
             });
-            surface.addEventListener('pointerleave', () => {
+            const resetTilt = () => {
                 if (frame) window.cancelAnimationFrame(frame);
                 frame = null;
                 surface.style.setProperty('--msc-tilt-x', '0deg');
                 surface.style.setProperty('--msc-tilt-y', '0deg');
                 surface.classList.remove('is-tilting');
-            });
+            };
+            surface.addEventListener('pointerleave', resetTilt);
+            reducedMotion?.addEventListener?.('change', resetTilt);
+            home.addEventListener('msc:motionchange', resetTilt);
         });
     }
 })();

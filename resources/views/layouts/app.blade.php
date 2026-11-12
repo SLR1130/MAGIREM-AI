@@ -16,6 +16,12 @@
     <title>{{ $pageTitle }}</title>
     <meta name="application-name" content="{{ config('branding.name') }}">
     <meta name="theme-color" content="#103f32">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MAGIREM AI">
+    <script defer src="{{ asset('js/pwa-register.js') }}" data-worker-url="{{ asset('service-worker.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/pwa-install.css') }}">
+    <script defer src="{{ asset('js/pwa-install.js') }}"></script>
     <link rel="icon" type="image/png" sizes="64x64" href="{{ asset(config('branding.assets.favicon')) }}">
     <link rel="icon" type="image/x-icon" href="{{ asset(config('branding.assets.favicon_ico')) }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset(config('branding.assets.touch_icon')) }}">
@@ -28,6 +34,7 @@
     <!-- Design Tokens (Global Theme System) -->
     <link rel="stylesheet" href="{{ asset('css/design-tokens.css') }}">
     <link rel="stylesheet" href="{{ asset('css/branding.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/magirem-responsive.css') }}">
 
     <!-- Shared UI primitives (kept separate from the legacy global stylesheet) -->
     @vite(['resources/css/minsuanscore.css', 'resources/js/minsuanscore.js'])
@@ -673,8 +680,8 @@
 
         .admin-sidebar .sidebar-section-title {
             padding: 5px 20px 8px;
-            color: #8BA098;
-            font-size: 8px;
+            color: #617B6E;
+            font-size: 10px;
             font-weight: 800;
             letter-spacing: .14em;
         }
@@ -686,15 +693,16 @@
         .admin-sidebar .sidebar-link {
             width: calc(100% - 20px);
             max-width: calc(100% - 20px);
-            height: 42px;
+            min-height: 46px;
+            height: auto;
             margin: 0 10px;
             padding: 0 12px;
             gap: 11px;
             border: 0;
             border-left: 2px solid transparent;
             border-radius: 10px;
-            color: #668078;
-            font-size: 12px;
+            color: #4D6A5D;
+            font-size: 13px;
             font-weight: 600;
             transition:
                 background-color 150ms ease,
@@ -717,14 +725,38 @@
         }
 
         .admin-sidebar .sidebar-link svg {
-            width: 18px;
-            height: 18px;
-            stroke-width: 1.7;
+            width: 19px;
+            height: 19px;
+            stroke-width: 1.9;
             color: #6E8B82;
         }
 
         .admin-sidebar .sidebar-link.active svg {
             color: #174F3F;
+        }
+
+        body.admin-layout .admin-header-context {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 0;
+            color: #60796d;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        body.admin-layout .admin-header-context strong {
+            overflow: hidden;
+            color: #103F32;
+            font-size: 14px;
+            font-weight: 750;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 520px) {
+            body.admin-layout .admin-header-context > span:first-child { display: none; }
+            body.admin-layout .admin-header-context > span[aria-hidden] { display: none; }
         }
 
         .admin-sidebar-note {
@@ -750,8 +782,9 @@
         }
 
         .admin-sidebar-note-icon svg {
-            width: 14px;
-            height: 14px;
+            width: 17px;
+            height: 17px;
+            stroke-width: 1.9;
         }
 
         .admin-sidebar-note > span:last-child {
@@ -768,14 +801,14 @@
 
         .admin-sidebar-note strong {
             color: #103F32;
-            font-size: 8px;
+            font-size: 11px;
             font-weight: 800;
         }
 
         .admin-sidebar-note small {
             margin-top: 3px;
             color: #81948A;
-            font-size: 7px;
+            font-size: 10px;
         }
 
         .admin-sidebar-footer {
@@ -831,14 +864,14 @@
 
         .admin-sidebar-user-copy strong {
             color: #103F32;
-            font-size: 9px;
+            font-size: 11px;
             font-weight: 800;
         }
 
         .admin-sidebar-user-copy small {
             margin-top: 3px;
             color: #82968E;
-            font-size: 7px;
+            font-size: 10px;
         }
 
         .admin-sidebar-logout-form {
@@ -867,8 +900,83 @@
         }
 
         .admin-sidebar-logout svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
+            stroke-width: 1.9;
+        }
+
+        /* Admin-only motion: navigation remains readable and usable without animation. */
+        .admin-sidebar .sidebar-link {
+            position: relative;
+            transition: background-color 200ms ease, color 200ms ease,
+                        box-shadow 200ms ease, transform 200ms cubic-bezier(.22,1,.36,1);
+        }
+
+        .admin-sidebar .sidebar-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 11px;
+            bottom: 11px;
+            width: 3px;
+            border-radius: 3px;
+            background: #D3A83F;
+            transform: scaleY(0);
+            transform-origin: center;
+            transition: transform 200ms cubic-bezier(.22,1,.36,1);
+            pointer-events: none;
+        }
+
+        .admin-sidebar .sidebar-link:hover::after,
+        .admin-sidebar .sidebar-link:focus-visible::after,
+        .admin-sidebar .sidebar-link.active::after {
+            transform: scaleY(1);
+        }
+
+        .admin-sidebar .sidebar-link svg {
+            transition: color 200ms ease, transform 200ms cubic-bezier(.22,1,.36,1);
+        }
+
+        .admin-sidebar .sidebar-link:hover svg,
+        .admin-sidebar .sidebar-link:focus-visible svg {
+            color: #174F3F;
+            transform: translateX(2px) scale(1.05);
+        }
+
+        .admin-sidebar-brand-mark {
+            transition: transform 220ms cubic-bezier(.22,1,.36,1), box-shadow 220ms ease;
+        }
+
+        .admin-sidebar-brand:hover .admin-sidebar-brand-mark,
+        .admin-sidebar-brand:focus-visible .admin-sidebar-brand-mark {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16,63,50,.16);
+        }
+
+        .admin-sidebar .sidebar-link:focus-visible,
+        .admin-sidebar-brand:focus-visible,
+        .admin-sidebar-logout:focus-visible {
+            outline: 2px solid #B48624;
+            outline-offset: 2px;
+        }
+
+        @keyframes adminSidebarReveal {
+            from { opacity: 0; transform: translateX(-8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (min-width: 1025px) and (prefers-reduced-motion: no-preference) {
+            body.admin-layout .admin-sidebar-brand,
+            body.admin-layout .admin-sidebar .sidebar-item,
+            body.admin-layout .admin-sidebar-note,
+            body.admin-layout .admin-sidebar-footer {
+                animation: adminSidebarReveal 360ms cubic-bezier(.22,1,.36,1) backwards;
+            }
+            body.admin-layout .admin-sidebar .sidebar-item:nth-of-type(2) { animation-delay: 40ms; }
+            body.admin-layout .admin-sidebar .sidebar-item:nth-of-type(3) { animation-delay: 75ms; }
+            body.admin-layout .admin-sidebar .sidebar-item:nth-of-type(4) { animation-delay: 110ms; }
+            body.admin-layout .admin-sidebar-note,
+            body.admin-layout .admin-sidebar-footer { animation-delay: 120ms; }
         }
 
         @media (max-width: 1024px) {
@@ -879,6 +987,72 @@
                 left: 0;
                 height: 100dvh;
                 z-index: 1050;
+            }
+
+            /* The header account menu provides account details and logout on mobile. */
+            body.admin-layout .admin-sidebar-footer {
+                display: none;
+            }
+
+            body.admin-layout .app-sidebar:not(.mobile-open) {
+                visibility: hidden;
+                transition: transform 280ms cubic-bezier(.22,1,.36,1), visibility 0s linear 280ms;
+            }
+
+            body.admin-layout .app-sidebar.mobile-open {
+                visibility: visible;
+                transition: transform 280ms cubic-bezier(.22,1,.36,1), visibility 0s;
+            }
+
+            body.admin-layout .sidebar-overlay {
+                display: block;
+                visibility: hidden;
+                opacity: 0;
+                pointer-events: none;
+                animation: none;
+                transition: opacity 240ms ease, visibility 0s linear 240ms;
+            }
+
+            body.admin-layout .sidebar-overlay.active {
+                visibility: visible;
+                opacity: 1;
+                pointer-events: auto;
+                transition: opacity 240ms ease, visibility 0s;
+            }
+        }
+
+        @media (max-width: 1024px) and (prefers-reduced-motion: no-preference) {
+            body.admin-layout .admin-sidebar.mobile-open .sidebar-item {
+                animation: adminSidebarReveal 320ms cubic-bezier(.22,1,.36,1) backwards;
+            }
+            body.admin-layout .admin-sidebar.mobile-open .sidebar-item:nth-of-type(2) { animation-delay: 40ms; }
+            body.admin-layout .admin-sidebar.mobile-open .sidebar-item:nth-of-type(3) { animation-delay: 75ms; }
+            body.admin-layout .admin-sidebar.mobile-open .sidebar-item:nth-of-type(4) { animation-delay: 110ms; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body.admin-layout .app-sidebar,
+            body.admin-layout .sidebar-overlay,
+            body.admin-layout .admin-sidebar-brand,
+            body.admin-layout .admin-sidebar-brand-mark,
+            body.admin-layout .admin-sidebar .sidebar-item,
+            body.admin-layout .admin-sidebar .sidebar-link,
+            body.admin-layout .admin-sidebar .sidebar-link::after,
+            body.admin-layout .admin-sidebar .sidebar-link svg,
+            body.admin-layout .admin-sidebar-note,
+            body.admin-layout .admin-sidebar-footer,
+            body.admin-layout .admin-sidebar-logout {
+                animation: none !important;
+                transition: none !important;
+            }
+
+            body.admin-layout .admin-sidebar .sidebar-link:hover,
+            body.admin-layout .admin-sidebar .sidebar-link:hover svg,
+            body.admin-layout .admin-sidebar .sidebar-link:focus-visible svg,
+            body.admin-layout .admin-sidebar-brand:hover .admin-sidebar-brand-mark,
+            body.admin-layout .admin-sidebar-brand:focus-visible .admin-sidebar-brand-mark,
+            body.admin-layout .admin-sidebar-logout:hover {
+                transform: none;
             }
         }
 
@@ -2890,7 +3064,7 @@
 
                     <div class="sidebar-item">
                         <a href="{{ route('admin.dashboard') }}"
-                           class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                           class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
                                       d="M4 13h6V4H4v9zm10 7h6V11h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"/>
@@ -2901,7 +3075,7 @@
 
                     <div class="sidebar-item">
                         <a href="{{ route('student.community') }}"
-                           class="sidebar-link {{ request()->routeIs('student.community*') ? 'active' : '' }}">
+                           class="sidebar-link {{ request()->routeIs('student.community*') ? 'active' : '' }}" @if(request()->routeIs('student.community*')) aria-current="page" @endif>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m7-2a8 8 0 01-8 8c-1.4 0-2.7-.35-3.8-.96L4 20l.96-4.2A8 8 0 1120 12z"/>
                             </svg>
@@ -2915,7 +3089,7 @@
 
                     <div class="sidebar-item">
                         <a href="{{ route('admin.users') }}"
-                           class="sidebar-link {{ request()->routeIs('admin.users', 'admin.create-user') ? 'active' : '' }}">
+                           class="sidebar-link {{ request()->routeIs('admin.users', 'admin.create-user') ? 'active' : '' }}" @if(request()->routeIs('admin.users', 'admin.create-user')) aria-current="page" @endif>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
                                       d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8m11 18v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
@@ -2927,7 +3101,7 @@
                     @if(auth()->user()?->canReviewAccountVerification())
                         <div class="sidebar-item">
                             <a href="{{ route('admin.account-verification.index') }}"
-                               class="sidebar-link {{ request()->routeIs('admin.account-verification.*') ? 'active' : '' }}">
+                               class="sidebar-link {{ request()->routeIs('admin.account-verification.*') ? 'active' : '' }}" @if(request()->routeIs('admin.account-verification.*')) aria-current="page" @endif>
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
                                           d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11zm-3-10 2 2 4-4"/>
@@ -2939,7 +3113,7 @@
 
                     <div class="sidebar-item">
                         <a href="{{ route('admin.reports') }}"
-                           class="sidebar-link {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
+                           class="sidebar-link {{ request()->routeIs('admin.reports') ? 'active' : '' }}" @if(request()->routeIs('admin.reports')) aria-current="page" @endif>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
                                       d="M4 19V9m5 10V5m5 14v-7m5 7V3"/>
@@ -3006,7 +3180,7 @@
     @elseif($showStudentInsightsSidebar || $showCounselorShell || $showAdminShell)
     <header class="app-header">
         <div class="header-left">
-            <button class="header-mobile-menu" onclick="toggleSidebar()" title="Menu" aria-label="Open navigation">
+            <button type="button" class="header-mobile-menu" onclick="toggleSidebar()" title="Menu" aria-label="Open navigation" @if($showAdminShell) aria-controls="appSidebar" aria-expanded="false" @endif>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
@@ -3021,6 +3195,21 @@
                     </div>
                     <div class="counselor-header-current">{{ $counselorHeaderTitle }}</div>
                 </div>
+            @elseif($showAdminShell)
+                @php
+                    $adminHeaderSection = match (true) {
+                        request()->routeIs('admin.dashboard') => 'Dashboard',
+                        request()->routeIs('student.community*') => 'Community Circle',
+                        request()->routeIs('admin.create-user') => 'Create user',
+                        request()->routeIs('admin.users') => 'Users',
+                        request()->routeIs('admin.account-verification.*') => 'Account verification',
+                        request()->routeIs('admin.reports') => 'Reports',
+                        default => 'Overview',
+                    };
+                @endphp
+                <div class="admin-header-context" aria-label="Current admin section">
+                    <span>Admin workspace</span><span aria-hidden="true">/</span><strong>{{ $adminHeaderSection }}</strong>
+                </div>
             @else
                 <div class="header-title">
                     <h1>@yield('header_title', config('branding.name'))</h1>
@@ -3030,17 +3219,7 @@
         </div>
 
         <div class="header-right">
-            @if(auth()->user()->isStudent())
-            <button class="header-button" onclick="toggleNotifications()" title="Notifications" aria-label="Notifications">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                @if(isset($unreadCount) && $unreadCount > 0)
-                <span class="notification-badge">{{ $unreadCount }}</span>
-                @endif
-            </button>
-            @endif
+            @include('components.notification-dropdown')
 
             @if($showCounselorShell)
                 <span class="counselor-status-chip">
@@ -3111,61 +3290,6 @@
     </header>
     @endif
 
-    <!-- Notification Panel (Slide-in) -->
-    @if(auth()->user()->isStudent())
-    <div id="notificationPanel" class="notification-panel">
-        <div class="notification-panel-header">
-            <div>
-                <h3>Notifications</h3>
-                <span class="notification-count-text" id="notificationCountText">
-                    @if(isset($unreadCount) && $unreadCount > 0)
-                        {{ $unreadCount }} unread
-                    @else
-                        All caught up!
-                    @endif
-                </span>
-            </div>
-            <button class="notification-panel-close" onclick="toggleNotifications()">Ã—</button>
-        </div>
-        <div class="notification-panel-content" id="notificationContent">
-            @if(isset($notifications))
-                @forelse($notifications as $notification)
-                    <div class="notification-item {{ !$notification->is_read ? 'notification-item-new' : '' }}" data-id="{{ $notification->id }}" onclick="handleNotificationClick({{ $notification->id }}, '{{ $notification->link }}', {{ $notification->is_read ? 'true' : 'false' }})">
-                        <div class="notification-item-icon">
-                            @if($notification->type === 'appointment')
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            @elseif($notification->type === 'message')
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                            @else
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            @endif
-                        </div>
-                        <div class="notification-content">
-                            <h4>{{ $notification->title }}</h4>
-                            <p>{{ $notification->message }}</p>
-                            <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
-                        </div>
-                        <button class="notification-delete-btn" onclick="deleteNotification(event, {{ $notification->id }})" title="Delete">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-                @empty
-                    <div class="notification-empty">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                        <p>No notifications yet</p>
-                        <span>We'll notify you when something important happens</span>
-                    </div>
-                @endforelse
-            @else
-                <div class="notification-empty">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <p>No notifications yet</p>
-                    <span>We'll notify you when something important happens</span>
-                </div>
-            @endif
-        </div>
-    </div>
-    @endif
 
     <!-- ==================== SHARED STUDENT ACCOUNT POPOVER ==================== -->
     @if(auth()->user()->isStudent())
@@ -3345,10 +3469,16 @@
 
             if (!sidebar) return;
 
-            sidebar.classList.toggle('mobile-open');
+            const isOpen = sidebar.classList.toggle('mobile-open');
 
             if (overlay) {
-                overlay.classList.toggle('active');
+                overlay.classList.toggle('active', isOpen);
+            }
+
+            const adminToggle = document.querySelector('.header-mobile-menu[aria-controls="appSidebar"]');
+            if (adminToggle) {
+                adminToggle.setAttribute('aria-expanded', String(isOpen));
+                adminToggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
             }
         }
 
@@ -3367,8 +3497,23 @@
                 if (sidebar.classList.contains('mobile-open')) {
                     sidebar.classList.remove('mobile-open');
                     overlay.classList.remove('active');
+                    if (menuBtn?.hasAttribute('aria-controls')) {
+                        menuBtn.setAttribute('aria-expanded', 'false');
+                        menuBtn.setAttribute('aria-label', 'Open navigation');
+                    }
                 }
             }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            const sidebar = document.getElementById('appSidebar');
+            const menuBtn = document.querySelector('.header-mobile-menu[aria-controls="appSidebar"]');
+            if (event.key !== 'Escape' || !menuBtn || !sidebar?.classList.contains('mobile-open')) return;
+            sidebar.classList.remove('mobile-open');
+            document.getElementById('sidebarOverlay')?.classList.remove('active');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            menuBtn.setAttribute('aria-label', 'Open navigation');
+            menuBtn.focus();
         });
 
         // ===== USER DROPDOWN TOGGLE =====
@@ -3391,56 +3536,6 @@
             }
         });
 
-        // ===== NOTIFICATION TOGGLE =====
-        function toggleNotifications() {
-            const panel = document.getElementById('notificationPanel');
-            if (panel) {
-                panel.classList.toggle('active');
-            }
-        }
-
-        // Close notification panel when clicking outside
-        document.addEventListener('click', function(event) {
-            const notificationPanel = document.getElementById('notificationPanel');
-            const notificationBtn = document.querySelector('.header-button');
-            
-            if (notificationPanel && notificationBtn && !notificationPanel.contains(event.target) && !notificationBtn.contains(event.target)) {
-                if (notificationPanel.classList.contains('active')) {
-                    notificationPanel.classList.remove('active');
-                }
-            }
-        });
-
-        // ===== NOTIFICATION FUNCTIONS =====
-        function handleNotificationClick(id, link, isRead) {
-            if (!isRead) {
-                fetch(`/student/api/notifications/${id}/read`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
-                    }
-                });
-            }
-            if (link) {
-                window.location.href = link;
-            }
-        }
-
-        function deleteNotification(event, id) {
-            event.stopPropagation();
-            fetch(`/student/api/notifications/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    document.querySelector(`[data-id="${id}"]`).remove();
-                }
-            });
-        }
 
         // ===== PROFILE MODAL =====
         window.openProfileModal = function () {
@@ -3678,5 +3773,6 @@
             }
         });
     </script>
+    @include('partials.pwa-install')
 </body>
 </html>

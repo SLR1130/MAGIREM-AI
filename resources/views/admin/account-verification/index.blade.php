@@ -13,20 +13,21 @@
 @media(max-width:900px){.avi-counts{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.avi{padding:15px 11px 26px}.avi-head{align-items:flex-start;flex-direction:column}.avi-counts{grid-template-columns:repeat(2,minmax(0,1fr))}.avi-filter{grid-template-columns:1fr 1fr}.avi-filter .wide{grid-column:1/-1}.avi-filter .avi-btn{width:100%}}
 </style>
+@include('admin.partials.workspace-polish')
 <main class="avi">
-    <header class="avi-head"><div><span class="avi-kicker">Identity &amp; access</span><h1>Account verification</h1><p>Review student and counselor applications before granting access to protected MAGIREM AI features.</p></div><a class="avi-btn avi-btn--light" href="{{ route('admin.users') }}">Back to users</a></header>
+    <header class="avi-head"><div><span class="avi-kicker">Identity &amp; access</span><h1>Account verification</h1><p>Review student and counselor applications before granting access to protected MAGIREM AI features.</p></div><a class="avi-btn avi-btn--light avi-back" href="{{ route('admin.users') }}" aria-label="Back to users" title="Back to users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5m7-7-7 7 7 7"/></svg></a></header>
     <section class="avi-counts" aria-label="Application totals">
         <div class="avi-count"><strong>{{ $counts->sum('aggregate') }}</strong><span>All applications</span></div>
         @foreach($statusNames as $key=>$label)<div class="avi-count"><strong>{{ $countFor($key) }}</strong><span>{{ $label }}</span></div>@endforeach
     </section>
     <nav class="avi-tabs" aria-label="Filter applications by status">
-        @foreach($statusNames as $key=>$label)<a class="avi-tab {{ $status===$key?'active':'' }}" href="{{ route('admin.account-verification.index',['status'=>$key,'role'=>$role,'source'=>$source,'q'=>$search]) }}">{{ $label }} <b>{{ $countFor($key) }}</b></a>@endforeach
-        <a class="avi-tab {{ $status==='all'?'active':'' }}" href="{{ route('admin.account-verification.index',['status'=>'all','role'=>$role,'source'=>$source,'q'=>$search]) }}">All <b>{{ $counts->sum('aggregate') }}</b></a>
+        @foreach($statusNames as $key=>$label)<a class="avi-tab {{ $status===$key?'active':'' }}" @if($status===$key) aria-current="page" @endif href="{{ route('admin.account-verification.index',['status'=>$key,'role'=>$role,'source'=>$source,'q'=>$search]) }}">{{ $label }} <b>{{ $countFor($key) }}</b></a>@endforeach
+        <a class="avi-tab {{ $status==='all'?'active':'' }}" @if($status==='all') aria-current="page" @endif href="{{ route('admin.account-verification.index',['status'=>'all','role'=>$role,'source'=>$source,'q'=>$search]) }}">All <b>{{ $counts->sum('aggregate') }}</b></a>
     </nav>
     <nav class="avi-tabs" aria-label="Filter by account creation workflow">
-        <a class="avi-tab {{ $source==='self_registration'?'active':'' }}" href="{{ route('admin.account-verification.index',['status'=>$status,'role'=>$role,'source'=>'self_registration','q'=>$search]) }}">Self-registered applicants <b>{{ $sourceCounts['self_registration'] }}</b></a>
-        <a class="avi-tab {{ $source==='admin_created'?'active':'' }}" href="{{ route('admin.account-verification.index',['status'=>$status,'role'=>$role,'source'=>'admin_created','q'=>$search]) }}">Admin-created restricted accounts <b>{{ $sourceCounts['admin_created'] }}</b></a>
-        <a class="avi-tab {{ $source==='all'?'active':'' }}" href="{{ route('admin.account-verification.index',['status'=>$status,'role'=>$role,'source'=>'all','q'=>$search]) }}">Both workflows</a>
+        <a class="avi-tab {{ $source==='self_registration'?'active':'' }}" @if($source==='self_registration') aria-current="page" @endif href="{{ route('admin.account-verification.index',['status'=>$status,'role'=>$role,'source'=>'self_registration','q'=>$search]) }}">Self-registered applicants <b>{{ $sourceCounts['self_registration'] }}</b></a>
+        <a class="avi-tab {{ $source==='admin_created'?'active':'' }}" @if($source==='admin_created') aria-current="page" @endif href="{{ route('admin.account-verification.index',['status'=>$status,'role'=>$role,'source'=>'admin_created','q'=>$search]) }}">Admin-created restricted accounts <b>{{ $sourceCounts['admin_created'] }}</b></a>
+        <a class="avi-tab {{ $source==='all'?'active':'' }}" @if($source==='all') aria-current="page" @endif href="{{ route('admin.account-verification.index',['status'=>$status,'role'=>$role,'source'=>'all','q'=>$search]) }}">Both workflows</a>
     </nav>
     <form class="avi-filter" method="GET" action="{{ route('admin.account-verification.index') }}">
         <div class="wide"><label for="avi-search">Search applications</label><input id="avi-search" type="search" name="q" value="{{ $search }}" placeholder="Name, institutional email, student ID, or campus"></div>
@@ -35,7 +36,7 @@
     </form>
     <section class="avi-table-shell" aria-label="Account applications">
         @if($applications->isEmpty())<div class="avi-empty">No applications match these filters.</div>@else
-        <div class="avi-table-wrap"><table class="avi-table"><thead><tr><th>Applicant</th><th>Role</th><th>Campus / office</th><th>Reviewer identity check</th><th>Status</th><th>Submitted</th><th><span class="sr-only">Review</span></th></tr></thead><tbody>
+        <div class="avi-table-wrap" role="region" aria-label="Applications; scroll horizontally to view all columns" tabindex="0"><table class="avi-table"><thead><tr><th>Applicant</th><th>Role</th><th>Campus / office</th><th>Reviewer identity check</th><th>Status</th><th>Submitted</th><th><span class="sr-only">Review</span></th></tr></thead><tbody>
             @foreach($applications as $application)
                 <tr><td><div class="avi-person"><span class="avi-avatar" aria-hidden="true">{{ mb_substr($application->name,0,1) }}</span><div><strong>{{ $application->name }}</strong><small>{{ $application->institutional_email }}</small><small>{{ $application->admin_created_account ? 'Admin-created account' : 'Self-registration' }}</small></div></div></td><td>{{ ucfirst($application->requested_role) }}</td><td>{{ $application->campus ?: '—' }}</td><td>{{ $application->institutional_verified_at && $application->approval_reviewer_id ? 'Reviewer confirmed' : ($application->institutional_verified_at ? 'Legacy timestamp' : 'Not confirmed') }}</td><td><span class="avi-pill avi-pill--{{ $application->approval_status }}">{{ str_replace('_',' ',$application->approval_status) }}</span></td><td>{{ optional($application->approval_submitted_at)->format('M j, Y') ?: '—' }}</td><td><a class="avi-btn avi-btn--light" href="{{ route('admin.account-verification.show',$application) }}">Review</a></td></tr>
             @endforeach

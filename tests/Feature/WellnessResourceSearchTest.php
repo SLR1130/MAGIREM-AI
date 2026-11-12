@@ -20,6 +20,123 @@ class WellnessResourceSearchTest extends TestCase
         return User::factory()->create(['role' => 'student']);
     }
 
+    public function test_home_shows_real_selected_guides_without_querying_external_providers(): void
+    {
+        Http::fake();
+        $html = $this->actingAs($this->student())->get(route('student.resources'))->assertOk()->getContent();
+        $this->assertStringContainsString('data-resource-results hidden', $html, 'Search results should stay out of the way before a search is submitted.');
+        $this->assertStringContainsString('data-featured-audio-section', $html, 'Selected listening cards should remain available on the landing view.');
+        $this->assertStringContainsString('Trusted guides', $html);
+        $this->assertStringContainsString('https://medlineplus.gov/stress.html', $html);
+        $this->assertStringContainsString('https://medlineplus.gov/healthysleep.html', $html);
+        $this->assertStringContainsString('Read at NHS', $html);
+        $this->assertStringContainsString('not live search results', $html);
+        $this->assertStringContainsString('referrerpolicy="no-referrer"', $html);
+        $this->assertStringContainsString(route('student.resources', ['q' => 'Stress']).'#results-title', $html);
+        Http::assertNothingSent();
+    }
+
+    public function test_resource_search_has_accessible_loading_feedback_hidden_until_needed(): void
+    {
+        $html = $this->actingAs($this->student())->get(route('student.resources'))->assertOk()->getContent();
+        $dom = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $xpath = new \DOMXPath($dom);
+        $this->assertSame(1, $xpath->query("//*[@data-search-status and @role='status' and @aria-live='polite']")->length);
+        $this->assertSame(1, $xpath->query("//*[@data-search-loading and @hidden and @aria-hidden='true']")->length);
+        $this->assertSame(1, $xpath->query("//*[@data-search-content and not(@hidden)]")->length);
+        $this->assertSame(3, $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' search-loading-card ')]")->length);
+        $this->assertStringContainsString('prefers-reduced-motion:reduce', $html);
+    }
+
+    public function test_selected_podcasts_and_audio_are_available_without_search_or_automatic_external_requests(): void
+    {
+        $student = $this->student();
+        Http::fake();
+        $html = $this->actingAs($student)->get(route('student.resources'))->assertOk()->getContent();
+        $dom = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $xpath = new \DOMXPath($dom);
+        $this->assertSame(1, $xpath->query("//*[@data-featured-audio-section and not(@hidden)]")->length);
+        $this->assertSame(4, $xpath->query("//*[@data-featured-audio]")->length);
+        $this->assertSame(4, $xpath->query("//*[@data-featured-audio]//a[@target='_blank' and @rel='noopener noreferrer' and @referrerpolicy='no-referrer']")->length);
+        $this->assertSame(0, $xpath->query("//*[@data-featured-audio]//iframe | //*[@data-featured-audio]//audio")->length);
+        foreach (['Stress and mental health', 'How sleep and green space can help your mental health', 'How to cope with anxiety', 'Friendships and mental health'] as $title) {
+            $this->assertStringContainsString($title, $html);
+        }
+        $this->assertSame(4, $xpath->query("//*[@data-featured-audio]//*[@data-featured-player]")->length);
+        $this->assertSame(4, $xpath->query("//article[@data-featured-audio]/a[@data-featured-player and @href and @aria-label]//h3")->length);
+        $this->assertSame(4, $xpath->query("//article[@data-featured-audio]/a[@data-featured-player]//img")->length);
+        $this->assertSame(3, $xpath->query("//*[@data-featured-player and @data-player-provider='spotify']")->length);
+        $this->assertSame(1, $xpath->query("//*[@data-featured-player and @data-player-provider='nhs' and @data-player-id='2163080377001']")->length);
+        $this->assertStringContainsString('data-video-source', $html);
+        $this->assertStringNotContainsString('class="featured-audio-link"', $html);
+        foreach (['topic-stress-outdoors-v1.png', 'topic-better-sleep-v1.png', 'topic-anxiety-education-v1.png', 'home-daylight-community-1600.webp'] as $image) {
+            $this->assertFileExists(public_path('images/wellness/'.$image));
+        }
+        $this->assertStringContainsString('Select a card to open its player', $html);
+        Http::assertNothingSent();
+        $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep']))->assertOk()->assertSee('data-featured-audio-section aria-labelledby="featured-audio-title" hidden', false);
+        Http::assertNothingSent();
+    }
+
+    public function test_topic_links_show_matching_guides_without_web_search_or_javascript(): void
+    {
+        $student = $this->student();
+        Http::fake();
+        foreach (['Stress', 'Sleep', 'Anxiety', 'Journaling', 'Self-care', 'Academic Pressure', 'Burnout'] as $topic) {
+            $html = $this->actingAs($student)->get(route('student.resources', ['q' => $topic]))->assertOk()->getContent();
+            $dom = new \DOMDocument();
+            $previous = libxml_use_internal_errors(true);
+            $dom->loadHTML($html);
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+            $xpath = new \DOMXPath($dom);
+            $this->assertGreaterThan(0, $xpath->query("//*[@data-curated-guide and not(@hidden)]")->length, "No selected guide for {$topic}");
+            $this->assertSame(1, $xpath->query("//*[@data-source-tab='guides' and not(@hidden)]")->length);
+        }
+        Http::assertNothingSent();
+    }
+
+    public function test_selected_guides_are_counted_and_not_duplicated_in_live_web_results(): void
+    {
+        $student = $this->student();
+        Http::fake(['https://wsearch.nlm.nih.gov/*' => Http::response(
+            '<nlmSearchResult><list><document url="https://medlineplus.gov/healthysleep.html"><content name="title">Healthy sleep</content><content name="snippet">Health-topic summary.</content></document></list></nlmSearchResult>',
+            200,
+            ['Content-Type' => 'application/xml']
+        )]);
+        Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep'));
+        $html = $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1]))->assertOk()->getContent();
+        $dom = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $xpath = new \DOMXPath($dom);
+        $this->assertSame(0, $xpath->query("//*[@data-curated-guide and not(@hidden)]")->length);
+        $this->assertSame('1', trim($xpath->query("//*[@data-tab-count='all']")->item(0)->textContent));
+        $this->assertSame('1', trim($xpath->query("//*[@data-tab-count='web']")->item(0)->textContent));
+    }
+
+    public function test_library_category_does_not_misclassify_selected_public_guides(): void
+    {
+        $html = $this->actingAs($this->student())->get(route('student.resources', ['category' => 'sleep']))->assertOk()->getContent();
+        $dom = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $xpath = new \DOMXPath($dom);
+        $this->assertSame(0, $xpath->query("//*[@data-curated-guide and not(@hidden)]")->length);
+    }
+
     public function test_search_combines_local_resources_with_safe_medlineplus_metadata(): void
     {
         config(['services.wellness_resources.medlineplus.enabled' => true]);
@@ -173,7 +290,7 @@ class WellnessResourceSearchTest extends TestCase
         $html = $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep']))->assertOk()->getContent();
 
         $this->assertLessThan(
-            strpos($html, 'Explore by topic'),
+            strpos($html, 'Explore a topic'),
             strpos($html, 'Sleep hygiene guide'),
             'Active search results should appear before discovery content.'
         );
@@ -218,7 +335,7 @@ class WellnessResourceSearchTest extends TestCase
         $this->actingAs($student)
             ->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1]))
             ->assertOk()
-            ->assertSee('1 resource')
+            ->assertSee('2 resources')
             ->assertSee('Sleep health article')
             ->assertSee('Web Articles')
             ->assertDontSee('0 local results')

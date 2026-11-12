@@ -209,7 +209,7 @@ class AdminController extends Controller
                         ->header('X-Robots-Tag', 'noindex, nofollow');
                 }
                 $message = $invitation['delivery_status'] === 'queued'
-                    ? 'Account approved. A one-time password-setup invitation was queued for the reviewer-confirmed personal Gmail. The owner must still set a password and verify Gmail before normal access.'
+                    ? 'Account approved. The one-time setup invitation is queued, not sent yet; a queue worker must process it. The owner must still set a password and verify Gmail before normal access.'
                     : 'Account approved but remains access-restricted. No invitation was sent; use the reviewer page to retry or arrange a secure in-person handoff.';
                 return redirect()->route('admin.users')->with($invitation['delivery_status'] === 'queued' ? 'success' : 'warning', $message);
             }
@@ -450,8 +450,9 @@ class AdminController extends Controller
     {
         $notifications = \App\Models\Notification::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->take(20)
-            ->get();
+            ->get(['id', 'user_id', 'type', 'title', 'message', 'icon', 'link', 'is_read', 'priority', 'created_at', 'updated_at']);
         
         $unreadCount = \App\Models\Notification::where('user_id', Auth::id())
             ->where('is_read', false)
@@ -460,7 +461,7 @@ class AdminController extends Controller
         return response()->json([
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
-        ]);
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     /**

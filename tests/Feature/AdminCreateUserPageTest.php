@@ -30,6 +30,10 @@ class AdminCreateUserPageTest extends TestCase
             ->assertSee('autocomplete="new-password"', false)
             ->assertSee('student-fields', false)
             ->assertSee('counselor-fields', false)
+            ->assertSee('aria-label="Back to users"', false)
+            ->assertSee('acu-field--email', false)
+            ->assertSee('id="acu-role-card"', false)
+            ->assertDontSee('class="acu-page-icon"', false)
             ->assertSee('data-password-toggle', false);
     }
 

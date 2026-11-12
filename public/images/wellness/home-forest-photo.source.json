@@ -1,0 +1,16 @@
+{
+  "title": "Trees on forest with sun rays",
+  "photographer": "Sebastian Unrau",
+  "source": "https://unsplash.com/photos/trees-on-forest-with-sun-rays-sp-p7uuT0tw",
+  "image_source": "https://images.unsplash.com/photo-1448375240586-882707db888b",
+  "license": "Unsplash License",
+  "license_url": "https://unsplash.com/license",
+  "retrieved_on": "2026-11-12",
+  "location": "Bad Pyrmont, Germany; not a photograph of the MinSU campus",
+  "processing": "Provider WebP conversion, quality 82, maximum widths 960/1920/3840; no AI generation or upscaling requested",
+  "variants": [
+    "home-forest-photo-960.webp",
+    "home-forest-photo-1920.webp",
+    "home-forest-photo-3840.webp"
+  ]
+}

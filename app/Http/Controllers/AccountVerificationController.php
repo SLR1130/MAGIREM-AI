@@ -251,7 +251,7 @@ class AccountVerificationController extends Controller
                     ->header('X-Robots-Tag', 'noindex, nofollow');
             }
             $message = $invitation['delivery_status'] === 'queued'
-                ? 'Admin-created account approved. A one-time password-setup invitation was queued to the reviewer-confirmed Gmail. Normal access remains blocked until the owner sets a password and verifies Gmail.'
+                ? 'Admin-created account approved. The one-time setup invitation is queued, not sent yet; a queue worker must process it. Normal access remains blocked until the owner sets a password and verifies Gmail.'
                 : 'Admin-created account approved but remains restricted. The invitation was not queued; use the reviewer page to retry or arrange a secure in-person handoff.';
             return redirect()->route('admin.account-verification.show', $fresh)
                 ->with($invitation['delivery_status'] === 'queued' ? 'success' : 'warning', $message);

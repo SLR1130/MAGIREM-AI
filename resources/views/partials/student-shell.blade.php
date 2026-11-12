@@ -250,6 +250,8 @@
             width:min(86vw,288px) !important;
             min-width:min(86vw,288px) !important;
             max-width:min(86vw,288px) !important;
+            /* Keep the open drawer above the 1040 backdrop and PWA prompt. */
+            z-index:1050 !important;
         }
 
         body.app-layout:not(:has(.msw-home)) .app-header {

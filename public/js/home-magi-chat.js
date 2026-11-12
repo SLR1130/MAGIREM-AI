@@ -32,6 +32,7 @@
         let busy = false;
         let typingTimer = null;
         let initialTimer = null;
+        let nudgeHideTimer = null;
         let nudgeSuppressed = false;
         let lastNudgeAt = 0;
         let sectionNudges = 0;
@@ -43,6 +44,7 @@
             nudgeSuppressed = true;
             window.clearTimeout(initialTimer);
             window.clearTimeout(typingTimer);
+            window.clearTimeout(nudgeHideTimer);
             nudgeText.classList.remove('is-typing');
             nudge.hidden = true;
             try { sessionStorage.setItem('magirem-home-magi-dismissed', '1'); } catch (_) { /* Never store messages. */ }
@@ -51,10 +53,19 @@
         function showNudge(text) {
             if (nudgeSuppressed || !panel.hidden || document.hidden) return;
             window.clearTimeout(typingTimer);
+            window.clearTimeout(nudgeHideTimer);
             nudge.hidden = false;
             nudgeText.textContent = '';
             nudgeAnnouncement.textContent = '';
             lastNudgeAt = Date.now();
+            // On narrow screens, do not leave a floating greeting covering page controls.
+            if (window.matchMedia?.('(max-width: 700px)').matches) {
+                nudgeHideTimer = window.setTimeout(() => {
+                    window.clearTimeout(typingTimer);
+                    nudgeText.classList.remove('is-typing');
+                    nudge.hidden = true;
+                }, 8000);
+            }
             if (reducedMotion?.matches) {
                 nudgeText.textContent = text;
                 nudgeAnnouncement.textContent = text;
@@ -90,9 +101,27 @@
         root.querySelector('[data-magi-dismiss]')?.addEventListener('click', suppressNudges);
         panel.addEventListener('keydown', (event) => { if (event.key === 'Escape') setOpen(false); });
 
-        initialTimer = window.setTimeout(() => showNudge(aiEnabled
-            ? 'Hi! Kumusta ka? Nandito lang ako kung gusto mong mag-usap.'
-            : 'Hi! Check your Privacy Settings if you would like to chat with MAGI.'), 1800);
+        initialTimer = window.setTimeout(() => {
+            const greeting = aiEnabled
+                ? 'Hi! Kumusta ka? Nandito lang ako kung gusto mong mag-usap.'
+                : 'Hi! Check your Privacy Settings if you would like to chat with MAGI.';
+            if (!window.matchMedia?.('(max-width: 700px)').matches) {
+                showNudge(greeting);
+                return;
+            }
+            const hero = document.querySelector('.msc-home-stage');
+            const scrollContainer = document.querySelector('.app-main');
+            const revealAfterHero = () => {
+                if (nudgeSuppressed || !hero || hero.getBoundingClientRect().bottom <= 76) {
+                    window.removeEventListener('scroll', revealAfterHero);
+                    scrollContainer?.removeEventListener('scroll', revealAfterHero);
+                    if (!nudgeSuppressed) showNudge(greeting);
+                }
+            };
+            window.addEventListener('scroll', revealAfterHero, { passive: true });
+            scrollContainer?.addEventListener('scroll', revealAfterHero, { passive: true });
+            revealAfterHero();
+        }, 1800);
 
         // These are prewritten comments about visible page sections, not inferences
         // from the student's history, mood, or private information.

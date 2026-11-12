@@ -34,6 +34,7 @@
 
         <main id="mscPublicTop" class="msc-home-page msc-home-page--public">
             <section class="msc-home-stage" aria-labelledby="mscPublicHeroTitle">
+                @include('partials.home-botanical-art')
                 <div class="msc-home-shell">
                     <div class="msc-home-hero">
                         <div class="msc-home-copy" data-msc-reveal style="--msc-reveal-order:0">
@@ -50,7 +51,6 @@
                             <p class="msc-home-note"><span aria-hidden="true">&#10047;</span> At your pace. On your terms. One day at a time.</p>
                             <a class="msc-home-scroll-cue" href="#mscPublicPathways"><span>Explore your space</span><span aria-hidden="true">&darr;</span></a>
                         </div>
-                        @include('partials.home-botanical-art')
                     </div>
                     @include('partials.home-feature-cards', ['guest' => true])
                 </div>
@@ -90,6 +90,7 @@
 @else
     <main class="msc-home-page msc-home-page--student" aria-labelledby="mscStudentHeroTitle">
         <section class="msc-home-stage">
+            @include('partials.home-botanical-art')
             <div class="msc-home-shell">
                 <div class="msc-home-hero">
                     <div class="msc-home-copy" data-msc-reveal style="--msc-reveal-order:0">
@@ -106,7 +107,6 @@
                             <p class="msc-home-note"><span aria-hidden="true">&#10047;</span> At your pace. On your terms. One day at a time.</p>
                             <a class="msc-home-scroll-cue" href="#mscStudentPathways"><span>Explore your space</span><span aria-hidden="true">&darr;</span></a>
                     </div>
-                    @include('partials.home-botanical-art')
                 </div>
                 @include('partials.home-feature-cards', ['guest' => false])
                 @if($homeUpcomingAppointment)

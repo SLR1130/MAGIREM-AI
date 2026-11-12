@@ -327,6 +327,8 @@
         font-size: 10px;
         line-height: 1.45;
     }
+    .msa-mobile-hint { display: none; }
+    .msa-brand-art { display: none; }
 
     .msa-input-wrap { position: relative; }
 
@@ -640,7 +642,78 @@
     @media (prefers-reduced-motion: reduce) {
         .msa-brand-title[data-hero-quote] { transition: none !important; }
         .msa-brand-title[data-hero-quote].is-changing { opacity: 1; transform: none; }
-    }</style>
+    }
+
+    /* Compact laptop sign-in without constraining errors or form content. */
+    @media (min-width: 901px) {
+        .msa-auth-shell { width: min(1120px, 100%); min-height: 580px; }
+        .msa-auth-brand { padding: 28px; }
+        .msa-brand-copy { padding: 24px 0; }
+        .msa-brand-pill { margin-bottom: 12px; }
+        .msa-brand-title[data-hero-quote] { font-size: clamp(28px, 2.5vw, 34px); }
+        .msa-brand-description { margin-top: 12px; line-height: 1.55; }
+        .msa-brand-features { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .msa-brand-feature { display: flex; align-items: center; gap: 7px; min-height: 48px; padding: 9px; }
+        .msa-brand-feature svg { flex: 0 0 17px; margin: 0; }
+        .msa-brand-feature span { display: none; }
+        .msa-auth-panel { padding: 30px 42px; }
+        .msa-form-subtitle { margin: 8px 0 20px; }
+        .msa-form { gap: 13px; }
+        .msa-desktop-hint, .msa-security { display: none; }
+        .msa-mobile-hint { display: inline; }
+        .msa-auth-footer { margin-top: 18px; padding-top: 16px; }
+    }
+
+    /* Compact mobile sign-in: keep the brand, bring the form into view sooner. */
+    @media (max-width: 560px) {
+        .msa-auth-page { padding: 12px; background: #edf4ee; }
+        .msa-auth-orb { display: none; }
+        .msa-auth-shell { border-radius: 22px; border-color: rgba(16,63,50,.08); box-shadow: 0 20px 45px rgba(16,63,50,.12); }
+        .msa-auth-brand { padding: 20px 20px 25px; background: linear-gradient(145deg, #103f32 8%, #1c624a 100%); }
+        .msa-auth-brand::before { display: none; }
+        .msa-auth-brand::after { height: 80px; opacity: .08; }
+        .msa-brand-art { display: block; position: absolute; z-index: 0; right: -4px; bottom: -5px; width: 142px; height: 142px; pointer-events: none; }
+        .msa-brand-art .msa-art-leaf { transform-origin: 110px 145px; animation: msa-leaf-sway 5s ease-in-out infinite alternate; }
+        .msa-brand-art .msa-art-spark { transform-origin: 122px 46px; animation: msa-spark-breathe 4s ease-in-out infinite alternate; }
+        .msa-brand-top { gap: 10px; }
+        .msa-brand-mark { box-shadow: 0 5px 18px rgba(0,0,0,.17); }
+        .msa-brand-name { font-size: 16px; }
+        .msa-brand-kicker { font-size: 9px; }
+        .msa-brand-copy { max-width: none; margin: 0; padding: 14px 0 0; }
+        .msa-brand-pill, .msa-brand-description, .msa-brand-features { display: none; }
+        .msa-form-subtitle, .msa-security, .msa-desktop-hint { display: none; }
+        .msa-mobile-hint { display: inline; }
+        .msa-brand-title[data-hero-quote] { max-width: calc(100% - 62px); min-height: 4.6em; font-size: 22px; line-height: 1.15; text-wrap: balance; }
+        .msa-auth-panel { position: relative; padding: 25px 20px 24px; background: #fffefa; }
+        .msa-form-kicker { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .msa-form-kicker::before { content: ''; width: 17px; height: 2px; border-radius: 2px; background: #d0a83f; }
+        .msa-form-title { margin-bottom: 20px; font-size: 29px; }
+        .msa-form-subtitle { margin: 7px 0 18px; }
+        .msa-form { gap: 14px; }
+        .msa-field { gap: 8px; }
+        .msa-label { font-size: 12px; }
+        .msa-login-hint { font-size: 11px; line-height: 1.5; }
+        .msa-input { height: 50px; border-color: #d6e4da; background: #f8fbf8; }
+        .msa-input:focus { border-color: #398568; box-shadow: 0 0 0 4px rgba(35,107,85,.12); }
+        .msa-options { min-height: 44px; align-items: center; flex-direction: row; gap: 10px; margin-top: -4px; }
+        .msa-remember, .msa-recovery-note { min-height: 44px; display: inline-flex; align-items: center; font-size: 11px; }
+        .msa-remember { padding-right: 8px; }
+        .msa-recovery-note { justify-content: flex-end; color: var(--emerald); }
+        .msa-recovery-help { margin: -5px 0 0; }
+        .msa-toggle { width: 44px; height: 44px; right: 3px; }
+        .msa-submit { min-height: 50px; background: linear-gradient(110deg, #103f32, #267456); box-shadow: 0 8px 18px rgba(16,63,50,.18); }
+        .msa-auth-footer { margin-top: 20px; padding-top: 18px; }
+    }
+    @media (max-width: 320px) {
+        .msa-brand-title[data-hero-quote] { max-width: calc(100% - 48px); min-height: 5.75em; font-size: 20px; }
+        .msa-options { flex-wrap: wrap; }
+    }
+    @keyframes msa-leaf-sway { from { transform: rotate(-2deg); } to { transform: rotate(3deg); } }
+    @keyframes msa-spark-breathe { from { opacity: .6; transform: scale(.93); } to { opacity: 1; transform: scale(1.05); } }
+    @media (prefers-reduced-motion: reduce) {
+        .msa-brand-art .msa-art-leaf, .msa-brand-art .msa-art-spark { animation: none; }
+    }
+</style>
 
 <section class="msa-auth-page">
     <div class="msa-auth-orb msa-auth-orb--a" aria-hidden="true"></div>
@@ -648,6 +721,12 @@
 
     <div class="msa-auth-shell">
         <aside class="msa-auth-brand">
+            <svg class="msa-brand-art" viewBox="0 0 150 150" fill="none" aria-hidden="true" focusable="false">
+                <circle cx="112" cy="54" r="33" fill="#f4c84e" fill-opacity=".13"/>
+                <circle cx="112" cy="54" r="22" fill="#f4c84e" fill-opacity=".18"/>
+                <g class="msa-art-spark" stroke="#f8d96e" stroke-width="1.5" stroke-linecap="round"><path d="M122 28v7m-3.5-3.5h7M76 39v5m-2.5-2.5h5"/></g>
+                <g class="msa-art-leaf" stroke="#c9e6c7" stroke-linecap="round" stroke-linejoin="round"><path d="M110 148c-1-30 2-49 13-71M112 126c-12-4-21-12-25-25 15 1 23 9 25 25ZM116 113c3-13 11-20 24-22-2 12-9 19-24 22ZM120 91c-3-10-2-19 5-27 7 10 5 18-5 27Z" fill="#a9d2ac" fill-opacity=".30" stroke-opacity=".7" stroke-width="1.5"/><path d="M109 147c-12-18-23-24-40-28m26 17c-11 1-20-3-26-13 12-3 21 2 26 13Z" fill="#a9d2ac" fill-opacity=".22" stroke-opacity=".55" stroke-width="1.5"/></g>
+            </svg>
             <div class="msa-brand-lockup">
                 <div class="msa-brand-top">
                     <div class="msa-brand-mark"><x-brand-logo variant="emblem" alt="MAGIREM AI emblem" /></div>
@@ -685,7 +764,7 @@
 
         <div class="msa-auth-panel">
             <div class="msa-auth-form-wrap">
-                <div class="msa-form-kicker">Secure student access</div>
+                <div class="msa-form-kicker">Secure account access</div>
                 <h2 class="msa-form-title">Welcome back</h2>
                 <p class="msa-form-subtitle">Sign in to continue to your MAGIREM AI wellness space.</p>
 
@@ -704,12 +783,12 @@
                     @csrf
 
                     <div class="msa-field">
-                        <label class="msa-label" for="email">Email address</label>
+                        <label class="msa-label" for="email">Sign-in email</label>
                         <div class="msa-input-wrap">
                             <svg class="msa-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16v12H4V6zm0 1l8 6 8-6"/></svg>
                             <input class="msa-input" type="email" id="email" name="email" value="{{ old('email') }}" placeholder="name@minsu.edu.ph" required autocomplete="email">
                         </div>
-                        <p class="msa-login-hint">Students and counselors use their MinSU institutional email. Existing administrator credentials remain unchanged.</p>
+                        <p class="msa-login-hint"><span class="msa-desktop-hint"><strong>Students and counselors:</strong> sign in with your @minsu.edu.ph institutional email and the password you created during setup. Your personal Gmail is only for verification and password recovery—it is not your username. <strong>Administrators</strong> continue using their existing account credentials.</span><span class="msa-mobile-hint">Students and counselors: use your MinSU email. Admins: use your existing email.</span></p>
                     </div>
 
                     <div class="msa-field">
@@ -717,7 +796,7 @@
                         <div class="msa-input-wrap">
                             <svg class="msa-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 10V7a5 5 0 0110 0v3m-11 0h12a2 2 0 012 2v7H4v-7a2 2 0 012-2z"/></svg>
                             <input class="msa-input" style="padding-right:48px" type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
-                            <button class="msa-toggle" type="button" data-password-toggle="password" aria-label="Show or hide password">
+                            <button class="msa-toggle" type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12zm9.5 2.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>
                             </button>
                         </div>
@@ -730,6 +809,7 @@
                         </label>
                         <a class="msa-link msa-recovery-note" href="{{ route('password.request') }}">Forgot password?</a>
                     </div>
+                    <p class="msa-login-hint msa-recovery-help"><span class="msa-desktop-hint">Password recovery is sent only to the verified personal Gmail linked to your account. If you have not completed the one-time setup invitation, contact the authorized Guidance reviewer.</span><span class="msa-mobile-hint">Reset links go to your verified Gmail. Need setup? Contact Guidance.</span></p>
 
                     <button type="submit" class="msa-submit">
                         <span>Sign in to MAGIREM AI</span>
@@ -811,6 +891,7 @@
 
         input.type = input.type === 'password' ? 'text' : 'password';
         button.setAttribute('aria-label', input.type === 'password' ? 'Show password' : 'Hide password');
+        button.setAttribute('aria-pressed', String(input.type === 'text'));
     });
 </script>
 @endsection

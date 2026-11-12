@@ -228,7 +228,7 @@
 }
 .adm-stat-icon.blue { background:var(--blue-bg); color:var(--blue); }
 .adm-stat-icon.gold { background:#FFF8E8; color:#A8781E; }
-.adm-stat-icon svg { width:15px; height:15px; }
+.adm-stat-icon svg { width:20px; height:20px; stroke-width:1.9; }
 .adm-stat strong {
     display:block;
     margin-top:10px;
@@ -282,7 +282,7 @@
     font-weight:820;
     cursor:pointer;
 }
-.adm-tab svg { width:14px; height:14px; }
+.adm-tab svg { width:16px; height:16px; stroke-width:1.9; flex:0 0 auto; }
 .adm-tab:hover { background:var(--ivory); color:var(--forest); }
 .adm-tab.active { background:var(--mint); color:var(--forest); }
 
@@ -323,9 +323,11 @@
     font-weight:830;
 }
 .adm-card-title svg {
-    width:15px;
-    height:15px;
+    width:17px;
+    height:17px;
+    flex:0 0 auto;
     color:var(--emerald);
+    stroke-width:1.9;
 }
 .adm-pill {
     min-height:24px;
@@ -404,7 +406,7 @@
     border-radius:9px;
     background:var(--mint);
 }
-.adm-shortcut-icon svg { width:14px; height:14px; }
+.adm-shortcut-icon svg { width:18px; height:18px; stroke-width:1.9; }
 .adm-shortcut strong { display:block; font-size:8.5px; }
 .adm-shortcut span span {
     display:block;
@@ -437,7 +439,7 @@
     background:var(--mint);
     color:var(--forest);
 }
-.adm-entry-icon svg { width:17px; height:17px; }
+.adm-entry-icon svg { width:19px; height:19px; stroke-width:1.9; }
 .adm-entry-copy { min-width:0; }
 .adm-entry-copy strong {
     display:block;
@@ -521,7 +523,7 @@
     background:var(--forest);
     color:#fff;
 }
-.adm-tool-icon svg { width:17px; height:17px; }
+.adm-tool-icon svg { width:19px; height:19px; stroke-width:1.9; }
 .adm-tool strong {
     position:relative;
     z-index:1;
@@ -554,7 +556,61 @@
     .adm-entry { grid-template-columns:36px minmax(0,1fr); }
     .adm-entry-time { grid-column:2; }
 }
+
+/* Calm, purposeful motion for the admin workspace. */
+.adm-tab { transition:background-color 180ms ease, color 180ms ease; }
+.adm-tab svg,
+.adm-shortcut-icon svg,
+.adm-tool-icon svg { transition:transform 200ms cubic-bezier(.22,1,.36,1); }
+.adm-tab:hover svg,
+.adm-tab:focus-visible svg,
+.adm-shortcut:hover .adm-shortcut-icon svg,
+.adm-shortcut:focus-visible .adm-shortcut-icon svg,
+.adm-tool:hover .adm-tool-icon svg,
+.adm-tool:focus-visible .adm-tool-icon svg { transform:translateY(-2px); }
+.adm-tab:focus-visible,
+.adm-shortcut:focus-visible,
+.adm-tool:focus-visible { outline:2px solid #B48624; outline-offset:2px; }
+
+@keyframes adminDashboardRise {
+    from { opacity:0; transform:translateY(10px); }
+    to { opacity:1; transform:translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .admin-dash .adm-head,
+    .admin-dash .adm-hero,
+    .admin-dash .adm-stat,
+    .admin-dash .adm-tabs,
+    .admin-dash .adm-panel.active .adm-card,
+    .admin-dash .adm-panel.active .adm-tool {
+        animation:adminDashboardRise 400ms cubic-bezier(.22,1,.36,1) backwards;
+    }
+    .admin-dash .adm-hero { animation-delay:40ms; }
+    .admin-dash .adm-stat:nth-child(1) { animation-delay:70ms; }
+    .admin-dash .adm-stat:nth-child(2) { animation-delay:100ms; }
+    .admin-dash .adm-stat:nth-child(3) { animation-delay:130ms; }
+    .admin-dash .adm-stat:nth-child(4) { animation-delay:160ms; }
+    .admin-dash .adm-tabs { animation-delay:170ms; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .admin-dash .adm-panel.active,
+    .admin-dash .adm-shortcut,
+    .admin-dash .adm-tool,
+    .admin-dash .adm-tab,
+    .admin-dash .adm-tab svg,
+    .admin-dash .adm-shortcut-icon svg,
+    .admin-dash .adm-tool-icon svg { animation:none !important; transition:none !important; }
+    .admin-dash .adm-shortcut:hover,
+    .admin-dash .adm-tool:hover,
+    .admin-dash .adm-tab:hover svg,
+    .admin-dash .adm-tab:focus-visible svg,
+    .admin-dash .adm-shortcut:hover .adm-shortcut-icon svg,
+    .admin-dash .adm-shortcut:focus-visible .adm-shortcut-icon svg,
+    .admin-dash .adm-tool:hover .adm-tool-icon svg,
+    .admin-dash .adm-tool:focus-visible .adm-tool-icon svg { transform:none; }
+}
 </style>
+@include('admin.partials.workspace-polish')
 
 @php
     $peopleTotal = max(1, $totalStudents + $totalCounselors);
@@ -567,7 +623,7 @@
         <div>
             <span class="adm-eyebrow">Administrator workspace</span>
             <h1>Platform control center</h1>
-            <p>Monitor MAGIREM AI at a glance, review recent activity, and move into administrative tools without crowding the main dashboard.</p>
+            <p>Review account activity, manage your workspace, and open reports from one place.</p>
         </div>
 
         <div class="adm-date">
@@ -575,23 +631,6 @@
             <span>System overview</span>
         </div>
     </header>
-
-    <section class="adm-hero">
-        <div class="adm-hero-main">
-            <small>System operations</small>
-            <h2>A cleaner administrative view for people, wellbeing activity, and platform management.</h2>
-            <p>The dashboard separates monitoring from administrative actions so the important information stays readable instead of becoming one long page of cards.</p>
-        </div>
-
-        <aside class="adm-health">
-            <div class="adm-health-top">
-                <span class="adm-health-label"><span class="adm-health-dot"></span> System health</span>
-                <span class="adm-health-badge">Operational</span>
-            </div>
-            <strong>Healthy</strong>
-            <p>All primary platform areas are available from this workspace.</p>
-        </aside>
-    </section>
 
     <section class="adm-stats">
         <article class="adm-stat">
@@ -621,26 +660,18 @@
             <small>Total recorded wellbeing entries</small>
         </article>
 
-        <article class="adm-stat">
-            <span class="adm-stat-icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </span>
-            <strong>Healthy</strong>
-            <span>Platform status</span>
-            <small>Administrative services available</small>
-        </article>
     </section>
 
     <nav class="adm-tabs" aria-label="Admin dashboard sections">
-        <button type="button" class="adm-tab active" data-adm-tab="overview">
+        <button type="button" class="adm-tab active" data-adm-tab="overview" aria-pressed="true">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 13h6V4H4v9zm10 7h6V11h-6v9zM4 20h6v-3H4v3zm10-13h6V4h-6v3z"/></svg>
             Overview
         </button>
-        <button type="button" class="adm-tab" data-adm-tab="activity">
+        <button type="button" class="adm-tab" data-adm-tab="activity" aria-pressed="false">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Recent Activity
         </button>
-        <button type="button" class="adm-tab" data-adm-tab="tools">
+        <button type="button" class="adm-tab" data-adm-tab="tools" aria-pressed="false">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             Administration
         </button>
@@ -765,6 +796,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             buttons.forEach(function (item) {
                 item.classList.toggle('active', item === button);
+                item.setAttribute('aria-pressed', String(item === button));
             });
 
             panels.forEach(function (panel) {

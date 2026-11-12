@@ -1,0 +1,260 @@
+/*
+ * MAGIREM AI shared responsive system layer.
+ *
+ * This file intentionally contains layout-safe primitives only. Page-specific
+ * views remain the source of truth for their visual composition; these rules
+ * prevent overflow, preserve readable widths, and make common controls usable
+ * on touch screens without changing application behavior.
+ */
+
+html {
+    overflow-x: clip;
+}
+
+body.app-layout,
+body.student-header-layout,
+body.counselor-layout,
+body.admin-layout,
+body.account-status-layout {
+    overflow-x: clip;
+}
+
+body.app-layout *,
+body.student-header-layout *,
+body.counselor-layout *,
+body.admin-layout *,
+body.account-status-layout * {
+    min-width: 0;
+}
+
+body.app-layout .app-main,
+body.student-header-layout .app-main,
+body.counselor-layout .app-main,
+body.admin-layout .app-main,
+body.account-status-layout .app-main,
+body.app-layout .content-wrapper,
+body.student-header-layout .content-wrapper,
+body.counselor-layout .content-wrapper,
+body.admin-layout .content-wrapper,
+body.account-status-layout .content-wrapper,
+body.guest-layout .guest-main {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+body.app-layout .content-wrapper > *,
+body.student-header-layout .content-wrapper > *,
+body.counselor-layout .content-wrapper > *,
+body.admin-layout .content-wrapper > *,
+body.account-status-layout .content-wrapper > *,
+body.guest-layout .guest-main > * {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+body.app-layout img,
+body.app-layout svg,
+body.app-layout video,
+body.app-layout canvas,
+body.app-layout iframe,
+body.student-header-layout img,
+body.student-header-layout svg,
+body.student-header-layout video,
+body.student-header-layout canvas,
+body.student-header-layout iframe,
+body.guest-layout img,
+body.guest-layout svg,
+body.guest-layout video,
+body.guest-layout canvas,
+body.guest-layout iframe {
+    max-width: 100%;
+}
+
+body.app-layout input,
+body.app-layout select,
+body.app-layout textarea,
+body.app-layout button,
+body.student-header-layout input,
+body.student-header-layout select,
+body.student-header-layout textarea,
+body.student-header-layout button,
+body.guest-layout input,
+body.guest-layout select,
+body.guest-layout textarea,
+body.guest-layout button {
+    max-width: 100%;
+    min-width: 0;
+}
+
+body.app-layout textarea,
+body.student-header-layout textarea,
+body.guest-layout textarea {
+    resize: vertical;
+}
+
+body.app-layout pre,
+body.student-header-layout pre,
+body.guest-layout pre,
+body.app-layout .table-responsive,
+body.app-layout .table-wrap,
+body.app-layout .table-container,
+body.app-layout .avi-table-wrap,
+body.student-header-layout .table-responsive,
+body.student-header-layout .table-wrap,
+body.student-header-layout .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.app-layout table,
+body.student-header-layout table {
+    max-width: 100%;
+}
+
+/* Shared grid rhythm: grids collapse by available width, not by a page's
+ * original fixed column count. */
+body.app-layout :where(.stats-grid, .metrics-grid, .dashboard-grid, .analytics-grid,
+    .card-grid, .cards-grid, .ca-grid, .cdash-grid, .avi-counts, .adm-stats,
+    .adm-grid, .report-grid, .quick-access-grid) {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+body.app-layout :where(.section-header, .page-header, .panel-header, .toolbar,
+    .header-actions, .form-actions, .button-group, .post-actions, .ca-head,
+    .cdash-head, .avi-head, .moderation-header) {
+    min-width: 0;
+}
+
+body.app-layout :where(.section-header, .page-header, .panel-header, .toolbar,
+    .header-actions, .form-actions, .button-group, .post-actions, .ca-head,
+    .cdash-head, .avi-head, .moderation-header) > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Keep long labels, URLs, and generated AI content from expanding a shell. */
+body.app-layout :where(.card, .panel, .section-container, .post-card,
+    .message-card, .resource-card, .msc-card, [class*="card"], [class*="panel"]) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+body.app-layout :where(.btn, button, [role="button"], input[type="submit"],
+    input[type="button"], a.btn, .msc-btn) {
+    touch-action: manipulation;
+}
+
+@media (max-width: 1024px) {
+    body.app-layout {
+        grid-template-columns: 1fr;
+        min-width: 0;
+    }
+
+    body.app-layout .app-main,
+    body.counselor-layout .app-main,
+    body.admin-layout .app-main {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.app-layout .app-header,
+    body.counselor-layout .app-header,
+    body.admin-layout .app-header {
+        min-width: 0;
+    }
+
+    body.app-layout :where(.header-actions, .form-actions, .button-group, .post-actions),
+    body.counselor-layout :where(.header-actions, .form-actions, .button-group, .post-actions),
+    body.admin-layout :where(.header-actions, .form-actions, .button-group, .post-actions) {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 700px) {
+    body.app-layout .content-wrapper,
+    body.counselor-layout .content-wrapper,
+    body.admin-layout .content-wrapper,
+    body.account-status-layout .content-wrapper {
+        padding-inline: 14px;
+    }
+
+    body.app-layout :where(.stats-grid, .metrics-grid, .dashboard-grid, .analytics-grid,
+        .card-grid, .cards-grid, .ca-grid, .cdash-grid, .avi-counts, .adm-stats,
+        .adm-grid, .report-grid, .quick-access-grid) {
+        grid-template-columns: 1fr;
+    }
+
+    body.app-layout :where(.section-header, .page-header, .panel-header, .toolbar,
+        .ca-head, .cdash-head, .avi-head, .moderation-header) {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.app-layout :where(.header-actions, .form-actions, .button-group, .post-actions) {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    body.app-layout :where(.header-actions > *, .form-actions > *, .button-group > *,
+        .post-actions > *) {
+        min-height: 44px;
+    }
+
+    body.app-layout :where(.modal, dialog, [role="dialog"]) {
+        max-width: calc(100vw - 24px);
+        max-height: calc(100dvh - 24px);
+    }
+
+    body.app-layout :where(.tabs, .tab-list, .filters, .categories) {
+        max-width: 100%;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: thin;
+    }
+
+    body.app-layout :where(.tabs > *, .tab-list > *, .filters > *, .categories > *) {
+        flex: 0 0 auto;
+    }
+
+    body.student-header-layout .content-wrapper {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 430px) {
+    body.app-layout .content-wrapper,
+    body.counselor-layout .content-wrapper,
+    body.admin-layout .content-wrapper,
+    body.account-status-layout .content-wrapper {
+        padding-inline: 12px;
+    }
+
+    body.app-layout :where(.msc-btn, .btn, button, input[type="submit"],
+        input[type="button"], [role="button"]),
+    body.student-header-layout :where(.msc-btn, .btn, button, input[type="submit"],
+        input[type="button"], [role="button"]) {
+        min-height: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    body.app-layout *,
+    body.student-header-layout *,
+    body.counselor-layout *,
+    body.admin-layout *,
+    body.guest-layout * {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}

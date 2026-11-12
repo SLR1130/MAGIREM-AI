@@ -2,11 +2,11 @@
 
 return [
     'categories' => [
-        'academic' => ['label' => 'Academic Stress', 'icon' => '📚'],
-        'mental-health' => ['label' => 'Mental Wellness', 'icon' => '💭'],
-        'relationships' => ['label' => 'Friendship and Relationships', 'icon' => '💛'],
-        'motivation' => ['label' => 'Motivation and Personal Growth', 'icon' => '🌱'],
-        'general' => ['label' => 'General Discussions', 'icon' => '💬'],
+        'academic' => ['label' => 'Academic Stress', 'icon' => 'book-open'],
+        'mental-health' => ['label' => 'Mental Wellness', 'icon' => 'brain'],
+        'relationships' => ['label' => 'Friendship and Relationships', 'icon' => 'heart'],
+        'motivation' => ['label' => 'Motivation and Personal Growth', 'icon' => 'sprout'],
+        'general' => ['label' => 'General Discussions', 'icon' => 'message-circle'],
     ],
     'support_labels' => [
         'advice' => 'Looking for Advice',

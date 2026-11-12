@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Mail\AccountVerificationMail;
 use App\Models\AccountVerificationEmailDelivery;
 use App\Models\AccountInvitation;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -91,9 +93,20 @@ class SendAccountVerificationEmail implements ShouldQueue
                 };
                 if ($field) $delivery->user()->update([$field => 'accepted']);
             }
-        } catch (Throwable) {
-            $delivery->update(['status' => 'retrying', 'last_error_code' => 'transport_error']);
+        } catch (Throwable $exception) {
+            $delivery->update([
+                'status' => 'retrying',
+                'last_error_code' => $this->safeTransportErrorCode($exception),
+            ]);
             throw new \RuntimeException('Account verification email transport failed.');
+        }
+
+        if ($delivery->kind === 'account_invitation') {
+            try {
+                $this->notifyInvitationIssuer($delivery, 'accepted');
+            } catch (Throwable) {
+                // Email delivery remains accepted even if an in-app alert cannot be recorded.
+            }
         }
     }
 
@@ -101,7 +114,15 @@ class SendAccountVerificationEmail implements ShouldQueue
     {
         $delivery = AccountVerificationEmailDelivery::query()->find($this->deliveryId);
         if (!$delivery) return;
-        $delivery->update(['status' => 'failed', 'last_error_code' => 'transport_error']);
+        $failureCode = in_array($delivery->last_error_code, [
+            'smtp_authentication_failed',
+            'smtp_tls_failed',
+            'smtp_connection_failed',
+            'smtp_temporary_rejection',
+            'smtp_permanent_rejection',
+            'transport_error',
+        ], true) ? $delivery->last_error_code : 'transport_error';
+        $delivery->update(['status' => 'failed', 'last_error_code' => $failureCode]);
         if ($delivery->user) {
             $field = match ($delivery->kind) {
                 'verification_code' => 'verification_email_delivery_status',
@@ -110,5 +131,71 @@ class SendAccountVerificationEmail implements ShouldQueue
             };
             if ($field) $delivery->user()->update([$field => 'failed']);
         }
+        if ($delivery->kind === 'account_invitation') {
+            try {
+                $this->notifyInvitationIssuer($delivery, 'failed', $failureCode);
+            } catch (Throwable) {
+                // Do not expose transport data or change the failure state.
+            }
+        }
+    }
+
+    private function safeTransportErrorCode(Throwable $exception): string
+    {
+        // Inspect provider error text only in memory. Persist a coarse allowlisted
+        // code; never log or store the raw SMTP response or exception message.
+        $message = strtolower($exception->getMessage());
+        $class = strtolower($exception::class);
+        if (str_contains($message, '535') || str_contains($message, 'authentication')
+            || str_contains($message, 'authenticator') || str_contains($class, 'authentication')) {
+            return 'smtp_authentication_failed';
+        }
+        if (str_contains($message, 'tls') || str_contains($message, 'ssl')
+            || str_contains($message, 'certificate') || str_contains($class, 'tls')) {
+            return 'smtp_tls_failed';
+        }
+        if (preg_match('/\b(?:421|450|451|452)\b/', $message)) {
+            return 'smtp_temporary_rejection';
+        }
+        if (preg_match('/\b5\d\d\b/', $message) || str_contains($message, 'rejected')) {
+            return 'smtp_permanent_rejection';
+        }
+        if (str_contains($message, 'connection') || str_contains($message, 'timed out')
+            || str_contains($message, 'timeout') || str_contains($class, 'transport')) {
+            return 'smtp_connection_failed';
+        }
+
+        return 'transport_error';
+    }
+
+    private function notifyInvitationIssuer(AccountVerificationEmailDelivery $delivery, string $status, ?string $failureCode = null): void
+    {
+        $invitation = AccountInvitation::query()->with('user')->where('email_delivery_id', $delivery->id)->first();
+        $reviewer = $invitation?->created_by ? User::query()->find($invitation->created_by) : null;
+        if (!$invitation?->user || !$reviewer?->canReviewAccountVerification()) return;
+
+        $accepted = $status === 'accepted';
+        $title = $accepted ? 'Setup invitation email accepted' : 'Setup invitation email failed';
+        $link = route('admin.account-verification.show', $invitation->user, false);
+        $failureMessage = match ($failureCode) {
+            'smtp_authentication_failed' => 'Gmail rejected SMTP authentication. Check the sender account and app-password configuration privately, then retry.',
+            'smtp_tls_failed' => 'The secure Gmail SMTP/TLS handshake failed. Check local SMTP security settings before retrying.',
+            'smtp_connection_failed' => 'The application could not establish a Gmail SMTP connection. Check the worker and network, then retry.',
+            'smtp_temporary_rejection' => 'Gmail temporarily rejected the message. Check the delivery status and retry after the provider recovers.',
+            'smtp_permanent_rejection' => 'Gmail permanently rejected the message. Check sender and recipient configuration before retrying.',
+            default => 'The one-time setup invitation could not be delivered. Review the account delivery status before retrying.',
+        };
+        Notification::query()->create([
+            'user_id' => $reviewer->id,
+            'type' => 'account',
+            'title' => $title,
+            'message' => $accepted
+                ? 'The mail provider accepted the one-time setup invitation. This does not confirm inbox placement.'
+                : $failureMessage,
+            'is_read' => false,
+            'priority' => $accepted ? 'normal' : 'high',
+            'icon' => 'mail',
+            'link' => $link,
+        ]);
     }
 }

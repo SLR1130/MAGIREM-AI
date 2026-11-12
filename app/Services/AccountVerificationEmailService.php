@@ -6,6 +6,7 @@ use App\Jobs\SendAccountVerificationEmail;
 use App\Models\AccountEmailVerification;
 use App\Models\AccountInvitation;
 use App\Models\AccountVerificationEmailDelivery;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -154,13 +155,47 @@ class AccountVerificationEmailService
             'invite_url' => $inviteUrl,
             'invitation_id' => $invitation->id,
             'invitation_token' => $token,
-        ], $deliveryId);
+        ], $deliveryId, 'account-emails', $invitation);
 
-        if ($deliveryId) {
-            $invitation->forceFill(['email_delivery_id' => $deliveryId])->save();
+        try {
+            $this->notifyInvitationIssuer($invitation, $queued ? 'queued' : 'failed');
+        } catch (Throwable) {
+            // In-app notification failures must not change mail queue status.
         }
 
         return $queued;
+    }
+
+    private function notifyInvitationIssuer(AccountInvitation $invitation, string $status): void
+    {
+        $reviewer = $invitation->created_by ? User::query()->find($invitation->created_by) : null;
+        $user = $invitation->user;
+        if (!$reviewer?->canReviewAccountVerification() || !$user) return;
+
+        [$title, $message, $priority] = match ($status) {
+            'queued' => [
+                'Counselor setup email queued',
+                'A one-time setup invitation was queued. Gmail delivery is not confirmed yet.',
+                'normal',
+            ],
+            'failed' => [
+                'Counselor setup email could not be queued',
+                'The one-time setup invitation was not queued. Review mail and queue health before retrying.',
+                'high',
+            ],
+            default => throw new \InvalidArgumentException('Unknown invitation notification state.'),
+        };
+
+        Notification::query()->create([
+            'user_id' => $reviewer->id,
+            'type' => 'account',
+            'title' => $title,
+            'message' => $message,
+            'is_read' => false,
+            'priority' => $priority,
+            'icon' => 'mail',
+            'link' => route('admin.account-verification.show', $user, false),
+        ]);
     }
 
     public function confirmCode(User $user, string $code): bool
@@ -244,7 +279,14 @@ class AccountVerificationEmailService
         return hash_hmac('sha256', $userId . ':' . $code, (string) config('app.key'));
     }
 
-    private function queue(User $user, string $kind, array $payload, ?int &$deliveryId = null): bool
+    private function queue(
+        User $user,
+        string $kind,
+        array $payload,
+        ?int &$deliveryId = null,
+        string $queueName = 'account-emails',
+        ?AccountInvitation $invitation = null,
+    ): bool
     {
         $delivery = AccountVerificationEmailDelivery::query()->create([
             'user_id' => $user->id,
@@ -255,8 +297,15 @@ class AccountVerificationEmailService
         ]);
         $deliveryId = (int) $delivery->id;
         try {
+            // Link the delivery before the isolated invitation queue can see
+            // the job. This avoids a fast worker racing the reviewer alert.
+            if ($invitation) {
+                $invitation->forceFill(['email_delivery_id' => $delivery->id])->save();
+            }
             $encrypted = Crypt::encryptString(json_encode($payload, JSON_THROW_ON_ERROR));
-            SendAccountVerificationEmail::dispatch($delivery->id, $encrypted)->afterCommit();
+            SendAccountVerificationEmail::dispatch($delivery->id, $encrypted)
+                ->onQueue($queueName)
+                ->afterCommit();
             return true;
         } catch (Throwable) {
             $delivery->update(['status' => 'failed', 'last_error_code' => 'queue_unavailable']);

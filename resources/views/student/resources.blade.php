@@ -19,10 +19,35 @@
         return is_string($id) && preg_match('/^[A-Za-z0-9_-]{11}$/', $id) ? $id : null;
     };
     $hasSearchContext = $searchQuery !== '' || $category !== null;
+    // Fixed editorial links: no provider request, user profile, or query is sent on page load.
+    $starterGuides = [
+        ['title' => 'Understanding and managing stress', 'provider' => 'MedlinePlus', 'description' => 'Learn about common sources of stress and ways to manage it.', 'url' => 'https://medlineplus.gov/stress.html', 'keywords' => ['stress', 'academic pressure', 'burnout', 'pagod sa school', 'stress sa school']],
+        ['title' => 'Healthy sleep', 'provider' => 'MedlinePlus', 'description' => 'Explore why sleep matters and ways to support healthy sleep.', 'url' => 'https://medlineplus.gov/healthysleep.html', 'keywords' => ['sleep', 'matulog', 'makatulog']],
+        ['title' => 'Anxiety, fear and panic', 'provider' => 'NHS', 'description' => 'Understand anxiety and find self-help and support options.', 'url' => 'https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/anxiety-fear-panic/', 'keywords' => ['anxiety', 'anxious', 'worry', 'fear', 'kinakabahan']],
+        ['title' => 'Writing down your thoughts', 'provider' => 'NHS', 'description' => 'Try a structured exercise for reflecting on thoughts and feelings.', 'url' => 'https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/thought-record/', 'keywords' => ['journal', 'journaling', 'reflection', 'writing']],
+        ['title' => 'Ways to support mental wellbeing', 'provider' => 'NHS', 'description' => 'Explore everyday ways to connect, learn and care for your wellbeing.', 'url' => 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/five-steps-to-mental-wellbeing/', 'keywords' => ['self-care', 'self care', 'wellbeing', 'wellness']],
+    ];
+    $guideMatches = function (array $guide) use ($searchQuery, $category, $remoteResults) {
+        if ($category !== null) return false; // Library categories do not classify external guides.
+        if ($remoteResults->contains(fn ($item) => rtrim($item['url'] ?? '', '/') === rtrim($guide['url'], '/'))) return false;
+        if ($searchQuery === '') return true;
+        foreach ($guide['keywords'] as $keyword) {
+            if (mb_stripos($searchQuery, $keyword, 0, 'UTF-8') !== false) return true;
+        }
+        return false;
+    };
+    $guideCount = collect($starterGuides)->filter($guideMatches)->count();
+    // Fixed, source-verified examples; no external player or request is loaded on page view.
+    $featuredAudio = [
+        ['topic' => 'Stress', 'type' => 'Podcast', 'title' => 'Stress and mental health', 'source' => 'Mental Health Foundation', 'url' => 'https://www.mentalhealth.org.uk/podcasts/stress-and-mental-health', 'image' => 'topic-stress-outdoors-v1.png', 'player' => 'spotify', 'id' => '18xva5FyNLPICun7GU3dhc'],
+        ['topic' => 'Sleep', 'type' => 'Podcast', 'title' => 'How sleep and green space can help your mental health', 'source' => 'Mental Health Foundation', 'url' => 'https://www.mentalhealth.org.uk/explore-mental-health/podcasts/how-sleep-and-green-space-can-help-your-mental-health', 'image' => 'topic-better-sleep-v1.png', 'player' => 'spotify', 'id' => '1xXWQnIULL9NgpDG3q6s68'],
+        ['topic' => 'Anxiety', 'type' => 'Audio guide', 'title' => 'How to cope with anxiety', 'source' => 'NHS', 'url' => 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/mental-wellbeing-audio-guides/', 'image' => 'topic-anxiety-education-v1.png', 'player' => 'nhs', 'id' => '2163080377001'],
+        ['topic' => 'Connection', 'type' => 'Podcast', 'title' => 'Friendships and mental health', 'source' => 'Mental Health Foundation', 'url' => 'https://www.mentalhealth.org.uk/explore-mental-health/podcasts/friendships-and-mental-health', 'image' => 'home-daylight-community-1600.webp', 'player' => 'spotify', 'id' => '0NAd8OCBQ93Are2orDJRDC'],
+    ];
     $localResultCount = method_exists($resources, 'total') ? (int) $resources->total() : $resources->count();
     $publicResultCount = $remoteResults->count();
     $videoResultCount = $videoResults->count();
-    $totalSearchResultCount = $localResultCount + $publicResultCount + $videoResultCount;
+    $totalSearchResultCount = $localResultCount + $publicResultCount + $videoResultCount + $guideCount;
     $hasProviderError = count($searchErrors) > 0;
     $initialOverallEmpty = $hasSearchContext && $totalSearchResultCount === 0;
 @endphp
@@ -34,6 +59,23 @@
     .wellness-section{margin-top:2.55rem}.wellness-section-head{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin:0 .15rem 1rem}.wellness-section-head h2{margin:0;color:var(--wellness-deep);font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.72rem,2.5vw,2.25rem);letter-spacing:-.045em;line-height:1}.wellness-section-head p{margin:.4rem 0 0;color:#73817c;line-height:1.5}.wellness-section-action{color:#145544;font-size:.87rem;font-weight:850;text-decoration:none;white-space:nowrap}.wellness-section-action:hover{text-decoration:underline}
     .topic-discovery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}.topic-card{position:relative;display:flex;min-width:0;min-height:235px;overflow:hidden;flex-direction:column;justify-content:flex-end;padding:0;border:1px solid #dce7de;border-radius:13px;background:#fff;color:var(--wellness-ink);text-align:left;cursor:pointer;box-shadow:0 8px 21px rgba(11,62,49,.055);transition:transform .2s ease,box-shadow .2s ease}.topic-card:hover{box-shadow:0 16px 28px rgba(11,62,49,.13);transform:translateY(-4px)}.topic-card-photo{position:relative;display:block;height:122px;overflow:hidden;background:#dcece0}.topic-card-photo:after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,rgba(3,55,45,.02),rgba(3,55,45,.15))}.topic-card img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.topic-card:hover img{transform:scale(1.045)}.topic-card-icon{position:absolute;z-index:2;top:13px;left:14px;display:grid;place-items:center;width:37px;height:37px;border:1px solid rgba(255,255,255,.75);border-radius:50%;background:rgba(255,253,240,.94);color:#307f69;font-size:1.1rem;box-shadow:0 3px 10px rgba(8,63,52,.12)}.topic-card-copy{display:block;padding:.72rem 3.5rem .85rem 1rem}.topic-card-title{display:block;color:var(--wellness-deep);font-family:Georgia,'Times New Roman',serif;font-size:1.08rem;font-weight:700;line-height:1.15}.topic-card-description{display:block;display:-webkit-box;overflow:hidden;margin-top:.32rem;color:#73817c;font-size:.8rem;line-height:1.35;-webkit-box-orient:vertical;-webkit-line-clamp:2}.topic-card-arrow{position:absolute;right:.95rem;bottom:1rem;display:grid;place-items:center;width:2.15rem;height:2.15rem;border-radius:50%;background:#f0f5ed;color:#0d5644;font-size:1.25rem;transition:background .18s,transform .18s}.topic-card:hover .topic-card-arrow{background:#dbeee0;transform:translateX(2px)}.topic-card:nth-child(1) .topic-card-icon:after{content:"\1f33f"}.topic-card:nth-child(2) .topic-card-icon:after{content:"\263e"}.topic-card:nth-child(3) .topic-card-icon:after{content:"\2665"}.topic-card:nth-child(4) .topic-card-icon:after{content:"\25a4"}
     .resource-results{margin-top:2.15rem}.resource-results-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin:0 .15rem 1rem}.resource-results-heading h2{margin:0;color:var(--wellness-deep);font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.65rem,2.35vw,2.15rem);letter-spacing:-.04em;line-height:1.05}.resource-results-heading p{margin:.4rem 0 0;color:#73817c;font-size:.9rem;line-height:1.45}.resource-results-count{flex:0 0 auto;color:#5f796d;font-size:.8rem;font-weight:800;white-space:nowrap}.resource-filter-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.15rem}.resource-filter{border:1px solid #d5e8df;border-radius:999px;padding:.44rem .72rem;background:#f8faf7;color:#236b55;text-decoration:none;font-size:.83rem;font-weight:750}.resource-filter.active,.resource-filter:hover{background:#e8f3ed;border-color:#21755d}.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.resource-card{position:relative;display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid rgba(16,63,50,.12);border-radius:16px;background:#fff;box-shadow:0 8px 21px rgba(16,63,50,.055);transition:transform .18s ease,box-shadow .18s ease}.resource-card:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(16,63,50,.11)}.resource-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;object-position:center;padding:.62rem;background:linear-gradient(145deg,#edf6ef,#f9fbf7)}.resource-card-body{display:flex;flex:1;flex-direction:column;padding:1.05rem}.resource-badge-row{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin-bottom:.62rem}.resource-badge{display:inline-flex;max-width:100%;border-radius:999px;padding:.28rem .55rem;background:#e8f3ed;color:#21755d;font-size:.72rem;font-weight:850;letter-spacing:.045em;text-transform:uppercase}.resource-badge.public{background:#fff5d6;color:#74560b}.resource-card h3{margin:0;color:#103f32;font-family:Georgia,'Times New Roman',serif;font-size:1.08rem;line-height:1.34}.resource-description{display:-webkit-box;overflow:hidden;margin:.6rem 0 0;color:#61736a;line-height:1.57;-webkit-line-clamp:3;-webkit-box-orient:vertical}.resource-attribution{margin:.72rem 0 0;color:#778982;font-size:.79rem;line-height:1.45}.resource-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:auto;padding-top:1rem}.resource-link{color:#21755d;font-size:.9rem;font-weight:800;text-decoration:none}.resource-link:hover{text-decoration:underline}.resource-link.external:after{content:"\2197";display:inline-block;margin-left:.25rem}.resource-public{margin-top:2rem;padding:1.3rem;border:1px solid #d5e8df;border-radius:20px;background:#f8faf7}.resource-public[hidden]{display:none!important}.resource-public .resource-card{background:#fff}.resource-public-head{display:flex;align-items:flex-start;gap:.8rem;margin-bottom:1rem}.resource-public-icon{display:grid;place-items:center;width:2.25rem;height:2.25rem;flex:0 0 auto;border-radius:10px;background:#fff5d6;color:#8b6611;font-weight:900}.resource-public-head h3{margin:0;color:#103f32}.resource-public-head p{margin:.25rem 0 0;color:#657970;font-size:.9rem;line-height:1.5}
+    .topic-chip,.topic-card{text-decoration:none}
+    .featured-audio{margin:2.4rem .15rem 0}.featured-audio-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.85rem}.featured-audio-card{display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid #dbe8dd;border-radius:16px;background:#fff;box-shadow:0 7px 20px rgba(16,63,50,.055);transition:transform .2s ease,box-shadow .2s ease}.featured-audio-card:hover{transform:translateY(-3px);box-shadow:0 14px 26px rgba(16,63,50,.12)}.featured-audio-image{position:relative;height:110px;overflow:hidden;background:#e7f1e7}.featured-audio-image img{display:block;width:100%;height:100%;object-fit:cover}.featured-audio-image:after{position:absolute;inset:0;content:"";background:linear-gradient(0deg,rgba(6,54,42,.35),transparent 65%)}.featured-audio-mark{position:absolute;z-index:1;left:.75rem;bottom:.65rem;display:grid;place-items:center;width:2.2rem;height:2.2rem;border:1px solid rgba(255,255,255,.65);border-radius:50%;background:#fffdf2;color:#155a46}.featured-audio-mark svg{width:1.1rem;height:1.1rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.featured-audio-body{display:flex;flex:1;flex-direction:column;padding:.9rem 1rem 1rem}.featured-audio-meta{color:#567a66;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.featured-audio-body h3{margin:.45rem 0 .4rem;color:#103f32;font-size:.96rem;line-height:1.35}.featured-audio-source{margin:0;color:#667e70;font-size:.77rem;line-height:1.4}.featured-audio-link{margin-top:auto;padding-top:.85rem;color:#126044;font-size:.82rem;font-weight:800;text-decoration:none}.featured-audio-link:hover{text-decoration:underline}.featured-audio-note{margin:.75rem .15rem 0;color:#61796e;font-size:.78rem;line-height:1.45}@media(max-width:1160px){.featured-audio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.featured-audio{margin:2rem 0 0}.featured-audio-grid{grid-template-columns:1fr}.featured-audio-card{flex-direction:row;min-height:120px}.featured-audio-image{width:110px;height:auto;min-height:120px;flex:0 0 110px}.featured-audio-body{padding:.75rem}.featured-audio-body h3{font-size:.88rem}.featured-audio-link{padding-top:.55rem}}@media(prefers-reduced-motion:reduce){.featured-audio-card{transition:none}}
+    .featured-audio-card{height:100%;color:inherit;text-decoration:none;cursor:pointer}.featured-audio-card:focus-visible{outline:3px solid #d8a825;outline-offset:3px}
+    .wellness-status.loading{display:flex;align-items:center;gap:.65rem;margin:.85rem 0 0;padding:.8rem 1rem;border:1px solid #badac9;border-radius:12px;background:#e9f5ec;color:#15523f;font-weight:750}
+    .wellness-status.loading::before{content:"";width:1rem;height:1rem;flex:0 0 auto;border:2px solid #a5cab4;border-top-color:#116c50;border-radius:50%;animation:wellness-spin .8s linear infinite}
+    .search-loading{padding:clamp(1.1rem,2vw,1.65rem);border:1px solid #cfe3d4;border-radius:20px;background:linear-gradient(135deg,#f3faf3,#fffefa);box-shadow:0 10px 28px rgba(16,63,50,.06)}
+    .search-loading[hidden],.search-results-content[hidden]{display:none!important}
+    .search-loading-heading{display:flex;align-items:center;gap:1rem}
+    .search-loading-spinner{width:2.65rem;height:2.65rem;flex:0 0 auto;border:3px solid #c6e2cf;border-top-color:#176d52;border-radius:50%;animation:wellness-spin .8s linear infinite}
+    .search-loading h2{margin:0;color:#103f32;font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.3rem,2vw,1.65rem);line-height:1.2}
+    .search-loading p{margin:.28rem 0 0;color:#536f60;font-size:.9rem;line-height:1.5}
+    .search-loading-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1.2rem}
+    .search-loading-card{min-height:112px;padding:.95rem;border:1px solid #dcebe0;border-radius:14px;background:#fff}
+    .search-loading-card .skeleton-block{margin:.55rem 0;height:11px}.search-loading-card .skeleton-block.short{width:58%}
+    @keyframes wellness-spin{to{transform:rotate(360deg)}}
+    @media(max-width:620px){.search-loading-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.search-loading-card:last-child{display:none}.search-loading-spinner{width:2.2rem;height:2.2rem}}
+    @media(prefers-reduced-motion:reduce){.search-loading-spinner,.wellness-status.loading::before{animation:none}.skeleton-block{animation:none}}
     .wellness-empty{padding:1.4rem;border:1px dashed #b9d7c9;border-radius:16px;background:#f8faf7;color:#50685d;line-height:1.6}.wellness-empty strong{color:#103f32}.wellness-status{min-height:1.5rem;margin:.72rem 0 0;color:#48675a;font-size:.9rem;line-height:1.5}.wellness-status.error{color:#8a3529}.wellness-status.notice{padding:.7rem .85rem;border:1px solid #efce73;border-radius:10px;background:#fff8df;color:#5b4a12}.skeleton-card{overflow:hidden;border:1px solid #d9e8e1;border-radius:18px;background:#fff}.skeleton-block{margin:.9rem 1rem;border-radius:7px;background:linear-gradient(90deg,#eef5f0 25%,#f8faf7 38%,#eef5f0 55%);background-size:200% 100%;animation:wellness-shimmer 1.15s infinite}.skeleton-block.image{height:115px;margin:0}.skeleton-block.line{height:13px}.skeleton-block.line.short{width:54%}@keyframes wellness-shimmer{to{background-position:-200% 0}}
     .support-directory{padding-top:2.15rem;border-top:1px solid #dcebe4}.support-directory .wellness-section-head{margin-bottom:.7rem}.support-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.85rem}.support-card{display:flex;min-width:0;align-items:flex-start;gap:.78rem;border:1px solid #e0e9e1;border-radius:12px;background:#fff;padding:1rem .86rem;box-shadow:0 5px 15px rgba(11,62,49,.035);transition:transform .18s,box-shadow .18s}.support-card:hover{box-shadow:0 10px 21px rgba(11,62,49,.09);transform:translateY(-2px)}.support-mark{display:grid;place-items:center;width:2.45rem;height:2.45rem;flex:0 0 auto;border-radius:50%;background:#edf5e9;color:#20745e;font-size:1.1rem}.support-card:nth-child(1) .support-mark:after{content:"\2767"}.support-card:nth-child(2) .support-mark:after{content:"\271a"}.support-card:nth-child(3) .support-mark:after{content:"\25cf"}.support-card:nth-child(4) .support-mark:after{content:"\260e"}.support-card-content{min-width:0;flex:1}.support-card h3{margin:0;color:#103f32;font-family:Georgia,'Times New Roman',serif;font-size:.9rem;line-height:1.15}.support-type{margin:.26rem 0 0;color:#7b958b;font-size:.69rem;font-weight:800;text-transform:uppercase;letter-spacing:.045em}.support-card p{display:-webkit-box;overflow:hidden;margin:.42rem 0 0;color:#728079;font-size:.76rem;line-height:1.35;-webkit-box-orient:vertical;-webkit-line-clamp:2}.support-arrow{display:grid;place-items:center;width:1.9rem;height:1.9rem;margin-top:auto;border-radius:50%;background:#eef5ed;color:#0d5845;font-size:1.08rem;text-decoration:none}.support-arrow:hover{background:#dceee0}.support-note{margin:0 0 1rem;padding:.75rem .9rem;border-left:3px solid #e6b940;background:#fffaf0;color:#65521d;font-size:.88rem;line-height:1.55}.wellness-footer-note{margin-top:2.3rem;color:#71837a;font-size:.79rem;line-height:1.55}.wellness-footer-note a{color:#21755d}
     [data-wellness-reveal]{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}[data-wellness-reveal].is-visible{opacity:1;transform:none}@media(max-width:1160px){.wellness-hero{grid-template-columns:56% 44%}.wellness-hero-art{left:47%}.topic-discovery{grid-template-columns:repeat(2,minmax(0,1fr))}.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:820px){.wellness-hub{padding:.8rem 0 3rem}.wellness-hero{grid-template-columns:1fr;min-height:460px}.wellness-hero:before{inset:48% 0 0}.wellness-hero-copy-wrap{justify-content:flex-start;padding:2rem 1.45rem}.wellness-hero h1{font-size:clamp(2.7rem,9vw,4.1rem)}.wellness-hero-copy{max-width:480px}.wellness-hero-art{inset:43% 0 0}.wellness-hero-art:before{background:linear-gradient(180deg,#eff7eb 0%,rgba(239,247,235,0) 38%)}.hero-proof{display:none}.hero-note{top:auto;right:11%;bottom:21%;font-size:1rem}.hero-wellbeing-badge{right:-.85rem;bottom:4%;width:114px;min-height:104px;font-size:.78rem}.wellness-search-panel{margin:-1.25rem .7rem 0}.wellness-section{margin-top:2.1rem}}@media(max-width:620px){.wellness-breadcrumb{padding-left:.35rem}.wellness-hero{min-height:440px;border-radius:20px}.wellness-hero-copy-wrap{padding:1.8rem 1.15rem}.wellness-hero h1{max-width:330px;font-size:3rem}.wellness-hero-copy{max-width:315px;font-size:.98rem}.wellness-search-panel{padding:.72rem;border-radius:15px}.wellness-search-main{flex-wrap:wrap}.wellness-search-input{flex-basis:100%}.wellness-button{flex:1}.wellness-search-options{align-items:flex-start;flex-direction:column;padding:.7rem .15rem 0}.wellness-topic-strip{margin-left:.15rem;margin-right:.15rem}.topic-strip-label{flex-basis:100%}.wellness-section-head{display:block}.wellness-section-action{display:inline-block;margin-top:.65rem}.topic-discovery,.resource-grid,.support-grid{grid-template-columns:1fr}.topic-card{min-height:225px}.topic-card-photo{height:128px}.resource-thumb{aspect-ratio:16/7.6}.support-card{padding:1rem}.hero-note{display:none}.hero-wellbeing-badge{right:-1rem;bottom:4%;width:100px;min-height:93px;padding:1rem;font-size:.72rem}.hero-wellbeing-badge:before{position:absolute;top:18px;right:26px;content:"\2767";color:#5b916f;font-size:1.55rem;rotate:-30deg}}@media(prefers-reduced-motion:reduce){.wellness-button,.topic-card,.topic-card img,.topic-card-arrow,.support-card,[data-wellness-reveal]{transition:none}.skeleton-block{animation:none}}
@@ -81,12 +123,15 @@
     .article-dialog-content{overflow:visible;white-space:normal;overflow-wrap:anywhere}
     .article-dialog-note{max-width:70ch;margin:0 auto}
     .article-dialog-actions{position:relative;z-index:1;background:#fff}
-    .video-dialog-panel{grid-template-rows:auto auto auto auto;width:min(100%,880px);max-height:90vh;max-height:90dvh}
+    .video-dialog-panel{grid-template-rows:auto auto auto auto auto;width:min(100%,880px);max-height:90vh;max-height:90dvh}
     .video-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-width:0}
     .video-dialog-head h2{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .video-dialog-close,.article-dialog-close{display:grid;place-items:center;width:2.4rem;height:2.4rem;flex:0 0 auto;padding:0;border:1px solid #d7e5db;border-radius:50%;background:#f7faf7;color:#174c3b;font:inherit;font-size:1.25rem;cursor:pointer}
-    .video-player-frame{width:100%;height:auto;max-height:calc(90dvh - 7rem);aspect-ratio:16/9;overflow:hidden;background:#061d17}
+    .video-player-frame{width:100%;height:auto;max-height:calc(90dvh - 11rem);aspect-ratio:16/9;overflow:hidden;background:#061d17}
     .video-player-frame iframe{display:block;width:100%;height:100%;border:0}
+    .video-player-frame[data-player-provider="spotify"]{height:min(352px,calc(90dvh - 12rem));aspect-ratio:auto;background:#edf4ee}
+    .video-dialog-source{display:inline-block;padding:0 1rem .8rem;color:#126044;font-size:.8rem;font-weight:750;text-decoration:underline}
+    .video-dialog-source[hidden]{display:none!important}
     .video-dialog-attribution,.video-dialog-note{min-width:0;overflow-wrap:anywhere}
     .video-dialog-note{margin:0}
     html.wellness-modal-open,body.wellness-modal-open{overflow:hidden!important;overscroll-behavior:none}
@@ -105,11 +150,91 @@
         .article-dialog-actions{padding:.8rem}
         .video-dialog-panel{width:100%;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);border-radius:13px}
         .video-dialog-head{padding:.7rem .8rem}
-        .video-player-frame{max-height:calc(90dvh - 6.5rem)}
+        .video-player-frame{max-height:calc(90dvh - 11rem)}
         .video-dialog-attribution{padding:.2rem .8rem 0}
         .video-dialog-note{padding:.65rem .8rem .8rem}
     }
     @media(prefers-reduced-motion:reduce){.video-hover-preview{transition:none}}
+
+    /* Compact resource discovery: preserve choices while reducing scroll and repeated copy. */
+    .wellness-hub{padding:.65rem .25rem 2rem}
+    .wellness-breadcrumb{margin-bottom:.5rem;font-size:.74rem}
+    .wellness-hero{height:236px;min-height:236px;border-radius:20px;box-shadow:0 10px 28px rgba(10,65,51,.08)}
+    .wellness-hero-copy-wrap{padding:1.3rem clamp(1.2rem,3vw,2.5rem)}
+    .wellness-hero h1{max-width:490px;margin:.55rem 0 .45rem;font-size:clamp(2.15rem,3.9vw,3.25rem);line-height:.98}
+    .wellness-hero-copy{max-width:430px;font-family:inherit;font-size:.94rem;line-height:1.45}
+    .hero-proof,.hero-note,.hero-wellbeing-badge{display:none!important}
+    .wellness-search-panel{margin:-.85rem clamp(.5rem,1.5vw,1.1rem) 0;padding:.58rem .68rem .62rem;border-radius:14px;box-shadow:0 8px 20px rgba(9,63,52,.09)}
+    .wellness-search-main{gap:.45rem}.wellness-search-input{gap:.55rem;padding-inline:.75rem}
+    .wellness-search-input input,.wellness-button{min-height:2.75rem}.wellness-button{padding:.5rem .75rem}
+    .wellness-search-options{padding:.5rem .15rem 0;font-size:.7rem}.wellness-opt-ins{gap:.4rem 1rem;width:100%}
+    .public-source-toggle{gap:.45rem;align-items:center}.public-source-toggle input{width:2rem;height:1.18rem;margin:0}
+    .public-source-toggle input:before{width:.86rem;height:.86rem}.public-source-toggle input:checked:before{transform:translateX(.82rem)}
+    .public-source-toggle strong{font-size:.74rem}.public-source-toggle small{font-size:.65rem;line-height:1.25}
+    .wellness-search-privacy{max-width:none;font-size:.65rem;line-height:1.3}
+    .wellness-section{margin-top:1.25rem}.wellness-section-head{margin:0 .1rem .55rem}
+    .wellness-section-head h2{font-size:1.35rem;line-height:1.1}.featured-audio{margin:1.2rem .1rem 0}
+    .featured-audio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}
+    .featured-audio-card{height:100%;min-height:82px;flex-direction:row;border-radius:12px;box-shadow:0 3px 10px rgba(16,63,50,.04)}
+    .featured-audio-card:hover{transform:translateY(-1px);box-shadow:0 7px 15px rgba(16,63,50,.08)}
+    .featured-audio-image{width:68px;height:auto;min-height:82px;flex:0 0 68px}.featured-audio-image:after{background:linear-gradient(0deg,rgba(6,54,42,.2),transparent 65%)}
+    .featured-audio-mark{left:.35rem;bottom:.35rem;width:1.55rem;height:1.55rem}.featured-audio-mark svg{width:.85rem;height:.85rem}
+    .featured-audio-body{justify-content:center;padding:.48rem .52rem}.featured-audio-meta{font-size:.58rem;letter-spacing:.035em}
+    .featured-audio-body h3{display:-webkit-box;overflow:hidden;margin:.18rem 0;color:#103f32;font-size:.75rem;line-height:1.22;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+    .featured-audio-source{font-size:.63rem;line-height:1.2}.featured-audio-note{margin:.32rem .1rem 0;font-size:.65rem;line-height:1.3}
+    .resource-results{margin-top:1.1rem}.resource-results[hidden]{display:none!important}
+    .resource-results-heading{margin-bottom:.65rem}.resource-results-heading h2{font-size:1.45rem}
+    .resource-results-heading p,.result-group-heading p{font-size:.76rem}.result-group{margin:.8rem 0 1rem}
+    .topic-discovery{grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}
+    .topic-card{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:center;min-height:76px;justify-content:initial;border-radius:12px}
+    .topic-card-photo{grid-row:1;grid-column:1;width:48px;height:48px;margin:.45rem;aspect-ratio:1;border-radius:9px}
+    .topic-card-icon{display:none}.topic-card-copy{grid-row:1;grid-column:2;min-height:0;padding:.45rem 1.8rem .45rem .1rem}
+    .topic-card-title{font-family:inherit;font-size:.76rem;line-height:1.2}.topic-card-description{margin-top:.15rem;font-size:.64rem;line-height:1.25;-webkit-line-clamp:2}
+    .topic-card-arrow{right:.35rem;bottom:.35rem;width:1.35rem;height:1.35rem;font-size:.85rem}
+    .support-directory{margin-top:1rem;padding-top:.7rem;border-top:1px solid #dcebe4}
+    .support-directory-summary{display:flex;align-items:center;justify-content:space-between;gap:.7rem;list-style:none;padding:.62rem .78rem;border:1px solid #dce8dc;border-radius:11px;background:#fff;color:#174c3b;cursor:pointer}
+    .support-directory-summary::-webkit-details-marker{display:none}.support-directory-summary strong{display:block;font-size:.8rem}
+    .support-directory-summary small{display:block;margin-top:.1rem;color:#73817c;font-size:.67rem}
+    .support-directory-chevron{font-size:1.1rem;transition:transform .16s ease}.support-directory[open] .support-directory-chevron{transform:rotate(45deg)}
+    .support-directory-content{padding-top:.75rem}.support-directory .wellness-section-head h2{font-size:1.25rem}
+    .support-note{margin-bottom:.65rem;padding:.55rem .7rem;font-size:.75rem;line-height:1.4}.support-grid{gap:.55rem}
+    .support-card{gap:.5rem;padding:.65rem}.support-mark{width:1.8rem;height:1.8rem}
+    .support-card h3{font-size:.8rem}.support-card p{font-size:.68rem}
+    .wellness-footer-note{margin-top:.8rem;font-size:.68rem}
+    @media(max-width:820px){
+        .wellness-hub{padding:.55rem 0 1.5rem}.wellness-hero{height:220px;min-height:220px;grid-template-columns:1fr}
+        .wellness-hero:before{inset:0 36% 0 0}.wellness-hero-copy-wrap{justify-content:center;padding:1.1rem 1.25rem}
+        .wellness-hero h1{max-width:390px;font-size:clamp(2rem,7vw,2.8rem)}.wellness-hero-copy{max-width:330px;font-size:.86rem}
+        .wellness-hero-art{inset:0 0 0 42%}.wellness-hero-art:before{background:linear-gradient(90deg,#eff7eb 0%,rgba(239,247,235,.62) 20%,rgba(239,247,235,0) 62%)}
+        .wellness-search-panel{margin:-.75rem .55rem 0}.topic-discovery{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:620px){
+        .wellness-breadcrumb{padding-left:.15rem}.wellness-hero{height:190px;min-height:190px;border-radius:15px}
+        .wellness-hero-copy-wrap{padding:.9rem 1rem}.wellness-eyebrow{font-size:.61rem;letter-spacing:.1em}
+        .wellness-hero h1{max-width:255px;margin:.4rem 0;font-size:2rem}.wellness-hero-copy{max-width:250px;font-size:.77rem;line-height:1.35}
+        .wellness-hero-art{inset:0 0 0 48%}.wellness-hero-art:before{background:linear-gradient(90deg,#eff7eb 0%,rgba(239,247,235,.8) 12%,rgba(239,247,235,.03) 74%)}
+        .wellness-search-panel{margin:-.65rem .35rem 0;padding:.48rem;border-radius:12px}.wellness-search-main{gap:.35rem}
+        .wellness-search-input{flex-basis:auto;gap:.4rem;padding-inline:.55rem}.wellness-search-input input{min-height:2.55rem;font-size:.79rem}
+        .search-submit{width:2.55rem;min-width:2.55rem;flex-basis:2.55rem;min-height:2.55rem}
+        .wellness-button.secondary{min-height:2.55rem;padding:.35rem .48rem;font-size:.7rem}
+        .wellness-search-options{padding:.42rem .1rem 0}.wellness-opt-ins{grid-template-columns:1fr;gap:.35rem}
+        .public-source-toggle strong{font-size:.7rem}.public-source-toggle small{font-size:.61rem}.wellness-search-privacy{font-size:.6rem}
+        .featured-audio{margin-top:.9rem}
+        .featured-audio-grid{grid-auto-flow:column;grid-auto-columns:min(78vw,270px);grid-template-columns:none;gap:.45rem;overflow-x:auto;padding:.05rem .05rem .3rem;scroll-snap-type:x proximity}
+        .featured-audio-card{min-height:72px;scroll-snap-align:start}.featured-audio-image{width:58px;min-height:72px;flex-basis:58px}
+        .featured-audio-body{padding:.38rem .45rem}.featured-audio-meta{font-size:.54rem}
+        .featured-audio-body h3{font-size:.71rem}.featured-audio-source{font-size:.6rem}.featured-audio-note{font-size:.61rem}
+        .wellness-section{margin-top:.95rem}.wellness-section-head{display:flex;align-items:center;margin-bottom:.45rem}
+        .wellness-section-head h2{font-size:1.2rem}
+        .topic-discovery{grid-auto-flow:column;grid-auto-columns:min(76vw,265px);grid-template-columns:none;gap:.45rem;overflow-x:auto;padding:.05rem .05rem .3rem;scroll-snap-type:x proximity}
+        .topic-card{min-height:70px;scroll-snap-align:start}.topic-card-photo{width:44px;height:44px;margin:.4rem}
+        .topic-card-title{font-size:.72rem}.topic-card-description{font-size:.61rem}
+        .support-grid{grid-template-columns:1fr}.support-directory .wellness-section-head{display:flex;align-items:center}
+        .support-directory .wellness-section-action{margin:0;font-size:.7rem}.wellness-footer-note{margin-top:.7rem}
+    }
+    @media(prefers-reduced-motion:reduce){.support-directory-chevron{transition:none}}
+    @media(max-width:620px){.wellness-hero-art{inset:0 0 0 48%}}
 </style>
 
 <div class="wellness-hub" data-wellness-hub>
@@ -118,42 +243,69 @@
     <section class="wellness-hero" aria-labelledby="wellness-title" data-wellness-reveal>
         <div class="wellness-hero-copy-wrap">
             <span class="wellness-eyebrow">Wellness resource library</span>
-            <h1 id="wellness-title">Explore Your<br>Wellness</h1>
-            <p class="wellness-hero-copy">Discover trusted information, practical insights, and resources to support your everyday wellbeing at MAGIREM AI.</p>            <div class="hero-proof" aria-label="Resource qualities">
-                <span class="hero-proof-item"><span class="hero-proof-mark" aria-hidden="true">&#10023;</span>Evidence-informed content</span>
-                <span class="hero-proof-item"><span class="hero-proof-mark" aria-hidden="true">&#9676;</span>Practical tools for daily life</span>
-                <span class="hero-proof-item"><span class="hero-proof-mark" aria-hidden="true">&#8984;</span>Created for students, by experts</span>
-            </div>
+            <h1 id="wellness-title">Wellness, at your pace.</h1>
+            <p class="wellness-hero-copy">Helpful reads, calming audio, and practical tools for student life.</p>
         </div>
         <div class="wellness-hero-art" aria-hidden="true">
             <img src="{{ asset('images/wellness/hero-student-journal-v1.png') }}" alt="">
-            <span class="hero-note">Small steps<br>brighter days</span>
-            <span class="hero-wellbeing-badge">Your wellbeing<br>matters here.</span>
         </div>
     </section>
 
     <form class="wellness-search-panel" action="{{ route('student.resources') }}" method="get" data-wellness-search data-search-url="{{ route('student.resources.search') }}" aria-label="Search wellness resources">
         <div class="wellness-search-main">
-            <label class="wellness-search-input" for="wellness-query"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m16 16 4.2 4.2"></path></svg><span class="sr-only">Search wellness resources</span><input id="wellness-query" type="search" name="q" maxlength="120" value="{{ $searchQuery }}" placeholder="Try &quot;stress management&quot;, &quot;better sleep&quot;, &quot;anxiety&quot;, &quot;journaling&quot;, and more..." autocomplete="off"></label>
+            <label class="wellness-search-input" for="wellness-query"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m16 16 4.2 4.2"></path></svg><span class="sr-only">Search wellness resources</span><input id="wellness-query" type="search" name="q" maxlength="120" value="{{ $searchQuery }}" placeholder="Search stress, sleep, anxiety, and more" autocomplete="off"></label>
             <button class="wellness-button secondary" type="button" data-clear-search {{ $searchQuery === '' ? 'hidden' : '' }}>Clear</button>
             <button class="wellness-button search-submit" type="submit" data-search-button aria-label="Search resources" title="Search resources"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m16 16 4.2 4.2"></path></svg><span class="sr-only">Search library</span></button>
         </div>
         <div class="wellness-search-options">
             <div class="wellness-opt-ins">
-                <label class="public-source-toggle"><input type="checkbox" name="public_sources" value="1" data-public-sources {{ $includePublicSources ? 'checked' : '' }}><span><strong>Include trusted web articles</strong><small>Search MedlinePlus; Europe PMC metadata may appear when enabled.</small></span></label>
-                <label class="public-source-toggle"><input type="checkbox" name="videos" value="1" data-video-sources {{ $includeVideos ? 'checked' : '' }}><span><strong>Include videos &amp; podcasts</strong><small>Search YouTube only after you opt in and submit. @if(empty(config('services.wellness_resources.youtube.api_key'))) YouTube API key is not configured.@elseif(!config('services.wellness_resources.youtube.enabled')) YouTube search is disabled.@else YouTube search is available.@endif</small></span></label>
-                <span class="wellness-search-privacy">Only the search terms you submit are sent to a selected provider—not chat, journal, or account data.</span>
+                <label class="public-source-toggle"><input type="checkbox" name="public_sources" value="1" data-public-sources {{ $includePublicSources ? 'checked' : '' }}><span><strong>Web articles</strong><small>MedlinePlus and eligible research</small></span></label>
+                <label class="public-source-toggle"><input type="checkbox" name="videos" value="1" data-video-sources {{ $includeVideos ? 'checked' : '' }}><span><strong>Videos</strong><small>YouTube @if(empty(config('services.wellness_resources.youtube.api_key'))) not configured @elseif(!config('services.wellness_resources.youtube.enabled')) unavailable @else available @endif</small></span></label>
+                <span class="wellness-search-privacy">Only your submitted search terms are shared—not chats or journal entries.</span>
             </div>
-            <span>Library search stays within MAGIREM AI.</span>
         </div>
     </form>
     <div class="wellness-status" role="status" aria-live="polite" data-search-status></div>
 
-    <section class="resource-results" aria-labelledby="results-title" data-resource-results>
+    <section class="featured-audio" data-featured-audio-section aria-labelledby="featured-audio-title" {{ $hasSearchContext ? 'hidden' : '' }}>
+        <div class="wellness-section-head"><div><h2 id="featured-audio-title">Listen</h2></div></div>
+        <div class="featured-audio-grid">
+            @foreach($featuredAudio as $audio)
+                <article data-featured-audio>
+                    <a class="featured-audio-card" href="{{ $audio['url'] }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" data-featured-player data-player-provider="{{ $audio['player'] }}" data-player-id="{{ $audio['id'] }}" data-player-title="{{ $audio['title'] }}" data-player-source="{{ $audio['source'] }}" aria-label="Play {{ $audio['title'] }} in MAGIREM AI">
+                    <div class="featured-audio-image" aria-hidden="true">
+                        <img src="{{ asset('images/wellness/' . $audio['image']) }}" alt="" loading="lazy" decoding="async">
+                        <span class="featured-audio-mark"><svg viewBox="0 0 24 24"><path d="M4 13v-2a8 8 0 0 1 16 0v2M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg></span>
+                    </div>
+                    <div class="featured-audio-body">
+                        <span class="featured-audio-meta">{{ $audio['topic'] }} &middot; {{ $audio['type'] }}</span>
+                        <h3>{{ $audio['title'] }}</h3>
+                        <p class="featured-audio-source">{{ $audio['source'] }}</p>
+                    </div>
+                    </a>
+                </article>
+            @endforeach
+        </div>
+        <p class="featured-audio-note">Select a card to open its player.</p>
+    </section>
+
+    <section class="resource-results" aria-labelledby="results-title" data-resource-results {{ $hasSearchContext ? '' : 'hidden' }}>
+        <div class="search-loading" data-search-loading hidden aria-hidden="true">
+            <div class="search-loading-heading">
+                <span class="search-loading-spinner"></span>
+                <div><h2>Searching for resources</h2><p data-loading-detail>Checking the sources you selected...</p></div>
+            </div>
+            <div class="search-loading-grid">
+                @for($i = 0; $i < 3; $i++)
+                    <div class="search-loading-card"><div class="skeleton-block short"></div><div class="skeleton-block"></div><div class="skeleton-block short"></div></div>
+                @endfor
+            </div>
+        </div>
+        <div class="search-results-content" data-search-content>
         <div class="resource-results-heading">
             <div>
-                <h2 id="results-title">{{ $hasSearchContext ? 'Search results' : 'Featured local resources' }}</h2>
-                <p data-results-description>{{ $hasSearchContext ? 'Results are grouped by source so you can see where each item came from.' : 'Local educational resources approved for students within MAGIREM AI.' }}</p>
+                <h2 id="results-title">{{ $hasSearchContext ? 'Search results' : 'Results' }}</h2>
+                <p data-results-description>{{ $hasSearchContext ? 'Results from the sources you selected.' : '' }}</p>
             </div>
             <span class="resource-results-count" data-result-count {{ $hasSearchContext ? '' : 'hidden' }}>{{ $totalSearchResultCount }} {{ \Illuminate\Support\Str::plural('resource', $totalSearchResultCount) }}</span>
         </div>
@@ -161,9 +313,27 @@
         <nav class="source-tabs" aria-label="Resource result sources" role="tablist" data-source-tabs {{ $hasSearchContext ? '' : 'hidden' }}>
             <button class="source-tab active" type="button" role="tab" aria-selected="true" data-source-tab="all">All Results <span data-tab-count="all">{{ $totalSearchResultCount }}</span></button>
             <button class="source-tab" type="button" role="tab" aria-selected="false" data-source-tab="library">Library <span data-tab-count="library">{{ $localResultCount }}</span></button>
+            <button class="source-tab" type="button" role="tab" aria-selected="false" data-source-tab="guides" {{ $guideCount ? '' : 'hidden' }}>Selected Guides <span data-tab-count="guides">{{ $guideCount }}</span></button>
             <button class="source-tab" type="button" role="tab" aria-selected="false" data-source-tab="web" {{ ($includePublicSources || $publicResultCount > 0) ? '' : 'hidden' }}>Web Articles <span data-tab-count="web">{{ $publicResultCount }}</span></button>
             <button class="source-tab" type="button" role="tab" aria-selected="false" data-source-tab="videos" {{ ($includeVideos || $videoResultCount > 0) ? '' : 'hidden' }}>Videos &amp; Podcasts <span data-tab-count="videos">{{ $videoResultCount }}</span></button>
         </nav>
+
+        <section class="result-group" data-result-group="guides" {{ $guideCount ? '' : 'hidden' }} aria-labelledby="selected-guides-title">
+            <div class="result-group-heading"><div><h3 id="selected-guides-title">Trusted guides</h3><p>Selected MedlinePlus and NHS guides; not live search results.</p></div></div>
+            <div class="resource-grid" data-curated-guides>
+                @foreach($starterGuides as $guide)
+                    <article class="resource-card" data-curated-guide data-guide-url="{{ $guide['url'] }}" data-guide-keywords="{{ implode('|', $guide['keywords']) }}" {{ $guideMatches($guide) ? '' : 'hidden' }}>
+                        <div class="resource-card-body">
+                            <div class="resource-badge-row"><span class="resource-badge public">{{ $guide['provider'] }}</span><span class="resource-badge">Selected guide</span></div>
+                            <h3>{{ $guide['title'] }}</h3>
+                            <p class="resource-description">{{ $guide['description'] }}</p>
+                            <p class="resource-attribution">External source &middot; Opens in a new tab</p>
+                            <div class="resource-actions"><a class="resource-link external" href="{{ $guide['url'] }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Read at {{ $guide['provider'] }}</a></div>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </section>
 
         <div class="result-group" data-result-group="library">
             <div class="result-group-heading"><div><h3>MAGIREM AI Library</h3><p>Curated resources available in this platform.</p></div></div>
@@ -197,7 +367,7 @@
                         </div>
                     </article>
                 @empty
-                    @if($hasSearchContext && ($publicResultCount + $videoResultCount) > 0)
+                    @if($hasSearchContext && ($publicResultCount + $videoResultCount + $guideCount) > 0)
                         <p class="library-empty-note" data-library-empty>No library matches this query. Other selected sources have results.</p>
                     @else
                         <div class="wellness-empty" data-local-empty><strong>{{ $hasSearchContext ? 'No library matches.' : 'No local resources are available yet.' }}</strong> {{ $hasSearchContext ? 'Try a related topic, or include optional sources to broaden discovery.' : 'Check back soon for approved student wellness resources.' }}</div>
@@ -207,7 +377,7 @@
         </div>
 
         <section class="result-group" data-result-group="web" data-public-results {{ $includePublicSources ? '' : 'hidden' }} aria-labelledby="public-results-title">
-            <div class="result-group-heading"><div><h3 id="public-results-title">Trusted web articles</h3><p>MedlinePlus provides health-topic summaries. Europe PMC abstracts appear only when the record provides a supported explicit reuse license; other records stay metadata-only.</p></div><span class="resource-provider-state" data-web-provider-state>{{ $providerStatus['web']['available'] ? 'Provider responded' : ($includePublicSources ? 'Source status unavailable' : 'Opt-in to search') }}</span></div>
+            <div class="result-group-heading"><div><h3 id="public-results-title">Trusted web articles</h3><p>MedlinePlus summaries and eligible Europe PMC records.</p></div><span class="resource-provider-state" data-web-provider-state>{{ $providerStatus['web']['available'] ? 'Provider responded' : ($includePublicSources ? 'Source status unavailable' : 'Opt-in to search') }}</span></div>
             <div class="resource-grid" data-public-grid>
                 @foreach($remoteResults as $result)
                     <article class="resource-card article-card">
@@ -240,7 +410,7 @@
         </section>
 
         <section class="result-group" data-result-group="videos" data-video-results {{ $includeVideos ? '' : 'hidden' }} aria-labelledby="video-results-title">
-            <div class="result-group-heading"><div><h3 id="video-results-title">Videos &amp; podcasts</h3><p>Videos are discovered through the official YouTube API. Hover over a video for a muted preview; this loads YouTube only after hover. On touchscreens, tap to open the player. Search results are not endorsements.</p></div><span class="resource-provider-state" data-video-provider-state>{{ $providerStatus['videos']['available'] ? 'YouTube responded' : ($includeVideos ? 'YouTube unavailable' : 'Opt-in to search') }}</span></div>
+            <div class="result-group-heading"><div><h3 id="video-results-title">Videos &amp; podcasts</h3><p>Search results are not endorsements. Select a video to play it here.</p></div><span class="resource-provider-state" data-video-provider-state>{{ $providerStatus['videos']['available'] ? 'YouTube responded' : ($includeVideos ? 'YouTube unavailable' : 'Opt-in to search') }}</span></div>
             <div class="resource-grid" data-video-grid>
                 @foreach($videoResults as $video)
                     <article class="resource-card video-card">
@@ -266,6 +436,7 @@
                 @endif
             @endif
         </div>
+        </div>
     </section>
 
     <dialog class="video-dialog wellness-modal" data-video-dialog aria-labelledby="video-dialog-title">
@@ -273,7 +444,8 @@
         <div class="video-dialog-head"><h2 id="video-dialog-title" data-video-dialog-title>Play video</h2><button type="button" class="video-dialog-close" data-close-video aria-label="Close video player"><span aria-hidden="true">×</span></button></div>
         <div class="video-player-frame" data-video-frame></div>
         <p class="video-dialog-attribution" data-video-attribution></p>
-        <p class="video-dialog-note">Embedded using YouTube's privacy-enhanced player. Playback begins only after you choose Play here.</p>
+        <p class="video-dialog-note" data-video-note>Embedded using YouTube's privacy-enhanced player. Playback begins only after you choose Play here.</p>
+        <a class="video-dialog-source" data-video-source target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" hidden>Player unavailable? Open the original source &nearr;</a>
         </section>
     </dialog>
 
@@ -289,15 +461,8 @@
         </section>
     </dialog>
 
-    <div class="wellness-topic-strip" aria-label="Quick wellness topics" data-topic-chips>
-        <span class="topic-strip-label">Popular topics</span>
-        @foreach(['Stress', 'Sleep', 'Anxiety', 'Journaling', 'Self-care', 'Academic Pressure', 'Burnout'] as $topic)
-            <button class="topic-chip" type="button" data-topic="{{ $topic }}">{{ $topic }}</button>
-        @endforeach
-    </div>
-
     <section class="wellness-section" aria-labelledby="explore-title" data-wellness-reveal>
-        <div class="wellness-section-head"><div><h2 id="explore-title">Explore by topic</h2><p>Dive into curated resources, articles, and tools to support what matters most to you.</p></div><a class="wellness-section-action" href="{{ route('student.resources') }}">View all topics <span aria-hidden="true">&rarr;</span></a></div>
+        <div class="wellness-section-head"><div><h2 id="explore-title">Explore a topic</h2></div><span class="wellness-section-action">Choose one to search</span></div>
         <div class="topic-discovery" data-topic-discovery>
             @foreach([
                 ['Stress management', 'Stress', 'Learn strategies to manage stress and feel more in control.', 'topic-stress-outdoors-v1.png'],
@@ -305,30 +470,33 @@
                 ['Anxiety education', 'Anxiety', 'Understand anxiety and find practical ways to cope.', 'topic-anxiety-education-v1.png'],
                 ['Journaling & reflection', 'Journaling', 'Discover how journaling can support your mental wellbeing.', 'topic-journaling-reflection-v1.png'],
             ] as [$title, $topic, $description, $image])
-                <button class="topic-card" type="button" data-topic="{{ $topic }}">
+                <a class="topic-card" href="{{ route('student.resources', ['q' => $topic]) }}#results-title" data-topic="{{ $topic }}">
                     <span class="topic-card-photo"><img src="{{ asset('images/wellness/' . $image) }}" alt="" loading="lazy" decoding="async"></span>
                     <span class="topic-card-icon" aria-hidden="true"></span>
                     <span class="topic-card-copy"><span class="topic-card-title">{{ $title }}</span><span class="topic-card-description">{{ $description }}</span></span>
                     <span class="topic-card-arrow" aria-hidden="true">&rarr;</span>
-                </button>
+                </a>
             @endforeach
         </div>
     </section>
 
-    <section class="wellness-section support-directory" id="support-directory" aria-labelledby="support-title" data-wellness-reveal>
-        <div class="wellness-section-head"><div><h2 id="support-title">Trusted support &amp; organizations</h2><p>Explore reputable organizations and support pathways for additional guidance.</p></div><a class="wellness-section-action" href="{{ route('student.counseling-requests') }}">Request university counseling <span aria-hidden="true">&rarr;</span></a></div>
-        <p class="support-note">Directory entries can change. Confirm each organization&apos;s current service, eligibility, and contact details directly. For immediate danger, use <a href="{{ route('student.emergency-resources') }}">Emergency Resources</a>.</p>
-        <div class="support-grid">
-            @foreach($supportOrganizations as $organization)
-                <article class="support-card"><span class="support-mark" aria-hidden="true"></span><div class="support-card-content"><h3>{{ $organization['name'] }}</h3><p class="support-type">{{ $organization['type'] }}</p><p>{{ $organization['description'] }}</p></div><a class="support-arrow" href="{{ $organization['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="Visit {{ $organization['name'] }}"><span aria-hidden="true">&rarr;</span></a></article>
-            @endforeach
+    <details class="wellness-section support-directory" id="support-directory" data-wellness-reveal>
+        <summary class="support-directory-summary"><span><strong>Trusted support directory</strong><small>Organizations and help options</small></span><span class="support-directory-chevron" aria-hidden="true">+</span></summary>
+        <div class="support-directory-content" aria-labelledby="support-title">
+            <div class="wellness-section-head"><div><h2 id="support-title">Trusted support &amp; organizations</h2></div><a class="wellness-section-action" href="{{ route('student.counseling-requests') }}">Request university counseling <span aria-hidden="true">&rarr;</span></a></div>
+            <p class="support-note">Confirm current services directly. For immediate danger, use <a href="{{ route('student.emergency-resources') }}">Emergency Resources</a>.</p>
+            <div class="support-grid">
+                @foreach($supportOrganizations as $organization)
+                    <article class="support-card"><span class="support-mark" aria-hidden="true"></span><div class="support-card-content"><h3>{{ $organization['name'] }}</h3><p class="support-type">{{ $organization['type'] }}</p><p>{{ $organization['description'] }}</p></div><a class="support-arrow" href="{{ $organization['url'] }}" target="_blank" rel="noopener noreferrer" aria-label="Visit {{ $organization['name'] }}"><span aria-hidden="true">&rarr;</span></a></article>
+                @endforeach
+            </div>
         </div>
-    </section>
+    </details>
 
-    <p class="wellness-footer-note">Your local catalog search remains in MAGIREM AI. External discovery is optional and uses only approved HTTPS providers. Do not enter names, private messages, journals, crisis details, appointments, or other personal information into a public search.</p>
+    <p class="wellness-footer-note">Search shares only the terms you submit—not your chats or journal entries.</p>
 </div>
 
-@if(request('section') === 'support')<script>document.getElementById('support-directory')?.scrollIntoView({behavior:'smooth',block:'start'});</script>@endif
+@if(request('section') === 'support')<script>const supportDirectory=document.getElementById('support-directory');if(supportDirectory){supportDirectory.open=true;supportDirectory.scrollIntoView({behavior:'smooth',block:'start'});}</script>@endif
 <script>
 (() => {
     const form = document.querySelector('[data-wellness-search]');
@@ -346,6 +514,11 @@
     const publicStatus = document.querySelector('[data-public-status]');
     const videoStatus = document.querySelector('[data-video-status]');
     const status = document.querySelector('[data-search-status]');
+    const resultsSection = document.querySelector('[data-resource-results]');
+    const loadingPanel = document.querySelector('[data-search-loading]');
+    const loadingDetail = document.querySelector('[data-loading-detail]');
+    const resultsContent = document.querySelector('[data-search-content]');
+    const featuredAudioSection = document.querySelector('[data-featured-audio-section]');
     const related = document.querySelector('[data-related-topics]');
     const resultsHeading = document.querySelector('#results-title');
     const resultsDescription = document.querySelector('[data-results-description]');
@@ -358,6 +531,8 @@
     const videoDialogTitle = document.querySelector('[data-video-dialog-title]');
     const videoFrame = document.querySelector('[data-video-frame]');
     const videoAttribution = document.querySelector('[data-video-attribution]');
+    const videoNote = document.querySelector('[data-video-note]');
+    const videoSource = document.querySelector('[data-video-source]');
     const closeVideoButton = document.querySelector('[data-close-video]');
     const articleDialog = document.querySelector('[data-article-dialog]');
     const articleDialogTitle = document.querySelector('[data-article-title]');
@@ -372,10 +547,12 @@
     let pendingController = null;
     let debounceTimer = null;
     let requestSequence = 0;
-    let preservedLocalNodes = [];
+    let slowSearchTimer = null;
+    let previousFeaturedAudioHidden = featuredAudioSection?.hidden ?? true;
     let activeSourceTab = 'all';
     let sourceAvailability = {
         library: true,
+        guides: @json($guideCount > 0),
         web: @json($includePublicSources || $publicResultCount > 0),
         videos: @json($includeVideos || $videoResultCount > 0),
     };
@@ -746,7 +923,20 @@
             if (image.complete && image.naturalWidth === 0) replaceWithTypeMark();
         });
     }
-    function setLoading() { preservedLocalNodes = Array.from(localGrid.childNodes, (node) => node.cloneNode(true)); localGrid.setAttribute('aria-busy', 'true'); }
+    function setLoading(isLoading, detail = '') {
+        if (isLoading) resultsSection?.removeAttribute('hidden');
+        if (isLoading && featuredAudioSection) {
+            if (loadingPanel?.hidden) previousFeaturedAudioHidden = featuredAudioSection.hidden;
+            featuredAudioSection.hidden = true;
+        } else if (featuredAudioSection) featuredAudioSection.hidden = previousFeaturedAudioHidden;
+        if (loadingPanel) loadingPanel.hidden = !isLoading;
+        if (resultsContent) resultsContent.hidden = isLoading;
+        if (loadingDetail) loadingDetail.textContent = detail;
+        if (isLoading) resultsSection?.setAttribute('aria-busy', 'true');
+        else resultsSection?.removeAttribute('aria-busy');
+        button.disabled = isLoading;
+        button.setAttribute('aria-label', isLoading ? 'Searching resources' : 'Search resources');
+    }
     function setStatus(message = '', type = '') { status.textContent = message; status.className = ['wellness-status', type].filter(Boolean).join(' '); }
     function renderRelated(topics) { related.replaceChildren(); if (!topics?.length || input.value.trim() === '') return; related.append(document.createTextNode('Related topics: ')); topics.slice(0, 4).forEach((topic, index) => { const chip = element('button', ['topic-chip']); chip.type = 'button'; chip.textContent = topic; chip.dataset.topic = topic; related.append(chip); if (index < Math.min(topics.length, 4) - 1) related.append(document.createTextNode(' ')); }); }
     function updateUrl(query, includePublic, includeVideos, push = false) {
@@ -759,11 +949,23 @@
         (push ? window.history.pushState : window.history.replaceState).call(window.history, {}, '', url);
     }
     function updateCategoryUI() { document.querySelectorAll('[data-category]').forEach((node) => node.classList.toggle('active', (node.dataset.category || '') === category)); }
+    function filterCuratedGuides(query, selectedCategory, publicItems) {
+        const normalized = String(query || '').trim().toLocaleLowerCase();
+        const returnedUrls = new Set((publicItems || []).map((item) => String(item.source_url || '').replace(/\/$/, '')));
+        let count = 0;
+        document.querySelectorAll('[data-curated-guide]').forEach((card) => {
+            const keywords = (card.dataset.guideKeywords || '').split('|');
+            const matched = !selectedCategory && !returnedUrls.has((card.dataset.guideUrl || '').replace(/\/$/, '')) && (!normalized || keywords.some((keyword) => normalized.includes(keyword)));
+            card.hidden = !matched;
+            if (matched) count++;
+        });
+        return count;
+    }
     function applySourceTab() {
         if (sourceTabs) sourceTabs.hidden = !input.value.trim() && !category;
         sourceTabButtons.forEach((tab) => {
             const key = tab.dataset.sourceTab;
-            tab.hidden = key === 'web' ? !sourceAvailability.web : key === 'videos' ? !sourceAvailability.videos : false;
+            tab.hidden = key === 'guides' ? !sourceAvailability.guides : key === 'web' ? !sourceAvailability.web : key === 'videos' ? !sourceAvailability.videos : false;
             const selected = key === activeSourceTab;
             tab.classList.toggle('active', selected); tab.setAttribute('aria-selected', selected ? 'true' : 'false');
         });
@@ -776,16 +978,19 @@
         if (localEmpty) localEmpty.hidden = (input.value.trim() !== '' || Boolean(category)) && activeSourceTab === 'all';
     }
     function render(data, preserveOptIns = false, historyMode = 'replace') {
-        localGrid.removeAttribute('aria-busy'); localGrid.replaceChildren(); preservedLocalNodes = [];
+        localGrid.replaceChildren();
         const localItems = data.local?.items || [];
         const publicItems = data.public || [];
         const videoItems = data.videos || [];
         const libraryCount = Number(data.counts?.library ?? data.local?.pagination?.total ?? 0);
         const webCount = Number(data.counts?.web ?? publicItems.length);
         const videosCount = Number(data.counts?.videos ?? videoItems.length);
-        const total = Number(data.counts?.all ?? (libraryCount + webCount + videosCount));
+        const guideCount = filterCuratedGuides(data.query, data.category, publicItems);
+        const total = Number(data.counts?.all ?? (libraryCount + webCount + videosCount)) + guideCount;
         const hasContext = Boolean(data.query || data.category);
-        sourceAvailability = {library: true, web: Boolean(data.public_requested || webCount), videos: Boolean(data.videos_requested || videosCount)};
+        if (resultsSection) resultsSection.hidden = !hasContext;
+        previousFeaturedAudioHidden = hasContext;
+        sourceAvailability = {library: true, guides: guideCount > 0, web: Boolean(data.public_requested || webCount), videos: Boolean(data.videos_requested || videosCount)};
         activeSourceTab = 'all';
         if (localItems.length) localItems.forEach((item) => localGrid.append(resourceCard(item, 'library')));
         else localGrid.append(emptyState('No library matches this query. Try a related topic or select an optional source.', true));
@@ -805,10 +1010,11 @@
         if (videoState) videoState.textContent = data.providers?.videos?.available ? 'YouTube responded' : (data.videos_requested ? 'YouTube unavailable' : 'Opt in to search');
         document.querySelector('[data-tab-count="all"]').textContent = String(total);
         document.querySelector('[data-tab-count="library"]').textContent = String(libraryCount);
+        document.querySelector('[data-tab-count="guides"]').textContent = String(guideCount);
         document.querySelector('[data-tab-count="web"]').textContent = String(webCount);
         document.querySelector('[data-tab-count="videos"]').textContent = String(videosCount);
-        if (resultsHeading) resultsHeading.textContent = data.query ? `Results for “${data.query}”` : (data.category ? `Results in ${data.category}` : 'Featured local resources');
-        if (resultsDescription) resultsDescription.textContent = hasContext ? 'Browse everything together or narrow by source. Counts reflect results returned by each source.' : 'Local educational resources approved for students within MAGIREM AI.';
+        if (resultsHeading) resultsHeading.textContent = data.query ? `Results for “${data.query}”` : (data.category ? `Results in ${data.category}` : 'Start exploring');
+        if (resultsDescription) resultsDescription.textContent = hasContext ? 'Browse selected guides and results from the sources you chose.' : 'Browse selected public guides and resources available in MAGIREM AI.';
         if (resultCount) { resultCount.textContent = `${total} ${total === 1 ? 'resource' : 'resources'}`; resultCount.hidden = !hasContext; }
         if (clearButton) clearButton.hidden = input.value.trim() === '';
         const hasProviderError = (data.errors || []).length > 0;
@@ -836,25 +1042,33 @@
         clearTimeout(debounceTimer); const sequence = ++requestSequence;
         if (pendingController) pendingController.abort(); pendingController = new AbortController();
         const params = new URLSearchParams(); if (input.value.trim()) params.set('q', input.value.trim()); if (category) params.set('category', category); if (includePublic && input.value.trim()) params.set('public_sources', '1'); if (includeVideos && input.value.trim()) params.set('videos', '1');
-        setLoading(); setStatus(includeVideos ? 'Searching the library and selected web/video sources...' : includePublic ? 'Searching the library and trusted web sources...' : 'Searching the local library...'); button.disabled = true;
+        const sources = ['MAGIREM AI library'];
+        if (includePublic && input.value.trim()) sources.push('trusted web articles');
+        if (includeVideos && input.value.trim()) sources.push('videos and podcasts');
+        const detail = `Checking ${sources.join(', ')}. Previous results will return if the search fails.`;
+        setLoading(true, detail); setStatus(`Searching ${sources.join(', ')}...`, 'loading');
+        clearTimeout(slowSearchTimer);
+        slowSearchTimer = setTimeout(() => {
+            if (sequence === requestSequence) setStatus('Still searching the selected sources. This may take a little longer.', 'loading');
+        }, 8000);
         try {
             const response = await fetch(`${searchUrl}?${params.toString()}`, {headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}, credentials: 'same-origin', signal: pendingController.signal});
             if (!response.ok) throw new Error(`Search request failed (${response.status}).`);
             const data = await response.json(); if (sequence !== requestSequence) return; render(data, preserveOptIns || !input.value.trim(), historyMode);
         } catch (error) {
             if (sequence !== requestSequence || error.name === 'AbortError') return;
-            localGrid.removeAttribute('aria-busy'); if (preservedLocalNodes.length) localGrid.replaceChildren(...preservedLocalNodes); setStatus('We could not update the resource search right now. Your current results are still available.', 'error');
-        } finally { if (sequence === requestSequence) { pendingController = null; button.disabled = false; } }
+            setStatus('We could not update the resource search right now. Your previous results are still available. Please try again.', 'error');
+        } finally {
+            if (sequence === requestSequence) { clearTimeout(slowSearchTimer); slowSearchTimer = null; pendingController = null; setLoading(false); }
+        }
     }
     function cancelPendingSearch() {
         clearTimeout(debounceTimer);
         ++requestSequence;
         if (pendingController) pendingController.abort();
         pendingController = null;
-        localGrid.removeAttribute('aria-busy');
-        if (preservedLocalNodes.length) localGrid.replaceChildren(...preservedLocalNodes);
-        preservedLocalNodes = [];
-        button.disabled = false;
+        clearTimeout(slowSearchTimer); slowSearchTimer = null;
+        setLoading(false);
     }
     function localDebouncedSearch() {
         cancelPendingSearch();
@@ -873,6 +1087,8 @@
     videoSources.addEventListener('change', () => { cancelPendingSearch(); setStatus(videoSources.checked ? 'YouTube will be searched when you submit. Only this query is sent.' : 'YouTube is off. Press Search to update results.'); });
     clearButton.addEventListener('click', () => { input.value = ''; category = ''; search({includePublic: false, includeVideos: false, preserveOptIns: true, historyMode: 'push'}); input.focus(); });
     document.addEventListener('click', (event) => {
+        const featuredPlayer = event.target.closest('[data-featured-player]');
+        if (featuredPlayer && openFeaturedPlayer(featuredPlayer)) { event.preventDefault(); return; }
         const articleLink = event.target.closest('[data-open-article]');
         if (articleLink && articleDialog?.showModal) { event.preventDefault(); openArticle(articleLink); return; }
         const videoLink = event.target.closest('[data-open-video]');
@@ -937,13 +1153,53 @@
         if (!validVideoId(id) || !videoDialog?.showModal || !videoFrame) return;
         stopHoverPreview({destroy: true});
         lastVideoTrigger = button; videoFrame.replaceChildren(); videoDialogTitle.textContent = button.dataset.videoTitle || 'YouTube video';
+        videoFrame.dataset.playerProvider = 'youtube';
         if (videoAttribution) videoAttribution.textContent = button.dataset.videoChannel ? `Channel: ${button.dataset.videoChannel}` : 'Source: YouTube';
+        if (videoNote) videoNote.textContent = 'Embedded using YouTube’s privacy-enhanced player. If playback is blocked, open the original source.';
+        setPlayerSource(button.href);
         const iframe = document.createElement('iframe');
         iframe.title = `YouTube video: ${videoDialogTitle.textContent}`;
         // This is set only in direct response to the student's Play click.
         iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1`;
         iframe.loading = 'eager'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share'; iframe.allowFullscreen = true;
         videoFrame.append(iframe); lockPageScroll(); videoDialog.showModal(); closeVideoButton?.focus();
+    }
+    function setPlayerSource(url) {
+        if (!videoSource) return;
+        const safeSource = allowedHttps(url);
+        videoSource.hidden = !safeSource;
+        if (safeSource) videoSource.href = safeSource;
+    }
+    function openFeaturedPlayer(trigger) {
+        if (!videoDialog?.showModal || !videoFrame || !videoDialogTitle) return false;
+        const {playerProvider, playerId, playerTitle, playerSource} = trigger.dataset;
+        const isSpotify = playerProvider === 'spotify' && /^[A-Za-z0-9]{22}$/.test(playerId || '');
+        // Only the specific NHS-published anxiety guide is allowed in this player.
+        const isNhs = playerProvider === 'nhs' && playerId === '2163080377001';
+        if (!isSpotify && !isNhs) return false;
+
+        stopHoverPreview({destroy: true});
+        lastVideoTrigger = trigger;
+        videoFrame.replaceChildren();
+        videoFrame.dataset.playerProvider = playerProvider;
+        videoDialogTitle.textContent = playerTitle || 'Audio guide';
+        if (videoAttribution) videoAttribution.textContent = `Source: ${playerSource || (isSpotify ? 'Spotify' : 'NHS')}`;
+        if (videoNote) videoNote.textContent = isSpotify
+            ? 'Press Play in the Spotify player. Availability and sign-in depend on Spotify; use the original source if playback is unavailable.'
+            : 'Press Play in the NHS player, hosted by Brightcove. If playback is unavailable, open the original NHS page.';
+        setPlayerSource(trigger.href);
+        const iframe = document.createElement('iframe');
+        iframe.title = `${isSpotify ? 'Spotify podcast' : 'NHS audio guide'}: ${videoDialogTitle.textContent}`;
+        iframe.src = isSpotify
+            ? `https://open.spotify.com/embed/episode/${encodeURIComponent(playerId)}`
+            : `https://players.brightcove.net/79855382001/EkC1XU82e_default/index.html?videoId=${encodeURIComponent(playerId)}`;
+        iframe.loading = 'eager';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.allow = isSpotify ? 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture' : 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        iframe.allowFullscreen = true;
+        videoFrame.append(iframe);
+        lockPageScroll(); videoDialog.showModal(); closeVideoButton?.focus();
+        return true;
     }
     function closeVideo() { if (videoDialog?.open) videoDialog.close(); }
     videoDialog?.addEventListener('close', () => { videoFrame?.replaceChildren(); if (lastVideoTrigger?.isConnected) lastVideoTrigger.focus(); lastVideoTrigger = null; unlockPageScroll(); });

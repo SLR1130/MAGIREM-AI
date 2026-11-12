@@ -913,8 +913,9 @@ class CounselorController extends Controller
     {
         $notifications = \App\Models\Notification::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->take(20)
-            ->get();
+            ->get(['id', 'user_id', 'type', 'title', 'message', 'icon', 'link', 'is_read', 'priority', 'created_at', 'updated_at']);
 
         $unreadCount = \App\Models\Notification::where('user_id', Auth::id())
             ->where('is_read', false)
@@ -923,7 +924,7 @@ class CounselorController extends Controller
         return response()->json([
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
-        ]);
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     /**

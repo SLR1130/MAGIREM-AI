@@ -69,6 +69,42 @@ class StudentCounselingRequestsTest extends TestCase
         $this->assertNotNull($appointment->appointment_date);
         $this->assertSame('pending', $appointment->status);
     }
+    public function test_new_requests_notify_only_eligible_counselors_without_private_details(): void
+    {
+        $student = User::factory()->create(['role' => 'student']);
+        $assigned = User::factory()->create(['role' => 'counselor', 'is_active' => true]);
+        $other = User::factory()->create(['role' => 'counselor', 'is_active' => true]);
+        $inactive = User::factory()->create(['role' => 'counselor', 'is_active' => false]);
+        $pending = User::factory()->create(['role' => 'counselor', 'is_active' => true, 'approval_status' => 'pending']);
+
+        $this->actingAs($student)->post(route('student.counseling-request'), [
+            'counselor_id' => $assigned->id,
+            'category' => 'academic',
+            'description' => 'Synthetic sensitive appointment concern.',
+        ])->assertRedirect();
+        $appointment = Appointment::where('student_id', $student->id)->latest('id')->firstOrFail();
+        $notice = Notification::where('user_id', $assigned->id)->where('title', 'New appointment request')->firstOrFail();
+        $this->assertStringNotContainsString('Synthetic sensitive', $notice->message);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $other->id, 'link' => $notice->link]);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $inactive->id, 'link' => $notice->link]);
+        NotificationService::appointmentRequested($appointment);
+        $this->assertSame(1, Notification::where('user_id', $assigned->id)->where('link', $notice->link)->count());
+        $this->actingAs($assigned)->getJson(route('counselor.notifications.get'))
+            ->assertOk()->assertJsonFragment(['id' => $notice->id, 'title' => 'New appointment request']);
+        $this->get($notice->link)->assertOk();
+
+        $this->actingAs($student)->post(route('student.request-appointment.submit'), [
+            'category' => 'academic',
+            'reason' => 'Synthetic unassigned appointment request.',
+        ])->assertRedirect();
+        $unassigned = Appointment::where('student_id', $student->id)->latest('id')->firstOrFail();
+        $link = route('counselor.appointments', ['request' => $unassigned->id], false);
+        $this->assertDatabaseHas('notifications', ['user_id' => $assigned->id, 'link' => $link]);
+        $this->assertDatabaseHas('notifications', ['user_id' => $other->id, 'link' => $link]);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $inactive->id, 'link' => $link]);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $pending->id, 'link' => $link]);
+    }
+
     public function test_status_filter_returns_only_requested_display_state(): void
     {
         $student = User::factory()->create(['role' => 'student']);

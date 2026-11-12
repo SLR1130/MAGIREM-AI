@@ -16,10 +16,17 @@
     <title>{{ $pageTitle }}</title>
     <meta name="application-name" content="{{ config('branding.name') }}">
     <meta name="theme-color" content="#103f32">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MAGIREM AI">
+    <script defer src="{{ asset('js/pwa-register.js') }}" data-worker-url="{{ asset('service-worker.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/pwa-install.css') }}">
+    <script defer src="{{ asset('js/pwa-install.js') }}"></script>
     <link rel="icon" type="image/png" sizes="64x64" href="{{ asset(config('branding.assets.favicon')) }}">
     <link rel="icon" type="image/x-icon" href="{{ asset(config('branding.assets.favicon_ico')) }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset(config('branding.assets.touch_icon')) }}">
     <link rel="stylesheet" href="{{ asset('css/branding.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/magirem-responsive.css') }}">
     
     <style>
         :root {
@@ -678,5 +685,6 @@
             }
         });
     </script>
+    @include('partials.pwa-install')
 </body>
 </html>

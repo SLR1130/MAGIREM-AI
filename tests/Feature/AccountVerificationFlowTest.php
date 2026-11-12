@@ -295,7 +295,7 @@ class AccountVerificationFlowTest extends TestCase
         $this->get(route('login'))
             ->assertOk()
             ->assertSee('name@minsu.edu.ph')
-            ->assertSee('Existing administrator credentials remain unchanged');
+            ->assertSee('continue using their existing account credentials');
         $this->post(route('login'), ['email' => $admin->email, 'password' => 'Synthetic-Admin-Password-Only-For-Test'])
             ->assertRedirect(route('admin.dashboard'));
         $this->assertAuthenticatedAs($admin);
@@ -445,6 +445,10 @@ class AccountVerificationFlowTest extends TestCase
         $response = $this->get(route('register'));
         $response->assertOk()
             ->assertSee('Step 1 of 5')
+            ->assertSee('Compact the existing split wizard on laptop and desktop', false)
+            ->assertSee('@media (min-width:901px)', false)
+            ->assertSee('width:min(1120px,100%); min-height:650px; grid-template-columns:43% 57%', false)
+            ->assertSee('.mreg-top { min-height:0; margin:0 0 18px; }', false)
             ->assertSee('Account information')
             ->assertSee('Student information')
             ->assertSee('Personal Gmail')
@@ -497,6 +501,39 @@ class AccountVerificationFlowTest extends TestCase
         $this->assertMatchesRegularExpression('/data-wizard-step="3"[^>]*tabindex="-1"/', $response->getContent());
         $this->assertMatchesRegularExpression('/data-wizard-step="1"[^>]*hidden/', $response->getContent());
         $this->assertDatabaseMissing('users', ['institutional_email' => $identity['email']]);
+    }
+
+    public function test_new_application_notifies_only_authorized_reviewer_via_bell(): void
+    {
+        Mail::fake();
+        Queue::fake();
+        $reviewer = $this->registrationReviewer();
+        $otherAdmin = User::factory()->create(['role' => 'admin']);
+        $inactiveReviewer = User::factory()->create(['role' => 'admin', 'is_active' => false]);
+        config(['services.account_verification.reviewer_user_ids' => [$reviewer->id, $inactiveReviewer->id]]);
+
+        $this->post(route('register.submit'), $this->studentPayload())
+            ->assertRedirect(route('account.status'));
+        $applicant = User::where('email', 'synthetic.student@minsu.edu.ph')->firstOrFail();
+        $this->assertSame('pending', $applicant->approval_status);
+        $notice = \App\Models\Notification::where('user_id', $reviewer->id)
+            ->where('title', 'New student application')->firstOrFail();
+        $this->assertStringNotContainsString($applicant->name, $notice->message);
+        $this->assertStringNotContainsString($applicant->notification_email, $notice->message);
+        $this->assertSame(route('admin.account-verification.show', $applicant, false), $notice->link);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $otherAdmin->id, 'title' => 'New student application']);
+        $this->assertDatabaseMissing('notifications', ['user_id' => $inactiveReviewer->id, 'title' => 'New student application']);
+
+        \App\Services\NotificationService::accountApplicationSubmitted($applicant);
+        $this->assertSame(1, \App\Models\Notification::where('user_id', $reviewer->id)->where('link', $notice->link)->count());
+        $this->actingAs($reviewer)->getJson(route('admin.notifications.get'))
+            ->assertOk()->assertJsonFragment(['id' => $notice->id, 'title' => 'New student application']);
+        $this->postJson(route('admin.notifications.read', $notice->id))->assertOk();
+        $this->assertTrue($notice->fresh()->is_read);
+        $this->get($notice->link)->assertOk();
+        config(['services.account_verification.reviewer_authorization_approved' => false]);
+        \App\Services\NotificationService::accountApplicationSubmitted($applicant);
+        $this->assertSame(1, \App\Models\Notification::where('user_id', $reviewer->id)->where('link', $notice->link)->count());
     }
 
     public function test_student_registration_otp_admin_approval_and_dashboard_access_complete_end_to_end(): void

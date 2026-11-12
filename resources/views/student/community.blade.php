@@ -62,7 +62,6 @@
 .community-layout{display:grid;grid-template-columns:210px minmax(0,1fr) 300px;gap:18px;align-items:start;margin-top:0}
 .community-local-rail{position:sticky;top:94px;padding:8px 0 12px}
 .community-local-brand{display:flex;align-items:center;gap:10px;padding:4px 12px 21px;border-bottom:1px solid var(--line);margin-bottom:16px}
-            <div class="community-local-brand"><span class="community-local-mark" aria-hidden="true">&#10022;</span><div><strong>Circle</strong><small>MinSU community</small></div></div>
 .community-local-brand strong{display:block;color:var(--forest);font-size:15px;letter-spacing:-.3px}.community-local-brand small{display:block;color:#84988d;font-size:9px;margin-top:2px}
 .community-rail-label{margin:0 12px 8px;color:#9aa9a0;font-size:9px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
 .community-rail-link{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;margin:2px 0;border:0;border-radius:11px;background:transparent;color:#5f766b;text-decoration:none;font:inherit;font-size:11px;font-weight:760;text-align:left;transition:background .16s,color .16s,transform .16s}
@@ -182,6 +181,15 @@
 .comment-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px}.comment-report summary{color:var(--muted);font-size:8px;cursor:pointer}.comment-report form{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.comment-report select{max-width:100%;padding:5px;border:1px solid var(--line);border-radius:7px;background:#fff;font:inherit;font-size:8px}
 .community-search input:focus-visible,.sort-controls select:focus-visible{outline:3px solid rgba(244,200,78,.65);outline-offset:2px}
 @media(max-width:720px){.sort-controls{align-items:stretch;flex-wrap:wrap}.sort-controls select{min-width:0;flex:1}.staff-identity-label{font-size:8px}.post-sharing-options{margin-left:15px;margin-right:15px}}
+.community-category-icon{display:inline-block;width:15px;height:15px;flex:0 0 auto;vertical-align:middle}
+.community-local-mark{display:grid;place-items:center}.community-local-mark .community-category-icon{width:18px;height:18px}
+.category{display:inline-flex;align-items:center;gap:6px}
+.space-icon .community-category-icon{width:16px;height:16px}
+.badge-category{display:inline-flex;align-items:center;gap:5px}.badge-category .community-category-icon{width:13px;height:13px}
+.photo-picker .community-category-icon{width:15px;height:15px}
+.empty-logo .community-category-icon{width:25px;height:25px}
+.empty-chip{justify-content:flex-start}.empty-chip .community-category-icon{width:15px;height:15px}
+.care-title .community-category-icon{width:16px;height:16px}
 </style>
 
 @vite('resources/js/community-react.tsx')
@@ -196,13 +204,13 @@
 <div class="community-container {{ $communityView === 'feed' && $messages->count() === 0 ? 'is-empty-feed' : '' }}">
     <div class="community-layout">
         <aside class="community-local-rail" aria-label="Community navigation">
-            <div class="community-local-brand"><span class="community-local-mark" aria-hidden="true">&#10022;</span><div><strong>Circle</strong><small>MinSU student community</small></div></div>
+            <div class="community-local-brand"><span class="community-local-mark" aria-hidden="true"><x-community-category-icon name="sparkles"/></span><div><strong>Circle</strong><small>MinSU student community</small></div></div>
             <div class="community-rail-label">Your space</div>
-            <a class="community-rail-link {{ $communityView === 'feed' ? 'active' : '' }}" href="{{ route('student.community', ['view' => 'feed', 'category' => 'all', 'sort' => $sortBy, 'q' => $search]) }}"><span aria-hidden="true">&#8962;</span><span>Community Feed</span></a>
-            <a class="community-rail-link {{ $communityView === 'mine' ? 'active' : '' }}" href="{{ route('student.community', ['view' => 'mine', 'status' => $myPostStatus]) }}"><span aria-hidden="true">&#9998;</span><span>My Posts</span></a>
-            <a class="community-rail-link" href="{{ route('student.community', ['view' => 'feed']) }}#community-topics"><span aria-hidden="true">&#9675;</span><span>Topics</span></a>
+            <a class="community-rail-link {{ $communityView === 'feed' ? 'active' : '' }}" href="{{ route('student.community', ['view' => 'feed', 'category' => 'all', 'sort' => $sortBy, 'q' => $search]) }}"><x-community-category-icon name="house"/><span>Community Feed</span></a>
+            <a class="community-rail-link {{ $communityView === 'mine' ? 'active' : '' }}" href="{{ route('student.community', ['view' => 'mine', 'status' => $myPostStatus]) }}"><x-community-category-icon name="pencil"/><span>My Posts</span></a>
+            <a class="community-rail-link" href="{{ route('student.community', ['view' => 'feed']) }}#community-topics"><x-community-category-icon name="circle-help"/><span>Topics</span></a>
             <div class="community-rail-label" style="margin-top:22px">Community care</div>
-            <a class="community-rail-link" href="#community-guidelines"><span aria-hidden="true">&#10022;</span><span>Guidelines</span></a>
+            <a class="community-rail-link" href="#community-guidelines"><x-community-category-icon name="shield-check"/><span>Guidelines</span></a>
             <a class="community-rail-create" href="{{ route('student.community', ['view' => 'feed']) }}#community-composer">Create Post</a>
             <div class="community-rail-note"><strong>A space to feel heard.</strong>Share at your own pace. Anonymous posts remain private from other students.</div>
         </aside>
@@ -316,7 +324,7 @@
             </div>
             <div class="community-post-error" id="community-post-error" role="alert" aria-live="polite">@if($errors->has('message') || $errors->has('image') || $errors->has('visual_text') || $errors->has('visual_layout') || $errors->has('resource_id')){{ $errors->first('message') ?: ($errors->first('image') ?: ($errors->first('visual_text') ?: ($errors->first('visual_layout') ?: $errors->first('resource_id')))) }}@endif</div>
             <div class="post-editor-actions">
-                <button type="button" class="photo-picker" data-photo-open><span aria-hidden="true">&#128247;</span> Add photo</button>
+                <button type="button" class="photo-picker" data-photo-open><x-community-category-icon name="image-plus"/> Add photo</button>
                 @if($communityIsStudent)<label class="anonymous-toggle"><input type="checkbox" name="is_anonymous" id="is_anonymous" value="1" @checked(old('is_anonymous', false))><span>Post anonymously</span></label>@else<span class="staff-identity-label">{{ $communityRoleLabel }} · public identity</span>@endif
                 <button type="submit" class="btn-submit">Share post</button>
             </div>
@@ -329,7 +337,7 @@
             <div class="feed-heading"><div><h3>Conversations happening</h3><p>Find discussions where you can share, relate, or offer support.</p></div><form method="GET" action="{{ route('student.community') }}" class="sort-controls"><input type="hidden" name="category" value="{{ $category }}"><input type="hidden" name="q" value="{{ $search }}"><label for="community-sort">Show</label><select id="community-sort" name="sort" aria-label="Sort discussions">@foreach(['recent' => 'Latest posts', 'popular' => 'Most supported', 'trending' => 'Trending', 'active' => 'Recent activity', 'unanswered' => 'Unanswered'] as $sortKey => $sortLabel)<option value="{{ $sortKey }}" @selected($sortBy === $sortKey)>{{ $sortLabel }}</option>@endforeach</select><label class="sr-only" for="community-campus">Campus</label><select id="community-campus" name="campus" onchange="this.form.submit()" aria-label="Filter discussions by campus"><option value="">All campuses</option>@foreach($availableCampuses as $campusOption)<option value="{{ $campusOption }}" @selected($campusFilter === $campusOption)>{{ $campusOption }}</option>@endforeach</select><noscript><button class="action-btn" type="submit">Apply filters</button></noscript></form></div>
             <nav id="community-topics" class="categories" aria-label="Filter discussions by category">
                 <a href="{{ route('student.community', ['category' => 'all', 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}" class="category {{ $category === 'all' ? 'active' : '' }}">All discussions</a>
-                @foreach($categories as $cat)<a href="{{ route('student.community', ['category' => $cat, 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}" class="category {{ $category === $cat ? 'active' : '' }}">{{ config('community.categories.'.$cat.'.icon', '') }} {{ config('community.categories.'.$cat.'.label', ucfirst(str_replace('-', ' ', $cat))) }}</a>@endforeach
+                @foreach($categories as $cat)<a href="{{ route('student.community', ['category' => $cat, 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}" class="category {{ $category === $cat ? 'active' : '' }}"><x-community-category-icon :name="config('community.categories.'.$cat.'.icon', 'sparkles')"/>{{ config('community.categories.'.$cat.'.label', ucfirst(str_replace('-', ' ', $cat))) }}</a>@endforeach
             </nav>
             <div class="messages-grid">
                 @forelse($messages as $message)
@@ -347,7 +355,7 @@
                                 <div class="message-avatar" aria-hidden="true">{{ $publicAnonymous ? 'A' : strtoupper(substr(optional($message->user)->name ?? 'C', 0, 1)) }}</div>
                                 <div class="message-info"><h4>{{ $publicAnonymous ? 'Anonymous student' : optional($message->user)->name ?? 'Community member' }}</h4><p>{{ $message->created_at->diffForHumans() }}</p></div>
                             </div>
-                            <div class="message-badges">@if($message->is_pinned)<span class="badge badge-pinned">Pinned</span>@endif<span class="badge badge-category">{{ $message->getCategoryIcon() }} {{ ucfirst(str_replace('-', ' ', $message->category)) }}</span>@if($publicRoleLabel)<span class="badge badge-role">{{ $publicRoleLabel }}</span>@endif @if($publicAnonymous)<span class="badge badge-anonymous">Anonymous</span>@endif</div>
+                            <div class="message-badges">@if($message->is_pinned)<span class="badge badge-pinned">Pinned</span>@endif<span class="badge badge-category"><x-community-category-icon :name="config('community.categories.'.$message->category.'.icon', 'sparkles')"/> {{ config('community.categories.'.$message->category.'.label', ucfirst(str_replace('-', ' ', $message->category))) }}</span>@if($publicRoleLabel)<span class="badge badge-role">{{ $publicRoleLabel }}</span>@endif @if($publicAnonymous)<span class="badge badge-anonymous">Anonymous</span>@endif</div>
                         </div>
                         @if($message->post_format !== 'visual' && ($message->title || trim((string) $message->message) !== '' || $message->support_label))
                         <div class="message-content">
@@ -384,8 +392,8 @@
                         @php $currentReaction = optional($message->reactions->first())->reaction; @endphp
                         <div class="message-actions">
                             @if($communityCanInteract)
-                                <button type="button" class="action-btn reaction-direct reaction-like {{ $currentReaction === 'like' ? 'active' : '' }}" data-message-id="{{ $message->id }}" data-reaction="like" aria-pressed="{{ $currentReaction === 'like' ? 'true' : 'false' }}"><span aria-hidden="true">&#128077;</span> Like <span class="reaction-count" data-reaction-count="like">{{ $message->like_reactions_count ?? 0 }}</span></button>
-                                <button type="button" class="action-btn reaction-direct reaction-heart {{ $currentReaction === 'heart' ? 'active' : '' }}" data-message-id="{{ $message->id }}" data-reaction="heart" aria-pressed="{{ $currentReaction === 'heart' ? 'true' : 'false' }}"><span aria-hidden="true">&#10084;</span> Heart <span class="reaction-count" data-reaction-count="heart">{{ $message->heart_reactions_count ?? 0 }}</span></button>
+                                <button type="button" class="action-btn reaction-direct reaction-like {{ $currentReaction === 'like' ? 'active' : '' }}" data-message-id="{{ $message->id }}" data-reaction="like" aria-pressed="{{ $currentReaction === 'like' ? 'true' : 'false' }}"><x-community-category-icon name="thumbs-up"/> Like <span class="reaction-count" data-reaction-count="like">{{ $message->like_reactions_count ?? 0 }}</span></button>
+                                <button type="button" class="action-btn reaction-direct reaction-heart {{ $currentReaction === 'heart' ? 'active' : '' }}" data-message-id="{{ $message->id }}" data-reaction="heart" aria-pressed="{{ $currentReaction === 'heart' ? 'true' : 'false' }}"><x-community-category-icon name="heart"/> Heart <span class="reaction-count" data-reaction-count="heart">{{ $message->heart_reactions_count ?? 0 }}</span></button>
                                 <div class="reaction-control">
                                     <button type="button" class="action-btn reaction-trigger" data-message-id="{{ $message->id }}" aria-expanded="false" aria-haspopup="menu">More reactions</button>
                                     <div class="reaction-menu" data-reaction-menu="{{ $message->id }}" hidden role="menu" aria-label="Choose another reaction">
@@ -411,10 +419,10 @@
                     </article>
                 @empty
                     <section class="empty-posts" aria-labelledby="emptyCommunityHeading">
-                        <div class="empty-head"><div class="empty-logo" aria-hidden="true">&#10033;</div><div><div class="card-eyebrow">YOUR COMMUNITY STARTS HERE</div><h3 class="empty-title" id="emptyCommunityHeading">A conversation starts with you.</h3></div></div>
+                        <div class="empty-head"><div class="empty-logo" aria-hidden="true"><x-community-category-icon name="sparkles"/></div><div><div class="card-eyebrow">YOUR COMMUNITY STARTS HERE</div><h3 class="empty-title" id="emptyCommunityHeading">A conversation starts with you.</h3></div></div>
                         <p class="empty-lead">There are no published discussions in this view yet. Ask a question, share something small, or offer a bit of encouragement. You do not need the perfect words to begin.</p>
                         @if($communityCanInteract)
-                        <div class="empty-chips" aria-label="Conversation starters"><button type="button" class="empty-chip" data-empty-prompt="Has anyone else been dealing with...?">Ask a question <span aria-hidden="true">-&gt;</span></button><button type="button" class="empty-chip" data-empty-prompt="A small win I want to celebrate is...">&#127793; Share a small win <span aria-hidden="true">-&gt;</span></button><button type="button" class="empty-chip" data-empty-prompt="One kind thing I would like to share is...">&#128161; Offer encouragement <span aria-hidden="true">-&gt;</span></button></div>
+                        <div class="empty-chips" aria-label="Conversation starters"><button type="button" class="empty-chip" data-empty-prompt="Has anyone else been dealing with...?"> <x-community-category-icon name="circle-help"/> Ask a question <span aria-hidden="true">-&gt;</span></button><button type="button" class="empty-chip" data-empty-prompt="A small win I want to celebrate is..."><x-community-category-icon name="sprout"/> Share a small win <span aria-hidden="true">-&gt;</span></button><button type="button" class="empty-chip" data-empty-prompt="One kind thing I would like to share is..."><x-community-category-icon name="lightbulb"/> Offer encouragement <span aria-hidden="true">-&gt;</span></button></div>
                         <div class="empty-footer"><button type="button" class="post-primary" data-composer-open aria-controls="community-composer" aria-expanded="false">Start the first conversation <span aria-hidden="true">-&gt;</span></button><span class="empty-helper">{{ $communityIsStudent ? 'Share at your own pace · choose anonymous only when you want to.' : 'Official staff accounts post with their public role identity.' }}</span></div>
                         @else
                         <div class="empty-footer"><span class="empty-helper">Community participation requires your current privacy consent.</span></div>
@@ -479,20 +487,20 @@
             @php $popularTopics = collect($stats['by_category'] ?? [])->sortDesc()->filter(fn ($count) => (int) $count > 0)->take(4); @endphp
             @if($popularTopics->isNotEmpty())
             <section class="side-card spaces-card"><div class="card-eyebrow">POPULAR TOPICS</div><h3>Active conversations</h3>
-                @foreach($popularTopics as $cat => $count)<a class="space-row" href="{{ route('student.community', ['category' => $cat, 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}"><span class="space-icon">{{ config('community.categories.'.$cat.'.icon', '') }}</span><span>{{ config('community.categories.'.$cat.'.label', ucfirst(str_replace('-', ' ', $cat))) }}</span><span class="chev" aria-label="{{ $count }} published posts">{{ $count }}</span></a>@endforeach
+                @foreach($popularTopics as $cat => $count)<a class="space-row" href="{{ route('student.community', ['category' => $cat, 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}"><span class="space-icon"><x-community-category-icon :name="config('community.categories.'.$cat.'.icon', 'sparkles')"/></span><span>{{ config('community.categories.'.$cat.'.label', ucfirst(str_replace('-', ' ', $cat))) }}</span><span class="chev" aria-label="{{ $count }} published posts">{{ $count }}</span></a>@endforeach
             </section>
             @endif
             @if($guidanceAnnouncements->isNotEmpty())
             <section class="side-card spaces-card"><div class="card-eyebrow">GUIDANCE ANNOUNCEMENTS</div><h3>From authorized staff</h3>
                 @foreach($guidanceAnnouncements as $announcement)
-                    <a class="space-row" href="{{ route('student.community', ['category' => 'all']) }}#community-post-{{ $announcement->id }}"><span class="space-icon" aria-hidden="true">{{ $announcement->user?->role === 'counselor' ? '◈' : '✦' }}</span><span><strong>{{ $announcement->user?->role === 'counselor' ? 'Counselor' : 'Guidance Admin' }}</strong><small>{{ \Illuminate\Support\Str::limit($announcement->title ?: $announcement->message, 72) }}</small></span><span class="chev" aria-hidden="true">&rarr;</span></a>
+                    <a class="space-row" href="{{ route('student.community', ['category' => 'all']) }}#community-post-{{ $announcement->id }}"><span class="space-icon" aria-hidden="true"><x-community-category-icon :name="$announcement->user?->role === 'counselor' ? 'heart' : 'shield-check'"/></span><span><strong>{{ $announcement->user?->role === 'counselor' ? 'Counselor' : 'Guidance Admin' }}</strong><small>{{ \Illuminate\Support\Str::limit($announcement->title ?: $announcement->message, 72) }}</small></span><span class="chev" aria-hidden="true">&rarr;</span></a>
                 @endforeach
             </section>
             @endif
             <section class="side-card spaces-card"><div class="card-eyebrow">EXPLORE SPACES</div><h3>Find a conversation that fits.</h3>
-                @foreach($categories as $cat)<a class="space-row" href="{{ route('student.community', ['category' => $cat, 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}"><span class="space-icon">{{ config('community.categories.'.$cat.'.icon', '') }}</span><span>{{ config('community.categories.'.$cat.'.label', ucfirst(str_replace('-', ' ', $cat))) }}</span><span class="chev" aria-hidden="true">-&gt;</span></a>@endforeach
+                @foreach($categories as $cat)<a class="space-row" href="{{ route('student.community', ['category' => $cat, 'sort' => $sortBy, 'q' => $search, 'campus' => $campusFilter]) }}"><span class="space-icon"><x-community-category-icon :name="config('community.categories.'.$cat.'.icon', 'sparkles')"/></span><span>{{ config('community.categories.'.$cat.'.label', ucfirst(str_replace('-', ' ', $cat))) }}</span><span class="chev" aria-hidden="true">-&gt;</span></a>@endforeach
             </section>
-            <section class="side-card care-card"><div class="care-title"><span aria-hidden="true">+</span> Respect is part of the space</div><p>Posts are visible to eligible Community members. Anonymous posting hides your name publicly, but not from authorized moderation.</p><a href="#community-guidelines">Community guidelines -&gt;</a><ul class="guideline-list" id="community-guidelines"><li>Share experiences, not medical advice.</li><li>Protect your privacy and others' privacy.</li><li>Report harassment or unsafe content.</li></ul><a class="community-resource-link" href="{{ route('student.resources') }}">Explore wellness resources &rarr;</a></section>
+            <section class="side-card care-card"><div class="care-title"><x-community-category-icon name="shield-check"/> Respect is part of the space</div><p>Posts are visible to eligible Community members. Anonymous posting hides your name publicly, but not from authorized moderation.</p><a href="#community-guidelines">Community guidelines -&gt;</a><ul class="guideline-list" id="community-guidelines"><li>Share experiences, not medical advice.</li><li>Protect your privacy and others' privacy.</li><li>Report harassment or unsafe content.</li></ul><a class="community-resource-link" href="{{ route('student.resources') }}">Explore wellness resources &rarr;</a></section>
         </aside>
     </div>
 </div>

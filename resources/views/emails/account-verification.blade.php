@@ -12,8 +12,9 @@
             <p style="margin:22px 0;text-align:center"><a href="{{ $resetUrl }}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#103F32;color:#fff;font-weight:bold;text-decoration:none">Reset password</a></p>
             <p>If you did not request this, ignore this message. Your password will not change unless the link is used.</p>
         @elseif($kind === 'account_invitation')
-            <p>An authorized Guidance Office reviewer created and approved an account for you. Use the one-time invitation below to establish your own password and verify your personal Gmail. Opening the link alone does not grant access to MAGIREM AI.</p>
+            <p>An authorized Guidance Office reviewer created and approved your MAGIREM AI account. Use the one-time link below to create your own password. After setup, enter the verification code sent to your personal Gmail. Your account remains restricted until setup and Gmail verification are complete; once verified, MAGIREM AI takes you to the dashboard for your approved role without another Guidance review.</p>
             <p style="margin:22px 0;text-align:center"><a href="{{ $inviteUrl }}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#103F32;color:#fff;font-weight:bold;text-decoration:none">Set up my account</a></p>
+            <p><strong>After setup:</strong> sign in at MAGIREM AI using your <strong>MinSU institutional email</strong> and the password you created. Do not use your personal Gmail as the sign-in email. There is no separate password-change page; to change or reset your password later, choose “Forgot password?”; the reset link is sent only to your verified personal Gmail.</p>
             <p>This invitation expires and can be used once. If you were not expecting it, do not forward it; contact the designated Guidance Office reviewer.</p>
         @elseif($kind === 'verification_code')
             <p>Use this one-time code to verify the notification email for your account:</p>

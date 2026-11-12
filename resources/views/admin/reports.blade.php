@@ -481,13 +481,67 @@
     .ar-drilldown-list { grid-template-columns:1fr; }
 }
 </style>
+@include('admin.partials.workspace-polish')
+
+<style>
+/* Clear chart interactions share the existing admin palette and do not change data. */
+.admin-reports .ar-chart-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.admin-reports .ar-chart-label { flex:none; padding:5px 9px; border-radius:999px; background:#eaf3ed; color:#185c46; font-size:11px; font-weight:750; }
+.admin-reports .ar-chart-hint { color:#526d60; font-size:12px; line-height:1.5; }
+.admin-reports .ar-legend { display:flex; flex-wrap:wrap; gap:7px; margin:12px 0 4px; }
+.admin-reports .ar-legend-button { display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:7px 10px; border:1px solid #d5e3d9; border-radius:10px; background:#f5f9f5; color:#234c3e; font:inherit; font-size:12px; font-weight:700; text-align:left; cursor:pointer; transition:background .18s ease, border-color .18s ease, opacity .18s ease; }
+.admin-reports .ar-legend-button[aria-pressed="false"] { background:#fff; border-color:#e0e7e1; color:#596f63; opacity:.72; }
+.admin-reports .ar-legend-button:disabled { cursor:not-allowed; opacity:.55; }
+.admin-reports .ar-legend-swatch { width:15px; height:15px; flex:none; border:2px solid var(--series-color, #236b55); border-radius:50%; background:var(--series-color, #236b55); }
+.admin-reports .ar-legend-button[aria-pressed="false"] .ar-legend-swatch { background:transparent; }
+.admin-reports .ar-chart-data { margin-top:14px; border-top:1px solid var(--line); }
+.admin-reports .ar-chart-data summary { min-height:44px; display:flex; align-items:center; gap:8px; color:var(--forest-2); font-size:12px; font-weight:750; cursor:pointer; }
+.admin-reports .ar-chart-data summary::before { content:'+'; font-size:19px; line-height:1; }
+.admin-reports .ar-chart-data[open] summary::before { content:'−'; }
+.admin-reports .ar-table-scroll { overflow-x:auto; overscroll-behavior-inline:contain; }
+.admin-reports .ar-data-table { width:100%; border-collapse:collapse; color:#304d40; font-size:12px; text-align:left; }
+.admin-reports .ar-data-table th, .admin-reports .ar-data-table td { padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+.admin-reports .ar-data-table th { color:#406052; font-weight:750; }
+.admin-reports .ar-data-table caption { padding:4px 0 10px; color:#526d60; text-align:left; }
+.admin-reports :is(.ar-legend-button, .ar-chart-data summary):focus-visible { outline:3px solid #c99830; outline-offset:3px; }
+@media (prefers-reduced-motion:reduce) { .admin-reports .ar-legend-button { transition:none; } }
+/* Mobile-only report bento; the desktop layout and report data stay unchanged. */
+@media (max-width:700px) {
+    .admin-reports { padding:18px 14px 32px; }
+    .admin-reports .ar-head { gap:12px; margin-bottom:14px; }
+    .admin-reports .ar-head h1 { font-size:clamp(26px,7.2vw,32px); line-height:1.08; }
+    .admin-reports .ar-head p { margin-top:6px; font-size:12px; line-height:1.5; }
+    .admin-reports .ar-scope { padding:10px 12px; border-radius:12px; }
+    .admin-reports .ar-scope strong { font-size:12px; }
+    .admin-reports .ar-scope span { margin-top:2px; font-size:11px; }
+    .admin-reports .ar-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-bottom:14px; }
+    .admin-reports .ar-stat { align-items:flex-start; gap:9px; padding:12px; border-radius:14px; }
+    .admin-reports .ar-stat:last-child { grid-column:1 / -1; }
+    .admin-reports .ar-stat-icon { width:32px; height:32px; flex-basis:32px; border-radius:9px; }
+    .admin-reports .ar-stat-copy span, .admin-reports .ar-stat-copy small { font-size:11px; line-height:1.4; overflow-wrap:anywhere; }
+    .admin-reports .ar-stat-copy strong { font-size:21px; line-height:1.1; white-space:normal; overflow-wrap:anywhere; }
+    .admin-reports .ar-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; overflow:visible; margin-bottom:14px; }
+    .admin-reports .ar-tab { min-width:0; min-height:44px; padding:0 8px; font-size:12px; }
+    .admin-reports .ar-intro { gap:8px; padding:12px 14px; margin-bottom:12px; }
+    .admin-reports .ar-chart { padding:14px; }
+    .admin-reports .ar-chart.large .ar-chart-wrap { height:260px; }
+    .admin-reports .ar-legend-button { min-height:44px; }
+    .admin-reports .ar-chart-head { align-items:flex-start; }
+    .admin-reports .ar-category-grid { gap:8px; }
+    .admin-reports .ar-category-card { min-height:96px; padding:12px; }
+}
+@media (max-width:340px) {
+    .admin-reports .ar-stat { flex-direction:column; }
+    .admin-reports .ar-stat:last-child { flex-direction:row; }
+}
+</style>
 
 <div class="admin-reports">
     <header class="ar-head">
         <div>
             <span class="ar-eyebrow">Wellbeing intelligence</span>
             <h1>Analytics & reports</h1>
-            <p>Explore emotional trends, distribution, risk levels, and engagement in separate analytical views instead of one overloaded reporting page.</p>
+            <p>Explore emotional trends, distribution, risk-level aggregates, and journal activity.</p>
         </div>
 
         <aside class="ar-scope">
@@ -542,19 +596,19 @@
     </section>
 
     <nav class="ar-tabs" aria-label="Analytics report sections">
-        <button type="button" class="ar-tab active" data-report-tab="trends">
+        <button type="button" class="ar-tab active" data-report-tab="trends" aria-pressed="true">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 19l5-5 4 4 7-9"/></svg>
             Trends
         </button>
-        <button type="button" class="ar-tab" data-report-tab="distribution">
+        <button type="button" class="ar-tab" data-report-tab="distribution" aria-pressed="false">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11 3a9 9 0 109 9h-9V3zm4 0v5h5a9 9 0 00-5-5z"/></svg>
             Distribution
         </button>
-        <button type="button" class="ar-tab" data-report-tab="risk">
+        <button type="button" class="ar-tab" data-report-tab="risk" aria-pressed="false">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v3m0 4h.01M10.3 4.4L2.9 17.2A2 2 0 004.6 20h14.8a2 2 0 001.7-2.8L13.7 4.4a2 2 0 00-3.4 0z"/></svg>
             Risk
         </button>
-        <button type="button" class="ar-tab" data-report-tab="engagement">
+        <button type="button" class="ar-tab" data-report-tab="engagement" aria-pressed="false">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8"/></svg>
             Engagement
         </button>
@@ -564,22 +618,29 @@
         <div class="ar-intro">
             <div>
                 <strong>Trend analysis</strong>
-                <p>Compare short-term emotion movement with six-month journal activity. These charts use the same datasets already supplied by your reports controller.</p>
+                <p>Compare emotion trends over the past week with journal activity over six months.</p>
             </div>
             <span class="ar-pill">Time series</span>
         </div>
 
         <div class="ar-grid-two">
             <article class="ar-chart large">
-                <h2>7-day emotion trends</h2>
-                <p>Daily emotion counts across the last seven days.</p>
-                <div class="ar-chart-wrap"><canvas id="emotionTrendsChart"></canvas></div>
+                <div class="ar-chart-head"><div><h2>7-day emotion trends</h2><p>Daily emotion counts across the last seven days.</p></div><span class="ar-chart-label">7 days</span></div>
+                <div class="ar-chart-wrap"><canvas id="emotionTrendsChart" role="img" aria-label="Seven-day emotion trends. Exact values are available in the data table below."></canvas></div>
+                <p class="ar-chart-hint">Choose categories to compare. Hover or tap the chart for values.</p>
+                <div class="ar-legend" aria-label="Show or hide emotion categories">
+                    @foreach($taxonomy->categories() as $category)
+                        <button type="button" class="ar-legend-button" data-trend-series="{{ $loop->index }}" data-series-key="{{ $category['key'] }}" aria-pressed="true"><span class="ar-legend-swatch" aria-hidden="true"></span>{{ $category['label'] }}</button>
+                    @endforeach
+                </div>
+                <details class="ar-chart-data"><summary>View trend data table</summary><div class="ar-table-scroll" role="region" aria-label="Emotion trend data; scroll horizontally" tabindex="0"><table class="ar-data-table"><caption>Daily counts; unavailable values include privacy-suppressed data.</caption><thead><tr><th scope="col">Category</th>@foreach($last7Days as $day)<th scope="col">{{ $day }}</th>@endforeach</tr></thead><tbody>@foreach($taxonomy->categories() as $category)<tr><th scope="row">{{ $category['label'] }}</th>@foreach($categoryTrends[$category['key']] ?? [] as $value)<td>{{ $value === null ? 'Unavailable' : $value }}</td>@endforeach</tr>@endforeach</tbody></table></div></details>
             </article>
 
             <article class="ar-chart large">
-                <h2>6-month journal activity</h2>
-                <p>Monthly entry volume across the existing six-month dataset.</p>
-                <div class="ar-chart-wrap"><canvas id="monthlyTrendChart"></canvas></div>
+                <div class="ar-chart-head"><div><h2>6-month journal activity</h2><p>Monthly entry volume across the existing six-month dataset.</p></div><span class="ar-chart-label">6 months</span></div>
+                <div class="ar-chart-wrap"><canvas id="monthlyTrendChart" role="img" aria-label="Journal activity over six months. Exact values are available in the data table below."></canvas></div>
+                <p class="ar-chart-hint">Hover or tap a bar to see its monthly total.</p>
+                <details class="ar-chart-data"><summary>View journal data table</summary><div class="ar-table-scroll"><table class="ar-data-table"><caption>Monthly journal entry totals.</caption><thead><tr><th scope="col">Month</th><th scope="col">Entries</th></tr></thead><tbody>@foreach($monthlyLabels as $index => $month)<tr><th scope="row">{{ $month }}</th><td>{{ $monthlyData[$index] ?? 'Unavailable' }}</td></tr>@endforeach</tbody></table></div></details>
             </article>
         </div>
     </section>
@@ -608,7 +669,7 @@
 
         <div class="ar-category-grid" aria-label="Emotion reporting categories">
             @foreach($categoryStats as $category)
-                <button type="button" class="ar-category-card" data-category-key="{{ $category['key'] }}" aria-controls="emotionCategoryDrilldown">
+                <button type="button" class="ar-category-card" data-category-key="{{ $category['key'] }}" aria-controls="emotionCategoryDrilldown" aria-expanded="false">
                     <strong>{{ $category['label'] }}</strong>
                     <span class="ar-category-count">{{ $category['suppressed'] ? '—' : $category['count'] }}</span>
                     <small>{{ $category['suppressed'] ? 'Suppressed for privacy' : number_format($category['percentage'], 1).'%' }} · view details</small>
@@ -720,10 +781,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabButtons = Array.from(document.querySelectorAll('[data-report-tab]'));
     const panels = Array.from(document.querySelectorAll('[data-report-panel]'));
     const charts = [];
+    const trendButtons = Array.from(document.querySelectorAll('[data-trend-series]'));
+    const motionPreference = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
     function openReportTab(name) {
         tabButtons.forEach(function (button) {
             button.classList.toggle('active', button.dataset.reportTab === name);
+            button.setAttribute('aria-pressed', String(button.dataset.reportTab === name));
         });
 
         panels.forEach(function (panel) {
@@ -743,11 +807,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    if (typeof Chart === 'undefined') return;
-
+    if (typeof Chart === 'undefined') {
+        trendButtons.forEach(function (button) { button.disabled = true; });
+        document.querySelectorAll('.ar-chart-wrap').forEach(function (container) {
+            const message = document.createElement('p');
+            message.className = 'ar-chart-error';
+            message.setAttribute('role', 'status');
+            message.textContent = 'Charts could not load. Refresh the page or check your connection; the other report sections remain available.';
+            container.replaceChildren(message);
+        });
+    } else {
     Chart.defaults.color = '#71837A';
     Chart.defaults.borderColor = 'rgba(16,63,50,.08)';
     Chart.defaults.font.family = 'Inter, sans-serif';
+    Chart.defaults.font.size = 12;
 
     const emotionColors = {
         happy:   { bg:'rgba(47,135,103,.22)', border:'#2F8767' },
@@ -769,22 +842,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const trendsCanvas = document.getElementById('emotionTrendsChart');
     if (trendsCanvas) {
-        charts.push(new Chart(trendsCanvas, {
+        const linePatterns = [[], [8,4], [3,3], [10,4,2,4], [5,3], [2,4], [12,4], [7,3,2,3]];
+        const trendChart = new Chart(trendsCanvas, {
             type:'line',
             data:{
                 labels:@json($last7Days),
                 datasets:[
                     @foreach($taxonomy->categories() as $category)
-                        { label:@json($category['label']), data:@json($categoryTrends[$category['key']] ?? []), borderColor:categoryColors[@json($category['key'])].border, backgroundColor:categoryColors[@json($category['key'])].bg, tension:.38, fill:false, borderWidth:2, pointRadius:3 },
+                        { label:@json($category['label']), data:@json($categoryTrends[$category['key']] ?? []), borderColor:categoryColors[@json($category['key'])].border, backgroundColor:categoryColors[@json($category['key'])].bg, borderDash:linePatterns[{{ $loop->index }} % linePatterns.length], tension:.3, fill:false, borderWidth:2.5, pointRadius:3, pointHoverRadius:6, pointHitRadius:16 },
                     @endforeach
                 ]
             },
             options:{
                 responsive:true,
                 maintainAspectRatio:false,
+                animation:motionPreference?.matches ? false : { duration:650, easing:'easeOutQuart' },
                 interaction:{ mode:'index', intersect:false },
                 plugins:{
-                    legend:{ position:'bottom', labels:{ padding:10, boxWidth:9, font:{ size:9 } } },
+                    legend:{ display:false },
                     tooltip:{ backgroundColor:'#103F32', padding:10, cornerRadius:8 }
                 },
                 scales:{
@@ -792,7 +867,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     y:{ beginAtZero:true, ticks:{ precision:0 }, grid:{ color:'rgba(16,63,50,.07)' } }
                 }
             }
-        }));
+        });
+        charts.push(trendChart);
+        trendButtons.forEach(function (button) {
+            const color = categoryColors[button.dataset.seriesKey];
+            if (color) button.style.setProperty('--series-color', color.border);
+            button.addEventListener('click', function () {
+                const index = Number(button.dataset.trendSeries);
+                if (!Number.isInteger(index) || index < 0 || index >= trendChart.data.datasets.length) return;
+                const visible = !trendChart.isDatasetVisible(index);
+                trendChart.setDatasetVisibility(index, visible);
+                button.setAttribute('aria-pressed', String(visible));
+                trendChart.update(motionPreference?.matches ? 'none' : undefined);
+            });
+        });
     }
 
     const monthlyCanvas = document.getElementById('monthlyTrendChart');
@@ -805,15 +893,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     label:'Journal Entries',
                     data:@json($monthlyData),
                     backgroundColor:'rgba(35,107,85,.68)',
+                    hoverBackgroundColor:'#174F3F',
                     borderColor:'#236B55',
                     borderWidth:1,
                     borderRadius:7,
-                    borderSkipped:false
+                    borderSkipped:false,
+                    maxBarThickness:54
                 }]
             },
             options:{
                 responsive:true,
                 maintainAspectRatio:false,
+                animation:motionPreference?.matches ? false : { duration:650, easing:'easeOutQuart' },
+                interaction:{ mode:'nearest', intersect:false },
                 plugins:{
                     legend:{ display:false },
                     tooltip:{ backgroundColor:'#103F32', padding:10, cornerRadius:8 }
@@ -848,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 maintainAspectRatio:false,
                 cutout:'64%',
                 plugins:{
-                    legend:{ position:'bottom', labels:{ padding:10, boxWidth:9, font:{ size:9 } } },
+                    legend:{ position:'bottom', labels:{ padding:10, boxWidth:11, font:{ size:11 } } },
                     tooltip:{
                         backgroundColor:'#103F32',
                         padding:10,
@@ -865,6 +957,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }));
     }
+    }
 
     const categoryButtons = Array.from(document.querySelectorAll('[data-category-key]'));
     const drilldown = document.getElementById('emotionCategoryDrilldown');
@@ -876,7 +969,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function showCategoryDetails(key) {
         const category = categoryDrilldown[key];
         if (!category || !drilldown || !drilldownList) return;
-        categoryButtons.forEach(function (button) { button.classList.toggle('active', button.dataset.categoryKey === key); });
+        categoryButtons.forEach(function (button) {
+            const selected = button.dataset.categoryKey === key;
+            button.classList.toggle('active', selected);
+            button.setAttribute('aria-expanded', String(selected));
+        });
         if (drilldownTitle) drilldownTitle.textContent = category.label + ' · detailed labels';
         drilldownList.innerHTML = '';
         category.emotions.forEach(function (emotion) {
@@ -888,7 +985,8 @@ document.addEventListener('DOMContentLoaded', function () {
             drilldownList.appendChild(row);
         });
         drilldown.hidden = false;
-        drilldown.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        drilldown.scrollIntoView({ behavior:reduceMotion ? 'auto' : 'smooth', block:'nearest' });
     }
 
     categoryButtons.forEach(function (button) {
@@ -896,7 +994,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     closeDrilldown?.addEventListener('click', function () {
         if (drilldown) drilldown.hidden = true;
-        categoryButtons.forEach(function (button) { button.classList.remove('active'); });
+        categoryButtons.forEach(function (button) {
+            button.classList.remove('active');
+            button.setAttribute('aria-expanded', 'false');
+        });
     });
 });
 </script>
