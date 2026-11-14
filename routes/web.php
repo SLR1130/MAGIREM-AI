@@ -280,28 +280,33 @@ Route::middleware(['auth', 'secure.auth'])->group(function () {
         Route::post('/api/notifications/read-all', [AdminController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
         Route::delete('/api/notifications/{id}', [AdminController::class, 'deleteNotification'])->name('notifications.delete');
     });
+
+    // Secure Counselor-Student Chat Attachment Access
+    Route::get('/counselor-chat/attachment/{message}', [CounselorController::class, 'viewAttachment'])
+        ->whereNumber('message')
+        ->name('counselor-chat.attachment');
 });
 
-// API routes for AI Chat - Exclude from CSRF since they're protected by auth + secure.auth
+// API routes for AI Chat - Protected by auth, secure.auth, throttle, and CSRF token
 Route::middleware(['auth', 'secure.auth', 'throttle:20,1'])->prefix('api/ai')->group(function () {
-    Route::post('/chat', [AIChatController::class, 'sendMessage'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::post('/chat', [AIChatController::class, 'sendMessage']);
     Route::get('/history', [AIChatController::class, 'getHistory']);
     Route::get('/summary', [AIChatController::class, 'getSummary']);
-    Route::post('/clear', [AIChatController::class, 'clearConversation'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
-    Route::post('/feedback', [AIChatController::class, 'submitFeedback'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::post('/clear', [AIChatController::class, 'clearConversation']);
+    Route::post('/feedback', [AIChatController::class, 'submitFeedback']);
     
     // AI Preference Settings
     Route::get('/preference', [AIChatController::class, 'getAIPreference']);
-    Route::post('/preference', [AIChatController::class, 'updateAIPreference'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::post('/preference', [AIChatController::class, 'updateAIPreference']);
     
     // Chat initialization - NEW: AI greets first when creating new chat
-    Route::post('/initialize-session', [AIChatController::class, 'initializeChatSession'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::post('/initialize-session', [AIChatController::class, 'initializeChatSession']);
     
     // Session management
     Route::get('/sessions', [AIChatController::class, 'getSessions']);
-    Route::post('/sessions', [AIChatController::class, 'createSession'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::post('/sessions', [AIChatController::class, 'createSession']);
     Route::get('/sessions/{sessionId}/messages', [AIChatController::class, 'getSessionMessages']);
-    Route::delete('/sessions/{sessionId}', [AIChatController::class, 'deleteSession'])->withoutMiddleware(Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    Route::delete('/sessions/{sessionId}', [AIChatController::class, 'deleteSession']);
 });
 
 // Video call routes

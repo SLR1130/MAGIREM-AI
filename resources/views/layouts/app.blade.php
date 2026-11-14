@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -467,12 +467,20 @@
             grid-row: 1;
 
             position: relative;
-            align-self: stretch;
+            align-self: center;
 
-            width: 100%;
+            width: calc(100% - 32px);
             min-width: 0;
-            height: var(--header-height);
-            min-height: var(--header-height);
+            height: calc(var(--header-height) - 14px);
+            min-height: calc(var(--header-height) - 14px);
+            margin: 10px 16px 4px;
+            padding: 0 22px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(16, 63, 50, 0.1);
+            box-shadow: 0 10px 30px rgba(16, 63, 50, 0.05), 0 2px 6px rgba(16, 63, 50, 0.02);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
 
             overflow: visible;
             z-index: 1000;
@@ -556,13 +564,18 @@
 
             body.admin-layout .app-header {
                 position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
+                top: 8px;
+                left: 10px;
+                right: 10px;
 
-                width: 100%;
-                height: 64px;
-                min-height: 64px;
+                width: calc(100% - 20px);
+                height: 56px;
+                min-height: 56px;
+                margin: 0;
+                padding: 0 14px;
+                border-radius: 18px;
+                background: rgba(255, 255, 255, 0.94);
+                box-shadow: 0 10px 28px rgba(16, 63, 50, 0.08);
 
                 z-index: 1000;
             }
@@ -1058,18 +1071,24 @@
 
 
         /* ============================================================
-           HEADER - CLEAN HORIZONTAL BAR
+           HEADER - MODERN FLOATING GLASS ISLAND
            ============================================================ */
 
         .app-header {
-            background-color: var(--color-surface);
-            border-bottom: 1px solid var(--color-border-light);
-            padding: 0 28px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(16, 63, 50, 0.1);
+            border-radius: 18px;
+            margin: 10px 16px 4px;
+            padding: 0 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
             flex-shrink: 0;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 0 10px 30px rgba(16, 63, 50, 0.05), 0 2px 6px rgba(16, 63, 50, 0.02);
+            transition: all 0.25s ease;
         }
 
         .header-left {
@@ -1082,22 +1101,26 @@
 
         .header-mobile-menu {
             display: none;
-            background: none;
-            border: none;
+            background: #ffffff;
+            border: 1px solid rgba(16, 63, 50, 0.12);
             cursor: pointer;
-            color: var(--color-text-primary);
+            color: #103f32;
             padding: 8px;
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-base);
-            transition: background-color var(--transition-fast);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            transition: all var(--transition-fast);
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(16, 63, 50, 0.04);
         }
 
         .header-mobile-menu:hover {
-            background-color: var(--color-surface-hover);
+            background-color: #103f32;
+            color: #f4c84e;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(16, 63, 50, 0.18);
         }
 
         .header-mobile-menu svg {
@@ -1199,19 +1222,23 @@
         .header-user-button {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: none;
-            border: none;
+            gap: 9px;
+            background: #ffffff;
+            border: 1px solid rgba(16, 63, 50, 0.12);
+            border-radius: 999px;
             cursor: pointer;
             color: var(--color-text-primary);
-            padding: 6px;
-            border-radius: var(--radius-base);
-            transition: background-color var(--transition-fast);
-            height: 44px;
+            padding: 4px 12px 4px 5px;
+            transition: all var(--transition-fast);
+            height: 42px;
+            box-shadow: 0 2px 6px rgba(16, 63, 50, 0.04);
         }
 
         .header-user-button:hover {
-            background-color: var(--color-surface-hover);
+            border-color: #236b55;
+            background-color: #e6f1eb;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 63, 50, 0.1);
         }
 
         .header-user-button:focus-visible {
@@ -1223,16 +1250,21 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #236B55 0%, #4D9D7B 100%);
+            background: #103f32;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--color-white);
             font-weight: 700;
-            font-size: 13px;
+            font-size: 11.5px;
             flex-shrink: 0;
             overflow: hidden;
-            border: 2px solid var(--color-surface-muted);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s ease;
+        }
+
+        .header-user-button:hover .header-user-avatar {
+            transform: scale(1.08);
         }
 
         .header-user-avatar img {
@@ -2410,19 +2442,22 @@
             grid-column: 2;
             grid-row: 1;
             position: relative;
-            align-self: stretch;
+            align-self: center;
 
-            width: 100%;
+            width: calc(100% - 32px);
             min-width: 0;
-            height: var(--header-height);
-            min-height: var(--header-height);
+            height: calc(var(--header-height) - 14px);
+            min-height: calc(var(--header-height) - 14px);
 
-            padding: 0 26px;
+            margin: 10px 16px 4px;
+            padding: 0 22px;
+            border-radius: 18px;
 
-            background: rgba(255, 255, 255, 0.94);
-            border-bottom: 1px solid rgba(16, 63, 50, 0.08);
-            box-shadow: 0 8px 28px rgba(16, 63, 50, 0.025);
-            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(16, 63, 50, 0.1);
+            box-shadow: 0 10px 30px rgba(16, 63, 50, 0.05), 0 2px 6px rgba(16, 63, 50, 0.02);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
 
             overflow: visible;
             z-index: 90;
@@ -2820,13 +2855,17 @@
 
             body.counselor-layout .app-header {
                 position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-                height: 62px;
-                min-height: 62px;
+                top: 8px;
+                left: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+                height: 56px;
+                min-height: 56px;
                 padding: 0 14px;
+                margin: 0;
+                border-radius: 18px;
+                background: rgba(255, 255, 255, 0.94);
+                box-shadow: 0 10px 28px rgba(16, 63, 50, 0.08);
                 z-index: 1000;
             }
 

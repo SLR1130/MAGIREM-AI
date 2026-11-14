@@ -146,18 +146,19 @@ function renderMessages(messages, studentId) {
         text.appendChild(p);
         
         // Handle attachments
-        if (m.attachment_path) {
+        if (m.attachment_path || m.attachment_url) {
             const isImage = m.attachment_type && m.attachment_type.startsWith('image/');
             const attachDiv = document.createElement('div');
             attachDiv.style.marginTop = '0.5rem';
+            const attachmentTarget = m.attachment_url || ('/storage/' + m.attachment_path);
             
             if (isImage) {
                 const img = document.createElement('img');
-                img.src = '/storage/' + m.attachment_path;
+                img.src = attachmentTarget;
                 img.style.maxWidth = '200px';
                 img.style.borderRadius = '0.5rem';
                 img.style.cursor = 'pointer';
-                img.onclick = function() { openImageModal('/storage/' + m.attachment_path); };
+                img.onclick = function() { openImageModal(attachmentTarget); };
                 attachDiv.appendChild(img);
             } else {
                 attachDiv.style.padding = '0.5rem';
@@ -180,7 +181,7 @@ function renderMessages(messages, studentId) {
                 svg.appendChild(path);
                 
                 const a = document.createElement('a');
-                a.href = '/storage/' + m.attachment_path;
+                a.href = attachmentTarget;
                 a.download = m.attachment_name;
                 a.style.color = 'inherit';
                 a.style.textDecoration = 'underline';

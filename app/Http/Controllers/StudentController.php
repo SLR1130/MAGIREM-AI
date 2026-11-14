@@ -581,7 +581,7 @@ class StudentController extends Controller
                 ->map(function ($msg) use ($studentId) {
                     $attachmentUrl = null;
                     if ($msg->attachment_path && !$msg->isUnsent()) {
-                        $attachmentUrl = \Storage::url($msg->attachment_path);
+                        $attachmentUrl = route('counselor-chat.attachment', ['message' => $msg->id]);
                     }
                     
                     return [
@@ -699,11 +699,10 @@ class StudentController extends Controller
             'message' => $request->message ?? '',
         ];
 
-        // Handle file upload
+        // Handle file upload securely on private disk
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('chat_attachments', $filename, 'public');
+            $path = $file->store('chat_attachments', 'local');
             
             $data['attachment_path'] = $path;
             $data['attachment_name'] = $file->getClientOriginalName();
@@ -743,7 +742,7 @@ class StudentController extends Controller
             // Include attachment_url in response
             $attachmentUrl = null;
             if ($message->attachment_path) {
-                $attachmentUrl = \Storage::url($message->attachment_path);
+                $attachmentUrl = route('counselor-chat.attachment', ['message' => $message->id]);
             }
 
             return response()->json([
@@ -1882,23 +1881,34 @@ class StudentController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $request->validate([
+        $user = Auth::user();
+        abort_unless($user, 401);
+
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
-            'student_id' => 'nullable|string|max:100',
+            'email' => ['required', 'email:rfc', 'max:255', 'unique:users,email,' . $user->id],
+            'student_id' => ['nullable', 'string', 'max:100', 'unique:users,student_id,' . $user->id],
             'year_level' => 'nullable|string|max:100',
             'program' => 'nullable|string|max:255',
             'bio' => 'nullable|string|max:500',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
+        ];
 
-        $user = Auth::user();
+        // For approved institutional accounts, require that institutional email retains @minsu.edu.ph domain
+        if ($user->isApproved() && !empty($user->institutional_email)) {
+            $rules['email'][] = 'regex:/^[^@\s]+@minsu\.edu\.ph$/i';
+        }
+
+        $validated = $request->validate($rules, [
+            'email.regex' => 'Approved institutional accounts must use their official @minsu.edu.ph email address.',
+            'student_id.unique' => 'This Student ID is already associated with another account.',
+        ]);
         
         // Handle profile picture upload
         if ($request->hasFile('profile_picture')) {
             // Delete old picture if exists
             if ($user->profile_picture && file_exists(public_path($user->profile_picture))) {
-                unlink(public_path($user->profile_picture));
+                @unlink(public_path($user->profile_picture));
             }
             
             // Ensure upload directory exists
@@ -1907,20 +1917,28 @@ class StudentController extends Controller
                 mkdir($uploadDir, 0755, true);
             }
             
-            // Store new picture
+            // Store new picture with safe random filename
             $file = $request->file('profile_picture');
-            $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'profile_' . $user->id . '_' . \Illuminate\Support\Str::random(16) . '.' . $file->getClientOriginalExtension();
             $file->move($uploadDir, $filename);
             $user->profile_picture = 'uploads/profiles/' . $filename;
         }
         
         // Update user data
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->student_id = $request->student_id;
-        $user->year_level = $request->year_level;
-        $user->program = $request->program;
-        $user->bio = $request->bio;
+        $user->name = trim($validated['name']);
+        $user->email = mb_strtolower(trim($validated['email']));
+        if (array_key_exists('student_id', $validated)) {
+            $user->student_id = filled($validated['student_id']) ? trim($validated['student_id']) : null;
+        }
+        if (array_key_exists('year_level', $validated)) {
+            $user->year_level = $validated['year_level'];
+        }
+        if (array_key_exists('program', $validated)) {
+            $user->program = $validated['program'];
+        }
+        if (array_key_exists('bio', $validated)) {
+            $user->bio = $validated['bio'];
+        }
         $user->save();
         
         return redirect()->back()->with('success', 'Profile updated successfully!');

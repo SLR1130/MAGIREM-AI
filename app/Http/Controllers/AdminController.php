@@ -228,9 +228,33 @@ class AdminController extends Controller
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
 
-        return back()->with('success', 'User deleted successfully!');
+        // Security check 1: Prevent self-deletion
+        abort_if((int) $user->id === (int) Auth::id(), 403, 'Administrators cannot delete their own account.');
+
+        // Security check 2: Prevent deletion of the sole remaining active admin
+        if ($user->isAdmin()) {
+            $otherAdmins = User::where('role', 'admin')
+                ->where('is_active', true)
+                ->where('id', '!=', $user->id)
+                ->count();
+            abort_if($otherAdmins < 1, 403, 'Cannot delete the only remaining active administrator account.');
+        }
+
+        try {
+            DB::transaction(function () use ($user) {
+                if ($user->profile_picture && file_exists(public_path($user->profile_picture))) {
+                    @unlink(public_path($user->profile_picture));
+                }
+
+                $user->delete();
+            });
+
+            return back()->with('success', 'User deleted successfully!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('[ADMIN_DELETE_USER_ERROR] Could not delete user ID ' . $id . ': ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Cannot delete this user because active operational records (such as appointments, messages, or audit entries) are linked to their account. Consider deactivating the account instead.']);
+        }
     }
 
     public function reports()

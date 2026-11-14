@@ -284,21 +284,229 @@
 .msc-home-support__item h3 { margin:13px 0 4px; font-size:15px; }
 .msc-home-support__item p { max-width:180px; margin:0; color:#718b7d; font-size:13px; line-height:1.5; }
 .msc-home-footer { display:flex; justify-content:space-between; gap:20px; width:min(1420px,calc(100% - 72px)); margin:0 auto; padding:25px 0 32px; color:#789083; font-size:12px; }
-.msc-public-header { position:relative; z-index:20; border-bottom:1px solid #e5ece7; background:rgba(255,255,255,.93); box-shadow:0 5px 20px rgba(18,62,51,.035); backdrop-filter:blur(13px); }
-.msc-public-header__inner { width:min(1420px,calc(100% - 72px)); min-height:78px; display:flex; align-items:center; gap:30px; margin:0 auto; }
-.msc-brand { display:flex; align-items:center; gap:11px; color:var(--msc-home-forest); text-decoration:none; }
-.msc-brand__mark { width:43px; height:43px; display:grid; place-items:center; border-radius:13px; color:#f4c84e; background:var(--msc-home-forest); box-shadow:0 9px 22px rgba(16,63,50,.13); }
-.msc-brand__mark svg { width:25px; height:25px; }
-.msc-brand__copy strong { display:block; font-size:17px; line-height:1.1; font-weight:850; letter-spacing:-.04em; }
-.msc-brand__copy small { display:block; margin-top:3px; color:#80948b; font-size:10px; font-weight:700; letter-spacing:.03em; }
-.msc-public-nav { display:flex; align-items:center; gap:26px; flex:1; }
-.msc-public-nav a { color:#526d62; font-size:13px; font-weight:700; text-decoration:none; transition:color .2s ease; }
-.msc-public-nav a:hover,.msc-public-nav a.is-active { color:var(--msc-home-forest); }
-.msc-public-actions { display:flex; align-items:center; gap:10px; margin-left:auto; }
-.msc-public-menu { display:none; border:1px solid #dce7df; border-radius:10px; padding:9px 11px; color:var(--msc-home-forest); background:#fff; cursor:pointer; }
-@media (max-width:1180px) { .msc-home-shell { width:calc(100% - 48px); } .msc-home-hero { grid-template-columns:48% 52%; } .msc-home-copy h1 { font-size:clamp(54px,6vw,78px); } .msc-home-art__image { right:-2%; }  .msc-home-feature { padding:16px 13px; } .msc-home-support { gap:22px; } }
-@media (max-width:860px) { .msc-public-header__inner { flex-wrap:wrap; min-height:72px; padding:11px 0; } .msc-public-nav { display:none; order:4; width:100%; flex-direction:column; align-items:stretch; gap:0; padding:10px 0 13px; border-top:1px solid #e5ece7; } .msc-public-nav.is-open { display:flex; } .msc-public-nav a { padding:11px 7px; } .msc-public-menu { display:inline-flex; } .msc-public-actions .msc-home-btn--outline { display:none; } .msc-home-stage { padding-top:25px; } .msc-home-shell { width:calc(100% - 38px); } .msc-home-hero { display:flex; flex-direction:column; min-height:0; } .msc-home-copy { max-width:650px; padding:12px 0 8px; } .msc-home-art { width:100%; min-height:410px; margin-top:2px; } .msc-home-art__image { right:-5%; top:0; width:auto; height:410px; max-width:none; max-height:none; } .msc-home-art__note { display:none; } .msc-home-feature-row { grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:0; padding-bottom:38px; } .msc-home-support { grid-template-columns:1fr 1fr; padding:42px 24px 48px; background:#eff6ef; } .msc-home-support::before,.msc-home-support::after { display:none; } .msc-home-support__lead { grid-column:1/-1; padding:22px; border-radius:20px; background:#155643; } .msc-home-footer { width:calc(100% - 38px); flex-direction:column; gap:7px; } }
-@media (max-width:560px) { .msc-public-header__inner { width:calc(100% - 28px); } .msc-public-actions { gap:5px; } .msc-public-actions .msc-home-btn--primary { min-height:40px; padding:0 13px; font-size:12px; } .msc-brand__mark { width:40px; height:40px; } .msc-brand__copy strong { font-size:16px; } .msc-home-shell { width:calc(100% - 28px); } .msc-home-copy h1 { margin:19px 0 17px; font-size:clamp(52px,16vw,76px); } .msc-home-description { font-size:14px; } .msc-home-actions { flex-direction:column; align-items:stretch; } .msc-home-btn { width:100%; } .msc-home-art { min-height:355px; margin-top:-8px; } .msc-home-copy__rotating { min-height:262px; } .msc-home-art__image { right:-92px; top:-8px; width:auto; height:355px; max-width:none; max-height:none; } .msc-home-art > .msc-leaf-motion { inset:0 0 0 36%; } .msc-home-feature-row { gap:9px; } .msc-home-feature { min-height:118px; flex-wrap:wrap; gap:9px; padding:13px; } .msc-home-feature__icon { width:38px; height:38px; flex-basis:38px; } .msc-home-feature__body { flex-basis:calc(100% - 48px); } .msc-home-feature__body strong { font-size:13px; margin:1px 0 5px; } .msc-home-feature__body span { font-size:11px; } .msc-home-feature__arrow { display:none; } .msc-home-support { grid-template-columns:1fr 1fr; gap:10px; padding:28px 14px 34px; } .msc-home-support__lead { padding:17px; } .msc-home-support__lead h2 { font-size:31px; } .msc-home-support__item { padding:10px 7px; } .msc-home-support__item h3 { font-size:13px; } .msc-home-support__item p { font-size:11px; } }
+.msc-public-header {
+    position: sticky;
+    top: 14px;
+    z-index: 1000;
+    width: min(1380px, calc(100% - 32px));
+    margin: 14px auto 0;
+    padding: 6px 12px;
+    border: 1px solid rgba(16, 63, 50, .12);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, .88);
+    box-shadow: 0 16px 38px -6px rgba(16, 63, 50, .09), 0 4px 14px -2px rgba(0, 0, 0, .04), inset 0 1px 0 rgba(255, 255, 255, .95);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    transition: all .28s cubic-bezier(.16, 1, .3, 1);
+}
+.msc-public-header.is-scrolled {
+    top: 10px;
+    background: rgba(255, 255, 255, .96);
+    border-color: rgba(16, 63, 50, .18);
+    box-shadow: 0 20px 42px -6px rgba(16, 63, 50, .14), 0 6px 18px -2px rgba(0, 0, 0, .05);
+}
+.msc-public-header__inner {
+    width: 100%;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 0 auto;
+}
+.msc-brand { display: flex; align-items: center; gap: 11px; color: var(--msc-home-forest); text-decoration: none; flex-shrink: 0; }
+.msc-brand__mark { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; color: #f4c84e; background: var(--msc-home-forest); box-shadow: 0 9px 22px rgba(16, 63, 50, .15); transition: transform .25s ease, box-shadow .25s ease; }
+.msc-brand:hover .msc-brand__mark { transform: rotate(-6deg) scale(1.06); box-shadow: 0 12px 26px rgba(16, 63, 50, .24); }
+.msc-brand__mark svg { width: 24px; height: 24px; }
+.msc-brand__copy strong { display: block; font-size: 16px; line-height: 1.1; font-weight: 850; letter-spacing: -.035em; color: #103f32; }
+.msc-brand__copy small { display: block; margin-top: 2px; color: #768f83; font-size: 10px; font-weight: 750; letter-spacing: .03em; }
+
+/* Modern Desktop Navigation with Icons & Glowing Hover Highlights */
+.msc-public-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px;
+    background: rgba(16, 63, 50, .035);
+    border: 1px solid rgba(16, 63, 50, .06);
+    border-radius: 9999px;
+}
+.msc-public-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    color: #436254;
+    font-size: 13.5px;
+    font-weight: 750;
+    text-decoration: none;
+    position: relative;
+    transition: all .24s cubic-bezier(.34, 1.56, .64, 1);
+}
+.msc-public-nav a .nav-icon-wrap {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(16, 63, 50, .05);
+    color: #236b55;
+    flex-shrink: 0;
+    transition: all .26s cubic-bezier(.34, 1.56, .64, 1);
+}
+.msc-public-nav a .nav-icon-wrap svg {
+    width: 15px;
+    height: 15px;
+}
+.msc-public-nav a:hover {
+    color: #103f32;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(16, 63, 50, .09);
+    transform: translateY(-1.5px);
+}
+.msc-public-nav a:hover .nav-icon-wrap {
+    background: #103f32;
+    color: #f4c84e;
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 4px 10px rgba(16, 63, 50, .22);
+}
+.msc-public-nav a.is-active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #103f32, #1d5f4c);
+    box-shadow: 0 8px 20px rgba(16, 63, 50, .20);
+}
+.msc-public-nav a.is-active .nav-icon-wrap {
+    background: rgba(255, 255, 255, .20);
+    color: #f4c84e;
+}
+
+/* Modern Action Buttons */
+.msc-public-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.msc-public-actions .msc-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all .24s cubic-bezier(.34, 1.56, .64, 1);
+}
+.msc-public-actions .msc-home-btn .nav-icon-wrap {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+}
+.msc-public-actions .msc-home-btn .nav-icon-wrap svg { width: 15px; height: 15px; }
+.msc-public-actions .msc-home-btn--outline {
+    border: 1px solid rgba(16, 63, 50, .16);
+    color: #103f32;
+    background: #ffffff;
+}
+.msc-public-actions .msc-home-btn--outline:hover {
+    border-color: #103f32;
+    background: #e6f1eb;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(16, 63, 50, .10);
+}
+.msc-public-actions .msc-home-btn--primary {
+    border: 1px solid transparent;
+    color: #ffffff;
+    background: linear-gradient(135deg, #103f32, #1f6b55);
+    box-shadow: 0 8px 20px rgba(16, 63, 50, .20);
+}
+.msc-public-actions .msc-home-btn--primary:hover {
+    background: linear-gradient(135deg, #0d352a, #165342);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(16, 63, 50, .28);
+}
+.msc-public-menu { display: none !important; }
+
+@media (max-width: 1180px) {
+    .msc-home-shell { width: calc(100% - 48px); }
+    .msc-home-hero { grid-template-columns: 48% 52%; }
+    .msc-home-copy h1 { font-size: clamp(54px, 6vw, 78px); }
+    .msc-home-art__image { right: -2%; }
+    .msc-home-feature { padding: 16px 13px; }
+    .msc-home-support { gap: 22px; }
+}
+
+/* Mobile Iconized App Mode: Transforms navigation into sleek native mobile app icons */
+@media (max-width: 900px) {
+    .msc-public-header {
+        width: calc(100% - 16px);
+        top: 8px;
+        margin: 8px auto 0;
+        padding: 6px 10px;
+        border-radius: 24px;
+    }
+    .msc-public-header__inner {
+        min-height: 50px;
+        gap: 8px;
+    }
+    .msc-public-nav {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 9999px;
+    }
+    .msc-public-nav a {
+        padding: 0;
+        min-height: 38px;
+        width: 38px;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .msc-public-nav a .nav-label {
+        display: none;
+    }
+    .msc-public-nav a .nav-icon-wrap {
+        width: 34px;
+        height: 34px;
+        background: transparent;
+    }
+    .msc-public-nav a .nav-icon-wrap svg {
+        width: 18px;
+        height: 18px;
+    }
+    .msc-public-actions .msc-home-btn {
+        min-height: 38px;
+        padding: 0 12px;
+    }
+    .msc-public-actions .msc-home-btn--outline {
+        display: inline-flex !important;
+        width: 38px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .msc-public-actions .msc-home-btn--outline .nav-label {
+        display: none;
+    }
+    .msc-public-actions .msc-home-btn--primary .btn-arrow {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .msc-brand__copy { display: none; }
+    .msc-brand__mark { width: 38px; height: 38px; border-radius: 11px; }
+    .msc-public-actions .msc-home-btn--primary {
+        padding: 0 10px;
+        font-size: 11.5px;
+    }
+    .msc-public-actions .msc-home-btn--primary .nav-icon-wrap {
+        display: none;
+    }
+}
+@media (max-width:860px) { .msc-home-stage { padding-top:25px; } .msc-home-shell { width:calc(100% - 38px); } .msc-home-hero { display:flex; flex-direction:column; min-height:0; } .msc-home-copy { max-width:650px; padding:12px 0 8px; } .msc-home-art { width:100%; min-height:410px; margin-top:2px; } .msc-home-art__image { right:-5%; top:0; width:auto; height:410px; max-width:none; max-height:none; } .msc-home-art__note { display:none; } .msc-home-feature-row { grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:0; padding-bottom:38px; } .msc-home-support { grid-template-columns:1fr 1fr; padding:42px 24px 48px; background:#eff6ef; } .msc-home-support::before,.msc-home-support::after { display:none; } .msc-home-support__lead { grid-column:1/-1; padding:22px; border-radius:20px; background:#155643; } .msc-home-footer { width:calc(100% - 38px); flex-direction:column; gap:7px; } }
+@media (max-width:560px) { .msc-home-shell { width:calc(100% - 28px); } .msc-home-copy h1 { margin:19px 0 17px; font-size:clamp(52px,16vw,76px); } .msc-home-description { font-size:14px; } .msc-home-actions { flex-direction:column; align-items:stretch; } .msc-home-btn { width:100%; } .msc-home-art { min-height:355px; margin-top:-8px; } .msc-home-copy__rotating { min-height:262px; } .msc-home-art__image { right:-92px; top:-8px; width:auto; height:355px; max-width:none; max-height:none; } .msc-home-art > .msc-leaf-motion { inset:0 0 0 36%; } .msc-home-feature-row { gap:9px; } .msc-home-feature { min-height:118px; flex-wrap:wrap; gap:9px; padding:13px; } .msc-home-feature__icon { width:38px; height:38px; flex-basis:38px; } .msc-home-feature__body { flex-basis:calc(100% - 48px); } .msc-home-feature__body strong { font-size:13px; margin:1px 0 5px; } .msc-home-feature__body span { font-size:11px; } .msc-home-feature__arrow { display:none; } .msc-home-support { grid-template-columns:1fr 1fr; gap:10px; padding:28px 14px 34px; } .msc-home-support__lead { padding:17px; } .msc-home-support__lead h2 { font-size:31px; } .msc-home-support__item { padding:10px 7px; } .msc-home-support__item h3 { font-size:13px; } .msc-home-support__item p { font-size:11px; } }
 @media (max-width:560px) { .msc-home-appointment-note { align-items:flex-start; flex-wrap:wrap; margin:-20px 0 32px; } .msc-home-appointment-note a { width:100%; margin-left:47px; } }
 @media (max-width:390px) { .msc-home-feature-row { grid-template-columns:1fr 1fr; } .msc-home-copy h1 { font-size:52px; } }
 @media (prefers-reduced-motion:reduce) { .msc-home-copy__rotating.is-transitioning { opacity:1; transform:none; } .msc-home-art__atmosphere-dot { animation:none; } .msc-home-page *, .msc-home-page *::before, .msc-home-page *::after, .msc-public-page *, .msc-public-page *::before, .msc-public-page *::after { animation:none !important; transition:none !important; } }/* Supplied cartoon wellness hero: scoped replacement for the botanical image. */
@@ -1372,7 +1580,8 @@ html.msc-motion-ready [data-msc-reveal].is-visible { opacity:1; transform:perspe
 html.msc-home-smooth-scroll { scroll-behavior: smooth; scroll-padding-top: 88px; }
 .app-main.msc-home-smooth-scroll { scroll-behavior: smooth; scroll-padding-top: 24px; }
 .msc-home-page [data-msc-tilt] { transform-style: preserve-3d; transition: transform .38s cubic-bezier(.22, 1, .36, 1), box-shadow .32s ease, border-color .28s ease; }
-.msc-home-page [data-msc-tilt].is-tilting { transform: perspective(950px) rotateX(var(--msc-tilt-x, 0deg)) rotateY(var(--msc-tilt-y, 0deg)) translateY(-3px); }
+.msc-home-page [data-msc-tilt].is-tilting,
+.msc-home-page [data-msc-tilt].is-tilting:hover { transform: perspective(950px) rotateX(var(--msc-tilt-x, 0deg)) rotateY(var(--msc-tilt-y, 0deg)) translateY(-3px); }
 .msc-home-page [data-msc-tilt] .msc-home-feature__icon,
 .msc-home-page [data-msc-tilt] .msc-pathways__tab-mark,
 .msc-home-page [data-msc-tilt] .msc-home-support__icon { transform: translateZ(12px); transition: transform .35s cubic-bezier(.22, 1, .36, 1); }
@@ -1401,147 +1610,104 @@ html.msc-home-smooth-scroll { scroll-behavior: smooth; scroll-padding-top: 88px;
     .msc-home-page [data-msc-tilt] .msc-home-support__icon { transform: none !important; transition: none !important; }
 }
 
-/* The Sanctuary: editorial campus-world artwork + local, layered motion. */
+/* Full-bleed daylight: a still photograph, blended edges and optional ambient light. */
 .msc-home-page .msc-home-stage {
-    --msc-stage-pan-x: 0px;
-    --msc-stage-pan-y: 0px;
-    background-color: #f7f2e5;
-    perspective: 1400px;
+    background: var(--msc-home-cream, #f6f3e8);
+    padding-top: clamp(48px, 5vw, 76px);
+    padding-bottom: 24px;
 }
-
-.msc-home-page .msc-home-stage::before {
-    inset: 0;
-    top: 0;
-    right: 0;
-    width: auto;
-    height: auto;
-    aspect-ratio: auto;
-    border-radius: 0;
-    filter: none;
-    opacity: 1;
-    background-image:
-        linear-gradient(90deg, rgba(248, 246, 235, .96) 0%, rgba(248, 246, 235, .91) 27%, rgba(248, 246, 235, .72) 42%, rgba(248, 246, 235, .28) 59%, rgba(248, 246, 235, .04) 76%, transparent 100%),
-        linear-gradient(180deg, rgba(255, 252, 244, .1), transparent 34%, rgba(246, 243, 232, .1)),
-        url('/assets/branding/magirem-minsu-sanctuary.webp');
-    background-repeat: no-repeat;
-    background-size: 100% 100%, 100% 100%, cover;
-    background-position: center, center, center 54%;
-    transform: translate3d(var(--msc-stage-pan-x), var(--msc-stage-pan-y), 0) scale(1.035);
-    transition: transform .55s cubic-bezier(.22, 1, .36, 1);
-    will-change: transform;
-}
-
+.msc-home-page .msc-home-stage::before,
 .msc-home-page .msc-home-stage::after { display: none; }
-.msc-home-page .msc-home-stage > .msc-home-shell { position: relative; z-index: 2; }
-.msc-home-page .msc-home-art--sanctuary {
-    --msc-art-shift-x: 0px;
-    --msc-art-shift-y: 0px;
-    --msc-art-scroll-y: 0px;
-    --msc-art-tilt-x: 0deg;
-    --msc-art-tilt-y: 0deg;
-    min-height: clamp(450px, 42vw, 660px);
-    margin-top: -16px;
+.msc-home-page .msc-home-hero { display: block; min-height: clamp(540px, 42vw, 650px); padding-bottom: 54px; }
+.msc-home-page .msc-home-copy { width: 55%; max-width: 680px; min-width: 0; padding: 12px 0 16px; }
+.msc-home-page .msc-home-copy::before { display: none; }
+.msc-home-page .msc-home-copy h1 { max-width: 640px; font-size: clamp(48px, 5.05vw, 76px); line-height: 1.02; }
+.msc-home-page .msc-home-description { max-width: 490px; color: #4b6558; }
+.msc-home-page .msc-home-art--nature {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
     isolation: isolate;
-    perspective: 1500px;
-    transform-style: preserve-3d;
-    overflow: visible;
-    cursor: default;
+    pointer-events: none;
 }
-
-.msc-home-page .msc-home-art--sanctuary::before,
-.msc-home-page .msc-home-art--sanctuary::after { display: none; }
-
-.msc-sanctuary-art__atmosphere {
+.msc-home-art--nature::before,
+.msc-home-art--nature::after { display: none; }
+.msc-nature-scene {
     position: absolute;
-    inset: 0 -4% -2%;
-    z-index: 1;
+    inset: 0;
     overflow: hidden;
-    pointer-events: none;
-    transform-style: preserve-3d;
+    background: var(--msc-home-cream, #f6f3e8);
 }
-
-.msc-sanctuary-art__mist {
-    position: absolute;
+.msc-nature-scene__picture { position: absolute; display: block; inset: 0; }
+.msc-nature-scene__picture img {
     display: block;
-    width: 54%;
-    height: 15%;
-    border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(255, 251, 239, .46), rgba(255, 251, 239, .2) 40%, transparent 74%);
-    filter: blur(15px);
-    opacity: .56;
-    transform: translate3d(var(--msc-art-shift-x, 0px), var(--msc-art-scroll-y, 0px), -60px);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 65% center;
 }
-
-.msc-sanctuary-art__mist--far { top: 30%; left: 12%; animation: msc-sanctuary-mist 37s ease-in-out -15s infinite alternate; }
-.msc-sanctuary-art__mist--near { top: 47%; right: 2%; width: 47%; height: 11%; opacity: .34; animation: msc-sanctuary-mist 29s ease-in-out infinite alternate-reverse; }
-
-.msc-sanctuary-art__sunwash {
+.msc-nature-scene__shade {
     position: absolute;
-    top: 2%;
-    right: 3%;
-    width: 48%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 223, 151, .16), rgba(255, 246, 211, .09) 32%, transparent 69%);
-    filter: blur(8px);
-    animation: msc-sanctuary-sunwash 18s ease-in-out infinite alternate;
+    inset: 0;
+    background:
+        linear-gradient(0deg, #f6f3e8 0%, rgba(246,243,232,.85) 10%, transparent 35%),
+        linear-gradient(90deg, #f6f3e8 0%, rgba(246,243,232,.98) 24%, rgba(246,243,232,.94) 36%, rgba(246,243,232,.68) 50%, rgba(246,243,232,.12) 72%, rgba(246,243,232,.04) 100%);
 }
-
-.msc-sanctuary-art__leaf {
-    position: absolute;
-    z-index: 3;
-    width: clamp(19px, 2vw, 30px);
-    overflow: visible;
-    fill: rgba(109, 139, 91, .78);
-    stroke: rgba(54, 92, 64, .56);
-    stroke-width: 1.1;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 2px 3px rgba(50, 74, 44, .12));
-    transform-origin: 10% 90%;
+.msc-nature-atmosphere { position: absolute; inset: 0; overflow: hidden; }
+.msc-nature-atmosphere > span { position: absolute; display: block; animation-play-state: paused; }
+.msc-nature-atmosphere__light {
+    inset: -15% -10% 20% 35%;
+    background: radial-gradient(ellipse, rgba(255,242,190,.38), transparent 65%);
+    animation: msc-daylight-drift 18s ease-in-out infinite alternate;
 }
-
-.msc-sanctuary-art__leaf--one { top: 22%; left: 39%; animation: msc-sanctuary-leaf-drift 21s ease-in-out -4s infinite; }
-.msc-sanctuary-art__leaf--two { top: 42%; right: 17%; width: clamp(14px, 1.5vw, 22px); opacity: .76; animation: msc-sanctuary-leaf-drift 27s ease-in-out -17s infinite reverse; }
-
-.msc-sanctuary-art__foreground-parallax {
-    position: absolute;
-    inset: 0 -8% -3% -8%;
-    z-index: 2;
-    transform: perspective(1500px) translate3d(var(--msc-art-shift-x), calc(var(--msc-art-shift-y) + var(--msc-art-scroll-y)), 26px) rotateX(var(--msc-art-tilt-x)) rotateY(var(--msc-art-tilt-y));
-    transform-style: preserve-3d;
-    transform-origin: 72% 95%;
-    transition: transform .5s cubic-bezier(.22, 1, .36, 1);
-    will-change: transform;
+.msc-nature-atmosphere__mist {
+    width: 75%; height: 35%; right: -10%; bottom: 22%;
+    background: radial-gradient(ellipse, rgba(255,254,239,.34), transparent 68%);
+    animation: msc-meadow-breeze 24s ease-in-out infinite alternate;
 }
-
-.msc-sanctuary-art__foreground {
-    position: absolute;
-    right: -2%;
-    bottom: -6%;
-    width: 108%;
-    max-width: none;
-    height: auto;
-    object-fit: contain;
-    transform-origin: 93% 100%;
-    filter: drop-shadow(0 18px 25px rgba(31, 63, 38, .18));
-    animation: msc-sanctuary-grass-breeze 8.5s ease-in-out infinite alternate;
+.msc-nature-atmosphere__mote { width: 4px; height: 4px; border-radius: 50%; background: #fff4bd; right: 13%; top: 48%; animation: msc-daylight-mote 10s ease-in-out infinite; }
+.msc-nature-atmosphere__mote:nth-child(4) { right: 29%; top: 62%; width: 3px; height: 3px; animation-delay: -4s; }
+.msc-nature-atmosphere__mote:nth-child(5) { right: 39%; top: 35%; animation-delay: -7s; animation-duration: 14s; }
+[data-msc-scene-visible="true"] .msc-nature-atmosphere > span { animation-play-state: running; }
+.msc-nature-tools { position: absolute; z-index: 5; top: 22px; right: max(28px, calc((100% - 1420px) / 2)); display: flex; align-items: center; gap: 16px; pointer-events: auto; }
+.msc-nature-scene__credit { position: absolute; z-index: 5; right: 24px; bottom: 12px; max-width: calc(100% - 48px); padding: 3px 6px; border-radius: 5px; background: rgba(255, 254, 247, .9); color: #36523b; font-size: 9px; line-height: 1.5; text-underline-offset: 3px; pointer-events: auto; }
+.msc-nature-motion { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; border: 1px solid #d7dfc5; border-radius: 999px; background: #fffdf1; color: #284c36; font: inherit; font-size: 11px; font-weight: 650; line-height: 1.2; cursor: pointer; box-shadow: 0 4px 14px rgba(53, 70, 38, .08); }
+.msc-nature-motion[hidden] { display: none; }
+.msc-nature-motion svg { width: 15px; height: 15px; flex: 0 0 auto; }
+.msc-nature-motion:hover { background: #edf3df; }
+.msc-nature-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255,254,247,.92);
+    color: var(--msc-home-forest, #103f32);
+    font-size: 11px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: background .2s;
 }
-
-.msc-home-page .msc-home-copy { isolation: isolate; }
-.msc-home-page .msc-home-copy::before {
-    content: '';
-    position: absolute;
-    inset: -8% -15% -8% -8%;
-    z-index: -1;
-    border-radius: 48% 36% 44% 28%;
-    background: radial-gradient(ellipse at 45% 48%, rgba(250, 248, 238, .86), rgba(250, 248, 238, .45) 57%, transparent 82%);
-    filter: blur(12px);
-    pointer-events: none;
-}
-
-.msc-home-page .msc-home-copy h1 { max-width: 660px; font-size: clamp(55px, 5.6vw, 86px); line-height: .98; }
-.msc-home-page .msc-home-description { max-width: 525px; color: #4b6558; }
+.msc-nature-reset svg { width: 19px; height: 19px; }
+.msc-nature-reset:hover { background: #fffdf1; }
+.msc-nature-motion:focus-visible,
+.msc-nature-reset:focus-visible,
+.msc-nature-scene__credit:focus-visible { outline: 3px solid #c6a13a; outline-offset: 4px; }
+.msc-home-page[data-msc-motion-paused="true"] .msc-nature-atmosphere > span { animation-play-state: paused; }
+.msc-home-page[data-msc-motion-paused="true"] .msc-pathways__visual-image,
+.msc-home-page[data-msc-motion-paused="true"] .msc-support-story__visual img,
+.msc-home-page[data-msc-motion-paused="true"] .msc-home-closing__foliage { animation-play-state: paused !important; }
+.msc-home-page[data-msc-motion-paused="true"] .msc-pathways__panel { animation: none !important; }
+.msc-home-page[data-msc-motion-paused="true"] [data-msc-tilt] { transform: none !important; }
+html.msc-motion-ready .msc-home-page[data-msc-motion-paused="true"] [data-msc-reveal] { opacity: 1; transform: none; transition: none; }
+@keyframes msc-daylight-drift { from { transform: translate3d(-2%, -1%, 0) scale(.96); opacity: .55; } to { transform: translate3d(3%, 2%, 0) scale(1.05); opacity: 1; } }
+@keyframes msc-meadow-breeze { from { transform: translate3d(5%, 3%, 0); opacity: .4; } to { transform: translate3d(-12%, -4%, 0); opacity: .85; } }
+@keyframes msc-daylight-mote { 0%,100% { transform: translate3d(0, 10px, 0); opacity: 0; } 30%,70% { opacity: .7; } 80% { transform: translate3d(22px, -40px, 0); opacity: 0; } }
 
 /* Keep the four interactive destinations readable at every grid width. */
 .msc-home-page .msc-pathways__tab {
@@ -1569,76 +1735,27 @@ html.msc-home-smooth-scroll { scroll-behavior: smooth; scroll-padding-top: 88px;
 .msc-home-page .msc-pathways__tab:hover { transform: translateY(-6px) perspective(800px) rotateX(1.5deg); }
 .msc-home-page .msc-pathways__tab.is-active { transform: translateY(-4px) perspective(800px) rotateX(0deg); }
 
-@keyframes msc-sanctuary-mist {
-    from { translate: -2% 0; opacity: .22; }
-    to { translate: 7% -10%; opacity: .58; }
+@media (max-width: 1100px) and (min-width: 861px) {
+    .msc-home-page .msc-home-copy { width: 60%; }
+    .msc-home-page .msc-home-copy h1 { font-size: 55px; }
 }
-
-@keyframes msc-sanctuary-sunwash {
-    from { transform: translate3d(-2%, 1%, 0) scale(.92); opacity: .52; }
-    to { transform: translate3d(3%, -2%, 0) scale(1.06); opacity: .9; }
-}
-
-@keyframes msc-sanctuary-leaf-drift {
-    0% { translate: 0 0; rotate: -8deg; opacity: 0; }
-    12% { opacity: .86; }
-    54% { translate: 48px 42px; rotate: 18deg; opacity: .72; }
-    100% { translate: 102px 120px; rotate: 4deg; opacity: 0; }
-}
-
-@keyframes msc-sanctuary-grass-breeze {
-    from { transform: rotate(-.6deg) translateY(0); }
-    to { transform: rotate(.55deg) translateY(-3px); }
-}
-
 @media (max-width: 860px) {
-    .msc-home-page .msc-home-stage::before {
-        background-image:
-            linear-gradient(180deg, rgba(248, 246, 235, .98) 0%, rgba(248, 246, 235, .93) 31%, rgba(248, 246, 235, .57) 55%, rgba(248, 246, 235, .08) 83%, transparent 100%),
-            linear-gradient(0deg, rgba(248, 246, 235, .18), transparent 42%),
-            url('/assets/branding/magirem-minsu-sanctuary.webp');
-        background-position: center, center, 70% center;
-    }
-    .msc-home-page .msc-home-art--sanctuary { min-height: 380px; margin: -8px 0 -10px; }
-    .msc-home-page .msc-home-copy h1 { max-width: 660px; font-size: clamp(52px, 8.3vw, 76px); }
-    .msc-home-page .msc-sanctuary-art__foreground { width: 112%; right: -4%; bottom: -6%; }
-    .msc-home-page .msc-pathways__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .msc-home-page .msc-pathways__tab-copy strong { font-size: clamp(14px, 2vw, 16px); }
+    .msc-home-page .msc-home-stage { padding-top: 76px; }
+    .msc-home-page .msc-home-hero { min-height: 0; padding-bottom: 36px; }
+    .msc-home-page .msc-home-copy { width: 100%; max-width: 650px; margin: 0; }
+    .msc-home-page .msc-home-copy h1 { font-size: clamp(48px, 8vw, 68px); }
+    .msc-nature-scene__picture img { object-position: 72% center; }
+    .msc-nature-scene__shade { background: linear-gradient(0deg, #f6f3e8, transparent 30%), linear-gradient(90deg, rgba(246,243,232,.97), rgba(246,243,232,.88) 55%, rgba(246,243,232,.55)); }
+    .msc-nature-tools { top: 16px; right: 20px; gap: 8px; }
 }
-
 @media (max-width: 560px) {
-    .msc-home-page .msc-home-stage::before {
-        background-image:
-            linear-gradient(180deg, rgba(248, 246, 235, .99) 0%, rgba(248, 246, 235, .94) 24%, rgba(248, 246, 235, .64) 48%, rgba(248, 246, 235, .16) 76%, rgba(248, 246, 235, .06) 100%),
-            linear-gradient(0deg, rgba(248, 246, 235, .32), transparent 38%),
-            url('/assets/branding/magirem-minsu-sanctuary.webp');
-        background-position: center, center, 71% center;
-    }
-    .msc-home-page .msc-home-art--sanctuary { min-height: clamp(290px, 85vw, 370px); margin: -12px -10px -8px; }
-    .msc-home-page .msc-sanctuary-art__foreground-parallax { inset: 0 -9% -6%; }
-    .msc-home-page .msc-sanctuary-art__foreground { width: 118%; right: -7%; bottom: -7%; }
-    .msc-home-page .msc-sanctuary-art__leaf--one { left: 28%; }
-    .msc-home-page .msc-home-copy h1 { font-size: clamp(48px, 12.8vw, 66px); }
-    .msc-home-page .msc-home-copy::before { inset: -5% -8%; background: radial-gradient(ellipse, rgba(250, 248, 238, .92), rgba(250, 248, 238, .53) 65%, transparent 88%); }
-    .msc-home-page .msc-pathways__tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
-    .msc-home-page .msc-pathways__tab { grid-template-columns: minmax(0, 1fr) 38px; grid-template-rows: 22px minmax(74px, 1fr); min-height: 142px; gap: 8px 5px; padding: 13px 12px 15px; border-radius: 18px; }
-    .msc-home-page .msc-pathways__tab-mark { width: 36px; height: 36px; border-radius: 12px; }
-    .msc-home-page .msc-pathways__tab-mark svg { width: 21px; height: 21px; }
-    .msc-home-page .msc-pathways__tab-copy small { font-size: 8px; letter-spacing: .04em; }
-    .msc-home-page .msc-pathways__tab-copy strong { font-size: 13px; line-height: 1.28; }
+    .msc-home-page .msc-home-copy h1 { font-size: clamp(42px, 11.5vw, 60px); }
+    .msc-nature-tools { left: 20px; right: 20px; justify-content: space-between; }
+    .msc-nature-motion, .msc-nature-reset { font-size: 10px; padding: 0 10px; }
+    .msc-nature-scene__credit { right: 20px; font-size: 8px; }
 }
-
 @media (prefers-reduced-motion: reduce) {
-    .msc-home-page .msc-home-stage::before,
-    .msc-sanctuary-art__mist,
-    .msc-sanctuary-art__sunwash,
-    .msc-sanctuary-art__leaf,
-    .msc-sanctuary-art__foreground { animation: none !important; }
-    .msc-home-page .msc-home-stage::before { transform: none !important; }
-    .msc-home-page .msc-home-art--sanctuary,
-    .msc-sanctuary-art__foreground-parallax { transform: none !important; transition: none !important; }
-    .msc-home-page .msc-pathways__tab:hover,
-    .msc-home-page .msc-pathways__tab.is-active { transform: none; }
+    .msc-nature-atmosphere > span { animation: none !important; }
 }
 
 /* An illustrated set of real MAGIREM destinations, not a sequence of steps. */
@@ -1924,4 +2041,21 @@ html.msc-home-smooth-scroll { scroll-behavior: smooth; scroll-padding-top: 88px;
     .msc-home-page .msc-support-story__visual img,
     .msc-home-closing__foliage { animation: none !important; transition: none !important; transform: none !important; }
     .msc-home-page .msc-pathways__tab:hover .msc-pathways__tab-thumb img { transform: none; }
+}
+
+/* Compact mobile hero without changing the desktop sanctuary composition. */
+@media (max-width: 700px) {
+    .msc-home-page .msc-home-stage { padding-top: 76px; }
+    .msc-home-page .msc-home-copy { width: 100%; max-width: 100%; padding: 8px 0 4px; }
+    .msc-home-page .msc-home-copy h1 {
+        margin: 16px 0 15px;
+        font-size: clamp(40px, 8vw, 54px);
+        line-height: 1.02;
+        letter-spacing: -.055em;
+    }
+    .msc-home-page .msc-home-copy h1 em { white-space: normal; }
+    .msc-home-page .msc-home-description { font-size: 15px; line-height: 1.55; }
+    .msc-home-page .msc-home-copy__rotating { min-height: 224px; }
+    .msc-home-page .msc-home-actions { gap: 10px; }
+    .msc-home-page .msc-home-actions .msc-home-btn { min-height: 48px; }
 }

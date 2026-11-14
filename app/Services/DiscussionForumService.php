@@ -86,17 +86,26 @@ class DiscussionForumService
     {
         $thread = ForumThread::findOrFail($threadId);
         
-        // Increment views
-        $thread->incrementViews();
+        // Debounce view count and activity logging (1-hour window per viewer)
+        $viewerIdentifier = (string) (Auth::id() ?: request()->ip());
+        $viewCacheKey = 'forum_thread_view_' . $threadId . '_' . md5($viewerIdentifier);
+        if (!\Illuminate\Support\Facades\Cache::has($viewCacheKey)) {
+            \Illuminate\Support\Facades\Cache::put($viewCacheKey, true, now()->addHours(1));
 
-        // Log view activity
-        ForumActivityLog::log(
-            Auth::id(),
-            'viewed_thread',
-            'thread',
-            $threadId,
-            "Viewed thread: {$thread->title}"
-        );
+            // Increment views
+            $thread->incrementViews();
+
+            // Log view activity for authenticated members
+            if (Auth::check()) {
+                ForumActivityLog::log(
+                    Auth::id(),
+                    'viewed_thread',
+                    'thread',
+                    $threadId,
+                    "Viewed thread: {$thread->title}"
+                );
+            }
+        }
 
         $replies = $thread->replies()
             ->with('user')

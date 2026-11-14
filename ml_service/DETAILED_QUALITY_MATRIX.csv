@@ -1,0 +1,232 @@
+text,language,emotion,language_correct,label_correct,natural,unambiguous,non_template,quality_judgment,verdict,reason
+"i don't know how to live without them",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit grief marker - bereavement
+"i'm not in a good place",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Clear emotional distress
+"i'm absolutely enraged!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intense anger emotion word
+"i'm really stressed with my studies lately and i don't know how to manage everything.",English,neutral,YES,PARTIAL,YES,YES,YES,GOOD,ACCEPT,Could be anxiety but contextually neutral study reflection
+"ok next is who is jose rizal and its background",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Factual academic question
+"i'm mourning the loss of someone i loved",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit mourning and loss
+"i'm worried sick about this",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Clear anxiety marker
+"no, not right now. i'm just overwhelmed.",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Emotional overwhelm
+"i feel like i'm drowning",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Metaphorical emotional devastation
+"session 1: i'm stressed about exams (attempt 1)",English,anxiety,YES,YES,YES,YES,NO,GOOD,ACCEPT,Clear exam anxiety
+"what is star fish",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Factual knowledge question
+"this is absolutely fantastic!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Superlative joy expression
+"this doesn't make me angry",English,joy,YES,NO,YES,NO,YES,PROBLEMATIC,REVIEW,Negation NOT joy - should be NEUTRAL
+"saying goodbye was the hardest thing",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement/separation grief
+"that's absolutely perfect!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Clear joy from perfection
+"ok so whats the tagalog of resurrection?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Language learning question
+"that's wonderful news!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Joyful news reaction
+"i wanted to check in",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Conversational neutral statement
+"can i name you lei-i",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Naming request - neutral inquiry
+"i'm not okay",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Emotional distress affirmation
+"i don't want to do anything",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Anhedonia/depression symptom
+"i'm seething with anger!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intense anger marker
+"i'm overwhelmed by sadness",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit sadness statement
+"no not at all can you help me find one ??",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Request for help - neutral tone
+"hi, how are you?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Standard greeting
+"i'm so grateful and happy!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Double emotion marker - joy
+"they crossed the line!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Boundary violation anger
+"how dare they treat me like this!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Indignant anger
+"i see reminders of them everywhere",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief from loss memories
+"what if everything goes wrong?",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Catastrophic worry
+"session 1, msg 1: i'm stressed about my exams coming up",English,anxiety,YES,YES,YES,YES,NO,GOOD,ACCEPT,Clear exam stress
+"i'm freaking out about this presentation",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Performance anxiety
+"well the truth is i was being bullied in school lately",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bullying trauma sadness
+"everything feels overwhelming",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,General anxiety
+"i feel so alone and isolated",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Loneliness and isolation
+"i'm boiling over with rage!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intense anger
+"i don't know how to move forward",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief from loss
+"yes im stress in my study latety, i need help",Taglish,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Phonetic student speech - genuine anxiety
+"this doesn't feel right",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Emotional misalignment
+"session 3, msg 1: i'm worried about my relationship",English,anxiety,YES,YES,YES,YES,NO,GOOD,ACCEPT,Relationship anxiety
+"that's the last straw!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Final straw anger
+"i'm feeling really down today",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Depression/sadness
+"i'm not doing well",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,General distress
+"bakla san galing yan",Tagalog,neutral,YES,NO,YES,YES,YES,PROBLEMATIC,REVIEW,Pure Tagalog slang - may indicate hidden emotion
+"i miss them every single day",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement grief
+"i have this overwhelming sense of dread",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Dread anxiety
+"i'm not sad",English,joy,YES,NO,YES,NO,YES,PROBLEMATIC,REVIEW,Negation NOT joy - should be NEUTRAL
+"i'm at my breaking point!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Rage/anger at limit
+"i'm not sure how i feel",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Emotional ambiguity - neutral
+"this is a dream come true!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Achievement joy
+"can we talk?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Communication request
+"i'm stressed about exam prep",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Exam stress anxiety
+"what's up?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Casual greeting
+"i'm not feeling good",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Physical/emotional distress
+"i don't like how i feel",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Emotional dissatisfaction
+"i wish i could have one more conversation",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement regret
+"everything is too much right now",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Overwhelming sadness
+"ok tnks tho bye i guess",English,neutral,YES,YES,YES,YES,YES,GOOD,ACCEPT,Casual goodbye - neutral
+"okay, medyo mahirap ang sitwasyon ko sa pera, ano ba ang pwedi kong gawin? any tips",Taglish,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Authentic Taglish code-switching
+"yes i would like to share",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Conversational agreement
+"namatay means that died or dead its tagalog bro",Taglish,sadness,YES,YES,YES,YES,YES,GOOD,ACCEPT,Meta-linguistic code-switching
+"medyo stressed ako because of school. any tips?",Taglish,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Authentic Taglish expression
+"i'm so happy right now!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Clear joy expression
+"this isn't bad at all",English,joy,YES,PARTIAL,YES,YES,YES,GOOD,ACCEPT,Negation but contextually positive
+"that made me so happy!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit joy
+"this is making me so mad!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit anger
+"i've been struggling with this for weeks",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Prolonged sadness/struggle
+"i feel like i'm losing control",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Loss of control anxiety
+"let me explain",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Neutral explanation marker
+"i'm feeling great today!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Clear joy
+"how could they do this?!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Indignant anger
+"i'm scared about the future",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Future-focused anxiety
+"i can't believe they're gone",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement shock
+"i really really had a fucking happy day today",English,neutral,YES,PARTIAL,YES,YES,NO,PROBLEMATIC,REVIEW,Profanity with happiness but labeled neutral - emotion unclear
+"i think about them every day",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief obsession
+"i can't stop crying",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief/sadness tears
+"i'm so frustrated i could scream!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Frustration-based anger
+"they meant everything to me",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement attachment
+"i'm so tired of feeling this way",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Chronic sadness fatigue
+"tell me more",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Neutral request
+"i'm not upset",English,joy,YES,PARTIAL,YES,NO,YES,PROBLEMATIC,REVIEW,Negation - should be NEUTRAL
+"i'm so glad about this!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Joy from satisfaction
+"i'm not sure what to do",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Uncertainty - neutral
+"this sadness won't go away",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Persistent sadness
+"i'm trying to figure this out",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Problem-solving attempt
+"i can't handle this anymore",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Overwhelmed sadness
+"my friends are supportive but sometimes i feel like they don't really understand how much pressure this is.",English,neutral,YES,PARTIAL,YES,YES,YES,GOOD,ACCEPT,Ambiguous but contextually neutral
+"nothing makes me happy anymore",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Anhedonia - depression
+"well to be honest i am not feeling well today",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Physical/emotional distress
+"who is rizal",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Knowledge question
+"i don't feel happy anymore",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Loss of joy
+"i'm having the time of my life!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Peak joy experience
+"i'm so angry right now!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit anger
+"i'm panicking about the exam",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Panic anxiety
+"losing them has broken me",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement devastation
+"this is the best thing that could happen!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Superlative joy
+"i'm not okay, i'm really struggling",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Distress acknowledgment
+"i loved them so much",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Past-tense attachment grief
+"not much but i do need help for my assignment",English,anxiety,YES,PARTIAL,YES,YES,YES,GOOD,ACCEPT,Practical request with stress
+"i can't complain",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Satisfaction/contentment
+"i don't want to be happy",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Rejection of happiness
+"i can't believe how unfair this is!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Injustice anger
+"years ago i wanted to die, but i'm okay now.",English,neutral,YES,NO,YES,NO,YES,PROBLEMATIC,REVIEW,Suicidal ideation reference - should be SADNESS/ANXIETY
+"i can't feel joy",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Anhedonia
+"so this happened...",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Neutral statement
+"i'm terrified of messing this up",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Performance anxiety
+"remember that i'm stressed about assignments",English,anxiety,YES,YES,YES,YES,NO,GOOD,ACCEPT,Assignment stress reminder
+"i dont have money bro",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Factual statement
+"can you help me?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Help request
+"what do you think?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Opinion inquiry
+"i'm learning to live with their memory",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief adaptation
+"this anxiety is suffocating me",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Severe anxiety
+"it still doesn't feel real",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief shock
+"i've been working with my friends on this and they suggested caching, but i'm not sure how to implement it.",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Technical neutral discussion
+"i'm so tired of being sad",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Chronic sadness fatigue
+"not good actually",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Distress acknowledgment
+"grieving this loss is so hard",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief difficulty acknowledgment
+"this situation is maddening!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Frustration-based anger
+"i'm processing my grief",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Grief work
+"i don't know what to do, i'm so stressed",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Decisional anxiety
+"my friends surprised me today and it made my whole day.",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Friendship joy
+"i'm not struggling",English,joy,YES,PARTIAL,YES,NO,YES,PROBLEMATIC,REVIEW,Negation - should be NEUTRAL
+"the anxiety is unbearable",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Severe anxiety
+"i'm bursting with happiness!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intense joy
+"i'm dealing with their passing",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement process
+"i'm having a rough day, but i'll get through it.",English,sadness,YES,YES,YES,YES,YES,GOOD,ACCEPT,Sadness with resilience
+"i'm losing my temper!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Anger escalation
+"i have a question",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Question marker
+"i'm so excited about this!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Excitement joy
+"this injustice makes me furious!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Injustice-based anger
+"this brings me so much joy!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit joy
+"i miss their laugh so much",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Specific bereavement memory
+"i'm feeling stressed about my deadlines.",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Deadline anxiety
+"this is amazing! i can't believe it!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Amazement joy
+"this is the happiest i've been in months!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Peak happiness
+"i can't stop smiling!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Joy manifestation
+"life is so good right now!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Existential joy
+"i'm worried about my upcoming presentation at work",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Performance anxiety
+"everything feels so empty right now",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Existential sadness
+"do you know rizal?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Knowledge inquiry
+"the pain of their absence is overwhelming",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement pain
+"let me tell you about my day",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Narrative marker
+"i'm so tense i can't think straight",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Tension-based anxiety
+"i can't relax, i'm too anxious",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit anxiety
+"their death has left a huge hole in my life",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement void
+"i can't be happier",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Peak happiness
+"ok my cat die yesterday",English,neutral,YES,NO,YES,NO,YES,PROBLEMATIC,REVIEW,Pet death - should be SADNESS/GRIEF
+"i'm not worried",English,joy,YES,PARTIAL,YES,NO,YES,PROBLEMATIC,REVIEW,Negation - should be NEUTRAL
+"i'm outraged by what happened!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Outrage anger
+"that's incredible news!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Joyful news
+"i can't get better",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Hopelessness
+"my blood is boiling!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intense anger
+"i don't see any light at the end",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Hopelessness
+"i'm not handling this well",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Coping difficulty
+"i'm nervous about seeing them again",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Social anxiety
+"this disrespect is infuriating!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Injustice anger
+"okay, medyo mahirap ang sitwasyon ko sa pera, ano ba ang pwedi kong gawin ?any tips",Taglish,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Duplicate variant - keep train version
+"im so loney too",English,sadness,YES,YES,YES,YES,YES,GOOD,ACCEPT,Misspelled but authentic "lonely"
+"i'm processing some thoughts",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Cognitive processing marker
+"what will people think?",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Social anxiety
+"i miss them so much",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement longing
+"i need some advice",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Advice request
+"my heart won't stop racing",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Physical anxiety symptom
+"i'm thinking about something",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Contemplation marker
+"i'm feeling so positive and energized!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Energy-based joy
+"i don't know how to cope with this",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Coping inability
+"i can't shake this feeling of dread",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Persistent anxiety
+"i've been sad for so long",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Chronic sadness
+"i can't stop thinking about this, it's making me nervous",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Rumination anxiety
+"i'm confused about something",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Cognitive confusion
+"what should i do?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Decision inquiry
+"can you response in filipino",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Language request
+"this isn't terrible",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Negation + context = mild joy
+"i can't seem to feel better",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Improvement inability
+"i don't think i'll be okay",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Hopelessness
+"i keep having terrible thoughts",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intrusive thought anxiety
+"i'm over the moon!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Euphoric joy
+"bro, my friends surprised me after class today. we went out for food and honestly i haven't had that much fun in a while.",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Friendship joy narrative
+"no im just kindding",English,sadness,YES,YES,YES,YES,YES,GOOD,ACCEPT,Misspelled "kidding" - sarcasm sadness
+"now i'm worried about other parts of the project breaking. i feel like i'm always finding new problems.",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Project anxiety
+"losing them was devastating",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement devastation
+"i'm not feeling good at all",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Distress
+"i can't breathe, i'm so anxious",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Panic anxiety
+"i feel like giving up",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Hopelessness
+"i'm literally jumping with joy!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Physical joy manifestation
+"i'm devastated by what happened",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Devastation sadness
+"i feel like something bad is going to happen",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Catastrophic anxiety
+"hey im a little sad right now",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Mild sadness acknowledgment
+"just wanted to chat",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Social neutral
+"i can't believe they did that to me!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Betrayal anger
+"who is rizal ?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Knowledge inquiry
+"i'm really stressed with my studies lately.",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Study anxiety
+"i'm anxious about making a mistake",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Performance anxiety
+"i'm not going to be okay",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Hopelessness
+"i can't stand this anymore!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Exasperation anger
+"i'll never be the same after losing them",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement transformation
+"i'm fed up with this nonsense!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Frustration anger
+"i'm absolutely livid!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Intense anger
+"i have something to tell you",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Disclosure marker
+"i lost my best friend",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement loss
+"let me ask you something",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Question marker
+"i don't feel good at all",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Distress
+"that's completely unfair and i'm furious!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Injustice fury
+"may tililing kb",Tagalog,neutral,YES,NO,YES,YES,YES,PROBLEMATIC,REVIEW,Pure Tagalog gossip/rumor - lacks emotional context
+"i'm really stressed about my assignments",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Assignment stress
+"that's so aggravating!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Aggravation anger
+"i feel numb and empty",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Depression numbness
+"no im just kidding",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Joking marker
+"i'm thrilled about this opportunity!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Opportunity joy
+"session 2, msg 1: work has been really overwhelming lately",English,anxiety,YES,YES,YES,YES,NO,GOOD,ACCEPT,Work overwhelm anxiety
+"i feel hopeless about the future",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Hopelessness
+"i'm struggling with this loss",English,grief,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Bereavement struggle
+"nothing in particular",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Non-specific neutral
+"this is on my mind",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Thought marker
+"they really got me fired up!",English,anger,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Anger escalation
+"baklla si lei",Tagalog,neutral,YES,NO,YES,YES,YES,PROBLEMATIC,REVIEW,Pure Tagalog slang - may indicate hidden emotion
+"that just made my whole day!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Day-brightening joy
+"hey you there?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Greeting inquiry
+"what's been going on?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Catch-up inquiry
+"i am feeling sad today",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit sadness
+"no no im just missing with you bro",English,sadness,YES,PARTIAL,YES,YES,YES,GOOD,ACCEPT,Teasing but sadness marker (joking about sadness)
+"i wanted to reach out",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Connection attempt
+"so what should i do thin ?",English,neutral,YES,YES,YES,YES,YES,GOOD,ACCEPT,Misspelled "then" but contextually neutral
+"i'm not lonely anymore",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Relief joy from loneliness
+"i'm so worried about what's going to happen",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Future worry anxiety
+"this worry is eating me alive",English,anxiety,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Rumination anxiety
+"bro im so sad right now",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Explicit sadness
+"ok whats 1+1 ?",English,neutral,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Math question
+"i just had the best day ever!",English,joy,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Peak day joy
+"well not good at all",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Distress negation
+"my heart is breaking",English,sadness,YES,YES,YES,YES,YES,PERFECT,ACCEPT,Heartbreak sadness/grief

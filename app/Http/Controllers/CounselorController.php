@@ -492,11 +492,10 @@ class CounselorController extends Controller
                 'message' => $request->message ?? '',
             ];
 
-            // Handle file upload
+            // Handle file upload securely on private disk
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('chat_attachments', $filename, 'public');
+                $path = $file->store('chat_attachments', 'local');
 
                 $data['attachment_path'] = $path;
                 $data['attachment_name'] = $file->getClientOriginalName();
@@ -527,7 +526,7 @@ class CounselorController extends Controller
             if ($request->expectsJson() || $request->header('Accept') === 'application/json') {
                 $attachmentUrl = null;
                 if ($message->attachment_path) {
-                    $attachmentUrl = \Storage::url($message->attachment_path);
+                    $attachmentUrl = route('counselor-chat.attachment', ['message' => $message->id]);
                 }
 
                 return response()->json([
@@ -650,7 +649,7 @@ class CounselorController extends Controller
             ->map(function ($msg) {
                 $attachmentUrl = null;
                 if ($msg->attachment_path && !$msg->isUnsent()) {
-                    $attachmentUrl = \Storage::url($msg->attachment_path);
+                    $attachmentUrl = route('counselor-chat.attachment', ['message' => $msg->id]);
                 }
 
                 return [
@@ -1098,5 +1097,53 @@ class CounselorController extends Controller
     {
         return $this->hasConfirmedAppointment($studentId, $counselorId)
             && app(PrivacyService::class)->canShareWithCounselor($studentId);
+    }
+
+    /**
+     * Safely stream confidential counseling chat attachments to authorized participants.
+     */
+    public function viewAttachment(int $messageId)
+    {
+        $user = Auth::user();
+        abort_unless($user, 401);
+
+        $message = CounselorMessage::findOrFail($messageId);
+        abort_if($message->isUnsent(), 404, 'Attachment is no longer available.');
+
+        $isAuthorized = (int) $message->student_id === (int) $user->id
+            || (int) $message->counselor_id === (int) $user->id
+            || (int) $message->sender_id === (int) $user->id
+            || $user->isAdmin();
+
+        abort_unless($isAuthorized, 403, 'Unauthorized to access this attachment.');
+
+        $path = $message->attachment_path;
+        abort_unless($path, 404, 'Attachment path not recorded.');
+
+        // First check the secure local disk (new uploads)
+        if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+            return \Illuminate\Support\Facades\Storage::disk('local')->response(
+                $path,
+                $message->attachment_name ?: basename($path),
+                [
+                    'Cache-Control' => 'private, no-store, max-age=0',
+                    'X-Content-Type-Options' => 'nosniff',
+                ]
+            );
+        }
+
+        // Backward compatibility fallback for legacy attachments stored on public disk
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->response(
+                $path,
+                $message->attachment_name ?: basename($path),
+                [
+                    'Cache-Control' => 'private, no-store, max-age=0',
+                    'X-Content-Type-Options' => 'nosniff',
+                ]
+            );
+        }
+
+        abort(404, 'Attachment file not found on disk.');
     }
 }

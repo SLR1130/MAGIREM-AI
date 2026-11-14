@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "project": {
+    "name": "capstoneApp",
+    "productType": null,
+    "stack": [
+      "react",
+      "tailwind-v4",
+      "vite"
+    ]
+  },
+  "sources": {
+    "tokens": [],
+    "components": [],
+    "assets": [
+      "public/assets",
+      "public/images"
+    ],
+    "instructions": []
+  },
+  "design": {
+    "colorMode": "unknown",
+    "colors": {},
+    "typography": {},
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "unknown"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [
+      "radix-ui"
+    ],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [],
+    "avoid": []
+  },
+  "decisions": [
+    {
+      "scope": "home.hero",
+      "direction": "Seamless daylight background",
+      "date": "2026-11-12",
+      "rationale": "Supersedes the separate photograph card: the existing meadow now fills the hero stage and blends into ivory behind the copy and lower edge. The image is static; light, mist and three small motes provide optional ambient motion with pause, offscreen and reduced-motion safeguards. Duplicate photo caption and large floating reset card removed; existing destination retained as a compact link."
+    },
+    {
+      "scope": "home.imagery",
+      "direction": "Warm daylight wellness photography",
+      "date": "2026-11-12",
+      "rationale": "Replaces the rejected dark forest hero and painted pathway/support scenes with licensed real sunrise, bright workspace, blank journal, picnic connection, and light seating photographs. Ivory rather than black hero scrim; existing depth and motion controls unchanged. Stock scenes are not represented as MinSU facilities or patients."
+    },
+    {
+      "scope": "home.hero",
+      "direction": "Real-world sanctuary",
+      "date": "2026-11-12",
+      "rationale": "Real licensed forest photography in a responsive locally hosted 4K WebP set, layered photo/caption/action depth, bounded fine-pointer perspective, actual document-scroll tracking, one-shot section reveals, and a motion pause control. Inspired by 21st Panoramic Spread Hero and Optimized Tilt Card metadata; no component code retrieved."
+    },
+    {
+      "scope": "student.journal",
+      "direction": "Open Notebook",
+      "date": "2026-11-12",
+      "rationale": "A writing-first Blade layout with the existing illustrated journal asset, warm paper typography, optional prompts, and compact recent reflections."
+    }
+  ],
+  "evidence": [
+    {
+      "fact": "project.stack:react",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:tailwind-v4",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:vite",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-11-10T07:54:40.466Z"
+}

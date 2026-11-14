@@ -1,0 +1,36 @@
+{"id":"en-sad-1","language":"ENGLISH","emotion":"sadness","text":"I feel sad and empty after failing my exam."}
+{"id":"en-sad-2","language":"ENGLISH","emotion":"sadness","text":"I have been lonely and down all week."}
+{"id":"en-grief-1","language":"ENGLISH","emotion":"grief","text":"My grandmother died last month and I miss her every day."}
+{"id":"en-grief-2","language":"ENGLISH","emotion":"grief","text":"I am grieving after my father's funeral."}
+{"id":"en-anxiety-1","language":"ENGLISH","emotion":"anxiety","text":"I feel anxious and worried about tomorrow's presentation."}
+{"id":"en-anxiety-2","language":"ENGLISH","emotion":"anxiety","text":"I keep panicking about my grades and cannot relax."}
+{"id":"en-anger-1","language":"ENGLISH","emotion":"anger","text":"I am angry that my group ignored my work."}
+{"id":"en-anger-2","language":"ENGLISH","emotion":"anger","text":"I feel furious about the unfair grade."}
+{"id":"en-joy-1","language":"ENGLISH","emotion":"joy","text":"I am happy and excited that I passed the exam."}
+{"id":"en-joy-2","language":"ENGLISH","emotion":"joy","text":"I feel joyful spending time with my friends."}
+{"id":"en-neutral-1","language":"ENGLISH","emotion":"neutral","text":"I need to submit my assignment on Friday."}
+{"id":"en-neutral-2","language":"ENGLISH","emotion":"neutral","text":"The library opens at eight tomorrow."}
+{"id":"tl-sad-1","language":"TAGALOG","emotion":"sadness","text":"Malungkot ako at pakiramdam ko ay mag-isa buong linggo."}
+{"id":"tl-sad-2","language":"TAGALOG","emotion":"sadness","text":"Nalulungkot ako dahil bumagsak ako sa pagsusulit."}
+{"id":"tl-grief-1","language":"TAGALOG","emotion":"grief","text":"Pumanaw ang lola ko at sobrang nangungulila ako."}
+{"id":"tl-grief-2","language":"TAGALOG","emotion":"grief","text":"Nagluluksa ako matapos ang libing ng aking ama."}
+{"id":"tl-anxiety-1","language":"TAGALOG","emotion":"anxiety","text":"Kinakabahan ako sa presentasyon bukas."}
+{"id":"tl-anxiety-2","language":"TAGALOG","emotion":"anxiety","text":"Nag-aalala ako sa grado ko at hindi ako mapakali."}
+{"id":"tl-anger-1","language":"TAGALOG","emotion":"anger","text":"Galit ako dahil hindi pinakinggan ng grupo ang trabaho ko."}
+{"id":"tl-anger-2","language":"TAGALOG","emotion":"anger","text":"Naiinis ako sa hindi patas na marka."}
+{"id":"tl-joy-1","language":"TAGALOG","emotion":"joy","text":"Masaya ako dahil pumasa ako sa pagsusulit."}
+{"id":"tl-joy-2","language":"TAGALOG","emotion":"joy","text":"Maligaya ako kasama ang mga kaibigan ko."}
+{"id":"tl-neutral-1","language":"TAGALOG","emotion":"neutral","text":"Ipapasa ko ang takdang-aralin sa Biyernes."}
+{"id":"tl-neutral-2","language":"TAGALOG","emotion":"neutral","text":"Bukas ang aklatan ng alas otso."}
+{"id":"tg-sad-1","language":"TAGLISH","emotion":"sadness","text":"I feel malungkot and drained after the exam."}
+{"id":"tg-sad-2","language":"TAGLISH","emotion":"sadness","text":"Lonely ako lately and wala akong gana."}
+{"id":"tg-grief-1","language":"TAGLISH","emotion":"grief","text":"Namatay ang lola ko last month and I miss her badly."}
+{"id":"tg-grief-2","language":"TAGLISH","emotion":"grief","text":"Nag-grieve ako after the funeral ni Papa."}
+{"id":"tg-anxiety-1","language":"TAGLISH","emotion":"anxiety","text":"Kinakabahan ako sa presentation tomorrow, sobrang worried."}
+{"id":"tg-anxiety-2","language":"TAGLISH","emotion":"anxiety","text":"I keep worrying sa grades ko and hindi ako mapakali."}
+{"id":"tg-anger-1","language":"TAGLISH","emotion":"anger","text":"Galit ako kasi ignored ng group yung effort ko."}
+{"id":"tg-anger-2","language":"TAGLISH","emotion":"anger","text":"I'm furious sa unfair na grade."}
+{"id":"tg-joy-1","language":"TAGLISH","emotion":"joy","text":"Masaya ako kasi I passed the exam!"}
+{"id":"tg-joy-2","language":"TAGLISH","emotion":"joy","text":"Sobrang saya ko with my friends today."}
+{"id":"tg-neutral-1","language":"TAGLISH","emotion":"neutral","text":"I need to submit yung assignment on Friday."}
+{"id":"tg-neutral-2","language":"TAGLISH","emotion":"neutral","text":"The library opens at eight bukas."}
