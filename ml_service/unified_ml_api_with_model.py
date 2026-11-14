@@ -1823,6 +1823,21 @@ def internal_crisis_assessment():
         return jsonify({'success': False, 'code': 'invalid_crisis_request'}), 400
     try:
         with gpu_queue.acquire(detail, priority='crisis') as admission:
+            gemini_key = os.getenv('GEMINI_API_KEY')
+            if gemini_key:
+                try:
+                    from gemini_bridge import GeminiBridge
+                    bridge = GeminiBridge(api_key=gemini_key)
+                    if bridge.is_available():
+                        res = bridge.generate(prompt, temperature=float(data.get('temperature', 0.3)))
+                        content = res.get('response', '')
+                        if content and content.strip():
+                            return jsonify({'success': True, 'response': content, 'queue_wait_ms': admission.wait_ms})
+                except Exception as e:
+                    import sys
+                    sys.stderr.write(f"[GEMINI_CRISIS_FALLBACK_TO_OLLAMA] {e}\n")
+                    sys.stderr.flush()
+
             response = requests.post('http://127.0.0.1:11434/api/generate', json={
                 'model': model, 'prompt': prompt, 'stream': False,
                 'options': {'temperature': float(data.get('temperature', 0.3))},

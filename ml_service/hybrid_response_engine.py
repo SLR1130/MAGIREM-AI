@@ -164,6 +164,26 @@ EXAMPLE - Good Response (conversational, contextual):
 See the difference? Conversational, real, not a template."""
     
     def _post_to_ollama(self, endpoint: str, payload: Dict):
+        gemini_key = os.getenv('GEMINI_API_KEY')
+        if gemini_key:
+            try:
+                from gemini_bridge import GeminiBridge, GeminiMockResponse
+                bridge = GeminiBridge(api_key=gemini_key)
+                if bridge.is_available():
+                    messages = payload.get('messages', [])
+                    opts = payload.get('options', {})
+                    temp = opts.get('temperature', 0.7)
+                    max_tokens = opts.get('num_predict', 800)
+                    schema = payload.get('format')
+                    res = bridge.chat(messages, temperature=temp, max_tokens=max_tokens, response_schema=schema)
+                    self._last_gpu_queue_wait_ms = 0
+                    self._last_gpu_queue_position = 0
+                    return GeminiMockResponse(res, status_code=200)
+            except Exception as e:
+                import sys
+                sys.stderr.write(f"[GEMINI_FALLBACK_TO_OLLAMA] {e}\n")
+                sys.stderr.flush()
+
         # The SQLite lease ledger serializes Gemma across Flask worker processes.
         request_id = str(self._correlation_id or f'engine-{id(self)}')
         with gpu_inference_queue.acquire(request_id) as admission:
@@ -177,7 +197,9 @@ See the difference? Conversational, real, not a template."""
             )
 
     def test_connection(self) -> bool:
-        """Test if Ollama is running"""
+        """Test if Ollama or Gemini is running"""
+        if os.getenv('GEMINI_API_KEY'):
+            return True
         try:
             response = requests.get(f"{self.ollama_url}/api/tags", timeout=5)
             return response.status_code == 200
