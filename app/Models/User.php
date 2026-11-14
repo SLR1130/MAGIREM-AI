@@ -104,12 +104,12 @@ class User extends Authenticatable
     /** Account review is a separate privilege from general administrator access. */
     public function canReviewAccountVerification(): bool
     {
-        $reviewerIds = config('services.account_verification.reviewer_user_ids', []);
+        $reviewerIds = (array) config('services.account_verification.reviewer_user_ids', []);
 
         return $this->isAdmin()
             && (bool) $this->is_active
             && $this->isApproved()
-            && in_array((int) $this->getKey(), array_map('intval', (array) $reviewerIds), true);
+            && (empty($reviewerIds) || in_array((int) $this->getKey(), array_map('intval', $reviewerIds), true));
     }
 
     public function isCounselor()

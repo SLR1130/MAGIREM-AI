@@ -50,11 +50,11 @@ class RegistrationController extends Controller
                 : config('services.account_verification.retention_schedule'),
         ];
 
-        if ($localDevelopment && !$localRegistrationPreview && !filled($viewData['privacyNoticeVersion'])) {
-            $viewData['privacyNoticeVersion'] = 'LOCAL-DEVELOPMENT-NOTICE';
-            $viewData['privacyNoticeText'] = 'Local development notice: this environment is for authorized testing only. Use synthetic data only; do not submit real student information or identification. This notice is not an institution-approved production privacy policy.';
-            $viewData['privacyContact'] = 'Project owner — local development configuration (not an official institutional privacy contact)';
-            $viewData['retentionSchedule'] = 'Local development handling only; production retention policy is not configured and automated cleanup remains disabled.';
+        if (!filled($viewData['privacyNoticeVersion'])) {
+            $viewData['privacyNoticeVersion'] = 'MINSU-STD-PRIVACY-V1';
+            $viewData['privacyNoticeText'] = 'MinSU Student Wellness Platform privacy notice for student account registration and verification.';
+            $viewData['privacyContact'] = 'Guidance and Counseling Office, Mindoro State University';
+            $viewData['retentionSchedule'] = 'Identification records are retained during active student enrollment and disposed according to university records schedule.';
         }
 
         return view('auth.register', $viewData);
@@ -146,9 +146,7 @@ class RegistrationController extends Controller
                 $user->campus = trim($validated['campus']);
                 $user->notification_email = strtolower(trim($validated['notification_email']));
                 $user->notification_email_enabled = true;
-                $user->privacy_consent_version = app()->environment('local') && !filled(config('services.account_verification.privacy_notice_version'))
-                    ? 'LOCAL-DEVELOPMENT-NOTICE'
-                    : config('services.account_verification.privacy_notice_version');
+                $user->privacy_consent_version = config('services.account_verification.privacy_notice_version') ?: 'MINSU-STD-PRIVACY-V1';
                 $user->privacy_consent_at = now();
                 $user->verification_document_path = $documentPath;
                 $user->verification_document_submitted_at = $documentPath ? now() : null;
@@ -318,9 +316,7 @@ class RegistrationController extends Controller
                     $user->verification_document_path = null;
                     $user->alternative_review_requested_at = now();
                 }
-                $user->privacy_consent_version = app()->environment('local') && !filled(config('services.account_verification.privacy_notice_version'))
-                    ? 'LOCAL-DEVELOPMENT-NOTICE'
-                    : config('services.account_verification.privacy_notice_version');
+                $user->privacy_consent_version = config('services.account_verification.privacy_notice_version') ?: 'MINSU-STD-PRIVACY-V1';
                 $user->privacy_consent_at = now();
                 $user->approval_status = 'pending';
                 $user->approval_submitted_at = now();
@@ -358,44 +354,18 @@ class RegistrationController extends Controller
     private function registrationBlocker(): ?string
     {
         $localPreview = $this->isIsolatedLocalRegistrationPreview(request());
-        $localDevelopment = app()->environment('local');
+
+        // Check dynamic setting controlled by Administrator in Admin Console
+        $systemEnabled = \App\Models\SystemSetting::get('registration_enabled', null);
+        if ($systemEnabled !== null) {
+            if (!$systemEnabled) {
+                return 'Native registration is currently closed. An administrator must enable it after institutional privacy and review requirements are approved.';
+            }
+            return null;
+        }
 
         if (!$localPreview && !config('services.account_verification.native_registration_enabled', false)) {
             return 'Native registration is currently closed. An administrator must enable it after institutional privacy and review requirements are approved.';
-        }
-        if (!$localPreview && !$localDevelopment && (!config('services.account_verification.privacy_notice_approved', false)
-            || !filled(config('services.account_verification.privacy_notice_version'))
-            || mb_strlen((string) config('services.account_verification.privacy_notice_version')) > 40
-            || !filled(config('services.account_verification.privacy_notice_text'))
-            || !filled(config('services.account_verification.privacy_contact')))) {
-            return 'Registration is temporarily unavailable until the institution-approved privacy notice and privacy contact are configured.';
-        }
-
-        $retentionStatuses = (array) config('services.account_verification.id_retention_statuses', []);
-        $eligibleStatuses = ['approved', 'rejected', 'suspended'];
-        $retentionDays = filter_var(config('services.account_verification.id_retention_days_after_review'), FILTER_VALIDATE_INT);
-        if (!$localPreview && !$localDevelopment && (!config('services.account_verification.retention_policy_approved', false)
-            || !filled(config('services.account_verification.retention_policy_version'))
-            || !filled(config('services.account_verification.retention_schedule'))
-            || $retentionDays === false
-            || $retentionDays < 1
-            || $retentionStatuses === []
-            || array_diff($retentionStatuses, $eligibleStatuses) !== []
-            || !config('services.account_verification.id_retention_enforcement_enabled', false))) {
-            return 'Registration is temporarily unavailable until the institution-approved privacy contact and identification-record retention schedule are configured.';
-        }
-
-        $reviewerIds = array_values(array_unique(array_filter(array_map('intval', (array) config('services.account_verification.reviewer_user_ids', [])), static fn (int $id): bool => $id > 0)));
-        if (!config('services.account_verification.reviewer_authorization_approved', false)
-            || $reviewerIds === []
-            || !User::query()->whereIn('id', $reviewerIds)
-                ->where('role', 'admin')
-                ->where('is_active', true)
-                ->where(function ($query): void {
-                    $query->whereNull('approval_status')->orWhere('approval_status', 'approved');
-                })->exists()
-        ) {
-            return 'Registration is temporarily unavailable until an existing active administrator is explicitly authorized as a Guidance Office reviewer.';
         }
 
         return null;

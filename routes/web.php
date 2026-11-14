@@ -241,6 +241,7 @@ Route::middleware(['auth', 'secure.auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::post('/toggle-registration', [AdminController::class, 'toggleRegistration'])->name('toggle-registration');
         Route::get('/create-user', [AdminController::class, 'createUser'])->name('create-user');
         Route::post('/store-user', [AdminController::class, 'storeUser'])->name('store-user');
         Route::delete('/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('delete-user');

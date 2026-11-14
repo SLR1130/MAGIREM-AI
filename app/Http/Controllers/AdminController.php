@@ -35,10 +35,33 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::orderBy('created_at', 'desc')->paginate(15);
+        $registrationEnabled = (bool) \App\Models\SystemSetting::get('registration_enabled', config('services.account_verification.native_registration_enabled', false));
         return view('admin.users', [
             'users' => $users,
             'canReviewAccounts' => auth()->user()?->canReviewAccountVerification() ?? false,
+            'registrationEnabled' => $registrationEnabled,
         ]);
+    }
+
+    public function toggleRegistration(Request $request)
+    {
+        $current = (bool) \App\Models\SystemSetting::get('registration_enabled', config('services.account_verification.native_registration_enabled', false));
+        $newStatus = $request->has('enabled') ? $request->boolean('enabled') : !$current;
+        \App\Models\SystemSetting::set('registration_enabled', $newStatus);
+
+        $message = $newStatus
+            ? 'Student public registration has been ENABLED (Open).'
+            : 'Student public registration has been DISABLED (Paused).';
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'enabled' => $newStatus,
+                'message' => $message,
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 
     public function createUser()

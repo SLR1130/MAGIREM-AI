@@ -468,6 +468,49 @@
     </header>
 
     <section class="au-summary">
+        <article class="au-context" style="display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;min-height:105px;">
+            <div>
+                <small style="color:var(--emerald);font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.09em;">Student Access Control</small>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
+                    <h2 style="margin:0;font-size:16px;color:var(--forest);font-weight:800;">Student Registration:</h2>
+                    @if(!empty($registrationEnabled))
+                        <span style="display:inline-flex;align-items:center;gap:6px;background:#e6f8ee;color:#0d7a42;font-size:12px;font-weight:750;padding:4px 10px;border-radius:20px;border:1px solid rgba(13,122,66,0.2);">
+                            <span style="width:7px;height:7px;border-radius:50%;background:#0d7a42;"></span> Open
+                        </span>
+                    @else
+                        <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:750;padding:4px 10px;border-radius:20px;border:1px solid rgba(146,64,14,0.2);">
+                            <span style="width:7px;height:7px;border-radius:50%;background:#d97706;"></span> Paused (Closed)
+                        </span>
+                    @endif
+                </div>
+                <p style="margin:6px 0 0;font-size:11.5px;color:var(--muted);line-height:1.45;">
+                    @if(!empty($registrationEnabled))
+                        Public registration is currently <strong>active</strong>. New students can register their account at <a href="{{ route('register') }}" target="_blank" style="color:var(--emerald);text-decoration:underline;font-weight:600;">/register</a>.
+                    @else
+                        Public registration is currently <strong>paused</strong>. Students visiting the registration page will see the "Applications paused" message.
+                    @endif
+                </p>
+            </div>
+            <div style="margin-top:12px;">
+                <form method="POST" action="{{ route('admin.toggle-registration') }}" style="display:inline;"
+                      data-confirm="{{ !empty($registrationEnabled) ? 'Pause student registration? New students will not be able to create an account until re-opened.' : 'Open student registration? Anyone with a valid student email will be able to register.' }}"
+                      data-confirm-title="{{ !empty($registrationEnabled) ? 'Pause Student Registration' : 'Open Student Registration' }}"
+                      data-confirm-btn="{{ !empty($registrationEnabled) ? 'Pause Registration' : 'Open Registration' }}"
+                      @if(!empty($registrationEnabled)) data-confirm-danger="true" @endif>
+                    @csrf
+                    <button type="submit" class="au-action-btn" style="background:{{ !empty($registrationEnabled) ? '#dc2626' : '#103f32' }};color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,0.12);transition:all .18s ease;">
+                        @if(!empty($registrationEnabled))
+                            <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Pause Registration
+                        @else
+                            <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Open Student Registration
+                        @endif
+                    </button>
+                </form>
+            </div>
+        </article>
+
         <article class="au-stat">
             <strong>{{ $users->total() }}</strong>
             <span>Total users</span>
