@@ -224,7 +224,7 @@ def load_fusion_shadow_service():
 def load_memory_system():
     """Initialize long-term memory system"""
     global _memory_manager
-    if os.getenv('MINDCARE_PHASE4A_AUTH_ENABLED', 'false').lower() != 'true':
+    if os.getenv('MINDCARE_PHASE4A_AUTH_ENABLED', 'true').lower() != 'true':
         print('[MEMORY] Persistent memory disabled until Phase 4A auth is enabled')
         return False
     try:

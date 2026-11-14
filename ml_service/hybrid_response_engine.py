@@ -1446,6 +1446,19 @@ Reference only details in the conversation. Be specific. Keep casual replies con
                         ' The student explicitly asked for counseling. State plainly that they can use the in-app '
                         'counselor directory or submit an appointment request now; do not delay this with screening questions.'
                     )
+
+            # LONG-TERM MEMORY & SESSION CONTINUITY:
+            # Add user memory (active projects, preferences, key facts, and continuity excerpts)
+            if memory_context:
+                clean_memory = memory_context.strip()
+                if clean_memory:
+                    system_prompt_short += (
+                        '\n\nRELEVANT USER MEMORY & CONTINUITY CONTEXT:\n'
+                        f'{clean_memory}\n'
+                        'Use these remembered facts naturally when relevant (e.g. asking about ongoing projects, '
+                        'honoring stated preferences, remembering their situation). Prioritize the newest message if feelings shifted.'
+                    )
+                    print(f"[MEMORY_PROMPT] Appended {len(clean_memory)} chars of memory context to system prompt")
             
             # Add language tag to user message itself to reinforce language choice
             # This helps models that don't respect system prompt instructions well

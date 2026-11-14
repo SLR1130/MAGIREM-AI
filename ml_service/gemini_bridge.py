@@ -62,12 +62,24 @@ class GeminiBridge:
             else:  # user
                 gemini_contents.append({"role": "user", "parts": [{"text": content}]})
 
+        # Ensure strictly alternating user/model turns for Gemini API compliance
+        merged_contents = []
+        for item in gemini_contents:
+            if merged_contents and merged_contents[-1]["role"] == item["role"]:
+                merged_contents[-1]["parts"][0]["text"] += "\n\n" + item["parts"][0]["text"]
+            else:
+                merged_contents.append(item)
+
+        # Gemini requires that the first turn is user
+        if merged_contents and merged_contents[0]["role"] == "model":
+            merged_contents.insert(0, {"role": "user", "parts": [{"text": "Hello"}]})
+
         # Ensure at least one user turn
-        if not gemini_contents:
-            gemini_contents = [{"role": "user", "parts": [{"text": "Hello"}]}]
+        if not merged_contents:
+            merged_contents = [{"role": "user", "parts": [{"text": "Hello"}]}]
 
         payload: Dict[str, Any] = {
-            "contents": gemini_contents,
+            "contents": merged_contents,
             "generationConfig": {
                 "temperature": float(temperature),
                 "maxOutputTokens": int(max_tokens),
