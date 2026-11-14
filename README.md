@@ -196,18 +196,6 @@ Visit **`http://localhost:8000`** in your browser.
 
 ---
 
-## 🔑 Demo Credentials
-
-| Role | Email | Password | Access Highlights |
-|---|---|---|---|
-| **Admin** | `admin@mindcare.com` | `admin123` | User approvals, verification queue, campus emotion analytics, moderation |
-| **Counselor** | `maria.santos@mindcare.com` | `counselor123` | Student triage, chat with attachment streaming, appointment approvals |
-| **Counselor** | `john.reyes@mindcare.com` | `counselor123` | Counselor dashboard, tele-counseling video room, case notes |
-| **Student** | `juan.delacruz@student.msu.edu` | `student123` | MAGI AI companion, journaling, coping exercises, community circle |
-| **Student** | `maria.clara@student.msu.edu` | `student123` | Mood check-ins, appointment booking, confidential counselor chat |
-
----
-
 ## 🔒 Security & Privacy
 
 - **Data Privacy**: Anonymous journaling mode, decoupled depression risk metrics, and student-controlled data visibility.
