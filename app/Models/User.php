@@ -33,6 +33,8 @@ class User extends Authenticatable
         'profile_picture',
         'community_verified_at',
         'community_verified_by',
+        'google_id',
+        'google_avatar',
     ];
 
     /**

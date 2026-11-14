@@ -17,9 +17,11 @@
             <p><strong>After setup:</strong> sign in at MAGIREM AI using your <strong>MinSU institutional email</strong> and the password you created. Do not use your personal Gmail as the sign-in email. There is no separate password-change page; to change or reset your password later, choose “Forgot password?”; the reset link is sent only to your verified personal Gmail.</p>
             <p>This invitation expires and can be used once. If you were not expecting it, do not forward it; contact the designated Guidance Office reviewer.</p>
         @elseif($kind === 'verification_code')
-            <p>Use this one-time code to verify the notification email for your account:</p>
+            <p><strong>This personal Gmail address was used to register for a MAGIREM AI student account.</strong></p>
+            <p>Your registration application has been received and is currently <strong>waiting for administrator and Guidance Office verification</strong>.</p>
+            <p>To confirm that you own this Gmail address for notifications and account updates, please enter this one-time verification code:</p>
             <p style="padding:14px;border-radius:10px;background:#E6F1EB;color:#103F32;font-size:26px;font-weight:bold;letter-spacing:.22em;text-align:center">{{ $code }}</p>
-            <p>This code expires in 30 minutes. If you did not request it, you can ignore this email.</p>
+            <p>This code expires in 30 minutes. Once your email is verified and administrators review your application, you will be notified of your approval status. If you did not create an account in MAGIREM AI, you can safely ignore this email.</p>
         @elseif($kind === 'approved')
             <p>Your registration has been approved. You may now sign in using your MinSU institutional email and password.</p>
         @elseif($kind === 'needs_information')

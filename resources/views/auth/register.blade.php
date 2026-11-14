@@ -299,13 +299,25 @@
         </aside>
         <section class="mreg-panel" aria-labelledby="mreg-title">
             <div class="mreg-form-panel">
-                <div class="mreg-top"><a href="{{ route('login') }}">Already have an account? Sign in</a></div>
+                <div class="mreg-top">
+                    <a href="{{ route('auth.google') }}" style="display:inline-flex;align-items:center;gap:6px;margin-right:12px;color:#103f32;font-weight:700">
+                        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        <span>Sign in with Google</span>
+                    </a>
+                    <a href="{{ route('login') }}">Already have an account? Sign in</a>
+                </div>
                 <header class="mreg-header">
                     <span class="mreg-kicker">Student registration</span>
                     <h1 id="mreg-title">Create your student account</h1>
                     <p>Apply using your MinSU institutional email for sign-in. A separate personal Gmail is used for verification and account updates.</p>
                 </header>
                 <div class="mreg-body">
+                @if(session('info'))<div class="mreg-flash" style="background:#eaf4ed;border-color:#b8dcce;color:#185b46" role="status">{{ session('info') }}</div>@endif
                 @if(session('registration_error'))<div class="mreg-flash warning" role="alert">{{ session('registration_error') }}</div>@endif
                 @if($errors->any())<div class="mreg-errors" role="alert"><strong>Please review the highlighted information.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 
@@ -346,7 +358,7 @@
                         <section class="mreg-section" aria-labelledby="account-title">
                             <div class="mreg-section-head"><span class="mreg-section-icon" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m12-13a4 4 0 11-8 0 4 4 0 018 0z"/></svg></span><div><h2 id="account-title">Account information</h2><p>Use your MinSU institutional email and password for sign-in.</p></div></div>
                             <div class="mreg-grid">
-                                <div class="mreg-field"><label for="name">Full name <span class="mreg-required">*</span></label><input id="name" name="name" value="{{ old('name') }}" autocomplete="name" maxlength="255" required @error('name') aria-invalid="true" @enderror>@error('name')<p class="mreg-error">{{ $message }}</p>@enderror</div>
+                                <div class="mreg-field"><label for="name">Full name <span class="mreg-required">*</span></label><input id="name" name="name" value="{{ old('name', session('google_oauth.name')) }}" autocomplete="name" maxlength="255" required @error('name') aria-invalid="true" @enderror>@error('name')<p class="mreg-error">{{ $message }}</p>@enderror</div>
                                 <div class="mreg-field"><label for="institutional_email">MinSU institutional email <span class="mreg-required">*</span></label><input id="institutional_email" name="institutional_email" type="email" value="{{ old('institutional_email') }}" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="255" placeholder="name@minsu.edu.ph" required @error('institutional_email') aria-invalid="true" @enderror><p class="mreg-help">This is your login email. The @minsu.edu.ph domain is required but does not by itself verify identity.</p>@error('institutional_email')<p class="mreg-error">{{ $message }}</p>@enderror</div>
                                 <div class="mreg-field"><label for="password">Password <span class="mreg-required">*</span></label><div class="mreg-password-wrap"><input id="password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required @error('password') aria-invalid="true" @enderror><button class="mreg-password-toggle" type="button" data-password-toggle data-target="password" aria-controls="password" aria-label="Show password" aria-pressed="false"><svg class="mreg-password-icon mreg-password-icon--eye" aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg><svg class="mreg-password-icon mreg-password-icon--off" aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="m3 3 18 18M10.6 6.2A10.2 10.2 0 0 1 12 6c6 0 9.5 6 9.5 6a17.7 17.7 0 0 1-3.1 3.8M6.1 6.9C3.9 8.4 2.5 12 2.5 12s3.5 6 9.5 6a9.7 9.7 0 0 0 3-.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.7 9.7a3.2 3.2 0 0 0 4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><p class="mreg-help">At least 12 characters, including uppercase, lowercase, a number, and a symbol.</p>@error('password')<p class="mreg-error">{{ $message }}</p>@enderror</div>
                                 <div class="mreg-field"><label for="password_confirmation">Confirm password <span class="mreg-required">*</span></label><div class="mreg-password-wrap"><input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="12" maxlength="128" required><button class="mreg-password-toggle" type="button" data-password-toggle data-target="password_confirmation" aria-controls="password_confirmation" aria-label="Show confirm password" aria-pressed="false"><svg class="mreg-password-icon mreg-password-icon--eye" aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg><svg class="mreg-password-icon mreg-password-icon--off" aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="m3 3 18 18M10.6 6.2A10.2 10.2 0 0 1 12 6c6 0 9.5 6 9.5 6a17.7 17.7 0 0 1-3.1 3.8M6.1 6.9C3.9 8.4 2.5 12 2.5 12s3.5 6 9.5 6a9.7 9.7 0 0 0 3-.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.7 9.7a3.2 3.2 0 0 0 4.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div></div>
@@ -369,7 +381,7 @@
                         <div class="mreg-wizard-step" data-wizard-step="3" aria-labelledby="notification-title" tabindex="-1" @if($wizardInitialStep !== 3) hidden @endif>
                         <section class="mreg-section" aria-labelledby="notification-title">
                             <div class="mreg-section-head"><span class="mreg-section-icon" aria-hidden="true"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 6l9 7 9-7M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg></span><div><h2 id="notification-title">Personal Gmail</h2><p>This is separate from your MinSU login. After you submit, a one-time code will be sent here; the address is not verified until you confirm it.</p></div></div>
-                            <div class="mreg-grid"><div class="mreg-field mreg-field--wide"><label for="notification_email">Personal Gmail <span class="mreg-required">*</span></label><input id="notification_email" name="notification_email" type="email" value="{{ old('notification_email') }}" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="255" title="Enter a Gmail address ending in gmail.com or googlemail.com" placeholder="you@gmail.com" required>@error('notification_email')<p class="mreg-error">{{ $message }}</p>@enderror<p class="mreg-help">The verification code is sent after you submit your application. This page does not mark your email as verified.</p></div></div>
+                            <div class="mreg-grid"><div class="mreg-field mreg-field--wide"><label for="notification_email">Personal Gmail <span class="mreg-required">*</span></label><input id="notification_email" name="notification_email" type="email" value="{{ old('notification_email', session('google_oauth.email')) }}" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="255" title="Enter a Gmail address ending in gmail.com or googlemail.com" placeholder="you@gmail.com" required>@error('notification_email')<p class="mreg-error">{{ $message }}</p>@enderror<p class="mreg-help">The verification code is sent after you submit your application. This page does not mark your email as verified.</p></div></div>
                         </section>
 
                         </div>
@@ -426,7 +438,7 @@
                     </form>
                 @endif
             </div>
-            <footer>Already applied? <a href="{{ route('login') }}">Sign in with your MinSU institutional email and password</a> to check your status.</footer>
+            <footer>Already applied? <a href="{{ route('login') }}">Sign in with your MinSU institutional email and password</a> or <a href="{{ route('auth.google') }}">sign in with Google</a> to check your status.</footer>
             </div>
         </section>
     </div>

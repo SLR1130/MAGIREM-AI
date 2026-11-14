@@ -155,6 +155,13 @@ class RegistrationController extends Controller
                 $user->student_id = trim($validated['student_id']);
                 $user->program = trim($validated['program']);
                 $user->year_level = $validated['year_level'];
+
+                $googleOAuth = $request->session()->get('google_oauth');
+                if ($googleOAuth && !empty($googleOAuth['id'])) {
+                    $user->google_id = $googleOAuth['id'];
+                    $user->google_avatar = $googleOAuth['avatar'] ?? null;
+                }
+
                 $user->save();
 
                 PrivacySetting::getOrCreateForUser($user->id);

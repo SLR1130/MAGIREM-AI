@@ -9,6 +9,7 @@ use App\Http\Controllers\AIChatController;
 use App\Http\Controllers\MentalHealthMonitoringController;
 use App\Http\Controllers\PasswordRecoveryController;
 use App\Http\Controllers\AccountOnboardingController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 
 // Home page - accessible to everyone
 Route::get('/', function () {
@@ -55,6 +56,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/account/activate', [AccountOnboardingController::class, 'acceptInvitation'])->middleware('throttle:5,10')->name('account.activate.accept');
     Route::get('/register', [\App\Http\Controllers\RegistrationController::class, 'show'])->name('register');
     Route::post('/register', [\App\Http\Controllers\RegistrationController::class, 'submit'])->middleware('throttle:5,10')->name('register.submit');
+
+    // Google OAuth
+    Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 });
 
 // Authenticated routes - with secure session validation
