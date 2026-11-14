@@ -1,366 +1,253 @@
-# 🧠 MindCare - Mental Health Support System
+# 🌿 MAGIREM AI: An AI-Supported Student Emotional Wellness and Support Platform
 
 <div align="center">
 
-![Mental Health Awareness](https://img.shields.io/badge/Mental%20Health-Awareness-purple?style=for-the-badge)
+![Institution](https://img.shields.io/badge/Institution-Mindoro%20State%20University-103f32?style=for-the-badge)
+![SDG](https://img.shields.io/badge/UN%20SDG-Goal%203%3A%20Good%20Health%20%26%20Well--being-236b55?style=for-the-badge)
 ![Laravel](https://img.shields.io/badge/Laravel-12-red?style=for-the-badge&logo=laravel)
-![PHP](https://img.shields.io/badge/PHP-8.2-blue?style=for-the-badge&logo=php)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)
+![PHP](https://img.shields.io/badge/PHP-8.2%2B-777bb4?style=for-the-badge&logo=php)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)
+![Vite](https://img.shields.io/badge/Vite-7.3-646cff?style=for-the-badge&logo=vite)
+![PWA](https://img.shields.io/badge/PWA-Installable-gold?style=for-the-badge)
 
-**An emotion-aware web application supporting student mental health at Mindoro State University**
+**A Guiding Light for Every Emotion · Mindoro State University (MinSU)**
 
-[Quick Start](#-quick-start) • [Features](#-features) • [Documentation](#-documentation) • [Support](#-support)
+[Quick Start](#-quick-start) • [Core Modules](#-core-modules) • [Architecture](#-system-architecture) • [Design System](#-design-system) • [AI & ML Stack](#-aiml-architecture) • [Security](#-security--privacy)
 
 </div>
 
 ---
 
-## 💜 About MindCare
+## 📖 About MAGIREM AI
 
-MindCare is a comprehensive web-based mental health support system designed specifically for university students. It provides a safe, confidential space where students can:
+**MAGIREM AI** is an institutional student mental health and emotional wellness platform engineered specifically for **Mindoro State University (MinSU)** students, guidance counselors, and administrators. 
 
-- 📝 Express their emotions through journaling
-- 🤖 Receive AI-powered emotion detection and feedback
-- 💬 Connect with professional counselors
-- 📊 Track their emotional well-being over time
-- 🔒 Maintain complete privacy and anonymity
+University life can often feel overwhelming. MAGIREM AI bridges the gap between self-guided reflection and professional guidance by pairing **MAGI**—an empathetic, multilingual conversational AI companion—with direct, confidential counseling workflows, grounding coping toolkits, and peer community support.
 
-### 🎯 Aligned with UN SDG 3: Good Health and Well-being
+### 🎯 Alignment with UN Sustainable Development Goals
+- **UN SDG 3: Good Health and Well-being** — Proactively destigmatizing mental health support, detecting early emotional distress, and facilitating timely access to university guidance professionals.
+- **Institutional Care** — Providing a secure, confidential environment tailored to Mindoro State University student life.
 
-This system promotes mental health awareness, reduces stigma, and provides accessible support resources for students.
+---
+
+## ✨ Core Modules
+
+### 🤖 1. MAGI AI Companion (v2.0)
+- **Empathetic Conversational Agent**: Context-aware, non-judgmental conversational space powered by conversational NLP models.
+- **Multilingual Understanding**: Comprehends English, Tagalog, and natural student Taglish expressions.
+- **Emotion Classification**: Integrated transformer-based emotion detection classifying complex emotional states (joy, sadness, anxiety, anger, overwhelm, exhaustion, neutral).
+- **Proactive Crisis Routing**: Immediate, non-invasive detection of high-distress phrases with instant referral cards, crisis hotline triggers, and counselor intervention pathways.
+
+### 📝 2. Emotional Journaling & Mood Tracking
+- **Private Journal**: Expressive writing workspace with AI sentiment tagging and mood tracking.
+- **Reflection Prompts**: Contextual prompts that guide students through self-reflection and emotional processing.
+- **Historical Trajectory**: Visual mood timeline empowering students to observe emotional trends over weeks and months.
+
+### 🧘 3. Coping Toolkit & Grounding Exercises
+- **Guided Box Breathing**: Interactive animated breathing pacer with visual expansion/contraction cues.
+- **5-4-3-2-1 Sensory Grounding**: Step-by-step grounding tool for de-escalating acute panic and anxiety.
+- **Mindfulness & Calming Audios**: Ambient soundscapes and guided audio meditations.
+- **Categorized Self-Help Resources**: Evidence-based strategies for academic stress, grief, sleep hygiene, and social anxiety.
+
+### 👥 4. Community Circle (Peer Support)
+- **Moderated Peer Space**: Students share reflections, wellness milestones, and supportive messages.
+- **Interactive Engagement**: Uplifting reactions, thread replies, and community empathy.
+- **Automated Safety Filters**: Toxic language, harassment, and crisis intent filters with one-click report escalation to guidance staff.
+
+### 🩺 5. Counselor Workspace & Tele-Counseling
+- **Real-Time Student Triage**: Counselor dashboard prioritizing students flagged with high-risk or attention-needed indicators.
+- **Confidential Chat**: Secure, real-time counselor-student messaging with private authenticated attachment streaming (supporting notes, medical certs, and documents).
+- **Appointment Scheduling**: Automated booking, schedule conflict resolution, and confirmation management.
+- **Integrated Video Consultations**: Browser-based video calling overlay for remote tele-counseling sessions.
+- **Clinical Session Notes**: Structured documentation and intervention tracking strictly confidential to licensed guidance staff.
+
+### 🛡️ 6. Admin Command Center
+- **User & Account Verification**: Multi-stage verification workflow for student ID validation and institutional `@minsu.edu.ph` domains.
+- **Campus Emotional Climate**: Anonymized macro-level mental health analytics, trend curves, and risk distribution reports.
+- **Moderation Queue**: Rapid review of reported community posts and user moderation actions.
+- **System Governance**: Role-Based Access Control (RBAC), audit logging, and automated last-admin protection safeguards.
+
+---
+
+## 📱 Modern UI & Navigation Design
+
+MAGIREM AI features a modern, floating glassmorphic design language crafted for seamless usability across both laptops and mobile devices:
+
+- **Desktop / Laptop Floating Island**:
+  - Rounded pill navbar (`border-radius: 9999px`) with frosted glass blur (`backdrop-filter: blur(20px)`), subtle ambient drop shadows, and elevation transitions on scroll.
+  - Interactive **Icon + Name** pairs for every destination (`Home`, `AI Companion`, `Journal`, `Appointments`, `Community`, `Explore`).
+  - **Glowing Hover Highlights**: Dynamic scaling, icon badge illumination (`#103f32` forest background with `#f4c84e` gold icon glow), and smooth cubic-bezier transitions.
+- **Mobile Experience ("Real Mobile App Full Icons")**:
+  - Dedicated **Floating Mobile Bottom App Dock** (`.student-mobile-dock`) with 6 full touch-friendly icons (`Home`, `MAGI AI`, `Journal`, `Appts`, `Circle`, `Explore`).
+  - Native-style **Slide-up Explore Sheet** with dedicated cards for *Insights*, *Coping Toolkit*, and *Wellness Resources*.
+  - Automatic content clearance padding preventing bottom dock obstruction.
+- **PWA Ready**: Offline caching, service worker integration, and installable as a standalone app on Android, iOS, and desktop.
+
+---
+
+## 🎨 Design System & Color Tokens
+
+The visual identity honors the natural botanical heritage and campus atmosphere of Mindoro State University:
+
+```css
+--forest:       #103F32;  /* Primary brand & headers */
+--emerald:      #236B55;  /* Active accents & primary buttons */
+--emerald-soft: #2F7C62;  /* Secondary interactive elements */
+--gold:         #F4C84E;  /* Illumination, badges & active glows */
+--mint-soft:    #E6F1EB;  /* Tinted card backgrounds & hover states */
+--ivory:        #F8FAF7;  /* Canvas background */
+--ink:          #263A33;  /* High-contrast body typography */
+--muted:        #708078;  /* Supporting captions & metadata */
+```
+
+---
+
+## 🔧 Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| **Backend Framework** | Laravel 12 (PHP 8.2+) |
+| **Frontend Architecture** | Blade Templates, Custom Design Tokens, Vanilla JS + React Components |
+| **Asset Pipeline** | Vite 7.3, PostCSS |
+| **Database** | SQLite (Default for rapid setup) / MySQL / PostgreSQL ready |
+| **AI / ML Service** | Python 3.10+, Flask REST Microservice, PyTorch, HuggingFace Transformers |
+| **Emotion Models** | DistilRoBERTa Multilingual Emotion Classifier, Multilabel Emotion-35, Hybrid Heuristic Safety Engine |
+| **Authentication** | Laravel Multi-guard Auth, Role Middleware, Microsoft Entra / OIDC Ready |
+| **PWA** | Web App Manifest, Service Worker Caching, Push Notification Framework |
+
+---
+
+## 📊 System Architecture
+
+```text
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      MAGIREM AI - MinSU Ecosystem                       │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+           ┌─────────────────────────┼─────────────────────────┐
+           ▼                         ▼                         ▼
+   ┌──────────────┐          ┌──────────────┐          ┌──────────────┐
+   │Student Portal│          │  Counselor   │          │Admin Command │
+   │ (PWA / Web)  │          │  Workspace   │          │    Center    │
+   └───────┬──────┘          └───────┬──────┘          └───────┬──────┘
+           │                         │                         │
+           └─────────────────────────┼─────────────────────────┘
+                                     ▼
+                     ┌───────────────────────────────┐
+                     │   Laravel 12 Application Core │
+                     │   - RBAC & Domain Gatekeepers │
+                     │   - Real-Time Chat & Streaming│
+                     │   - Community Moderation Engine│
+                     └───────────────┬───────────────┘
+                                     │
+                 ┌───────────────────┴───────────────────┐
+                 ▼                                       ▼
+   ┌───────────────────────────┐           ┌───────────────────────────┐
+   │ Database & Storage Layer  │           │ Python ML Microservice    │
+   │ - Users, Journals, Moods  │◄─────────►│ - Emotion Classification  │
+   │ - Private Chat Storage    │   REST    │ - Multilingual NLP (En/Fil│
+   │ - Cached Analytics Engine │           │ - Tiered Crisis Detection │
+   └───────────────────────────┘           └───────────────────────────┘
+```
 
 ---
 
 ## ⚡ Quick Start
 
 ### Prerequisites
-- PHP 8.2 or higher
-- Composer
-- Node.js & npm
-- SQLite (included)
+- **PHP**: 8.2 or higher (with `pdo`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`)
+- **Composer**: 2.x
+- **Node.js & npm**: Node 18+ and npm 9+
+- **Python**: 3.10+ (for ML emotion detection microservice)
+- **SQLite** or **MySQL**
 
-### Installation (3 Steps)
+### Installation
 
 ```bash
-# 1. Install dependencies
-composer install && npm install
+# 1. Clone the repository
+git clone https://github.com/SLR1130/MAGIREM-AI.git
+cd MAGIREM-AI
 
-# 2. Build assets
+# 2. Install PHP and Node dependencies
+composer install
+npm install
+
+# 3. Configure environment
+cp .env.example .env
+php artisan key:generate
+
+# 4. Run database migrations & seed demo accounts
+php artisan migrate --seed
+
+# 5. Build production frontend assets
 npm run build
 
-# 3. (Optional) Setup ML Emotion Detection
+# 6. (Optional) Start Python ML Emotion Service
 cd ml_service
 pip install -r requirements.txt
+python app.py &
 cd ..
 
-# 4. Start server
+# 7. Start the Laravel development server
 php artisan serve
 ```
 
-> 📚 **ML Setup:** See [ML_SETUP_GUIDE.md](ML_SETUP_GUIDE.md) for detailed machine learning installation
-
-Visit **http://localhost:8000** and login with:
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | admin@mindcare.com | admin123 |
-| **Counselor** | counselor@mindcare.com | counselor123 |
-| **Student** | student@mindcare.com | student123 |
-
-> 📚 **Need detailed setup?** See [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md)
+Visit **`http://localhost:8000`** in your browser.
 
 ---
 
-## ✨ Features
+## 🔑 Demo Credentials
 
-### 🎓 For Students
-- ✅ Secure registration with student ID
-- ✅ Create emotional journal entries
-- ✅ AI emotion detection (happy, sad, anxious, angry, neutral)
-- ✅ Anonymous entry option
-- ✅ Direct counselor messaging
-- ✅ Personal emotional history tracking
-- ✅ Supportive AI feedback
-
-### 🩺 For Counselors
-- ✅ View all registered students
-- ✅ Access student emotional entries
-- ✅ Secure messaging with students
-- ✅ Student profile monitoring
-- ✅ Dashboard with statistics
-- ✅ Unread message tracking
-
-### 👨‍💼 For Administrators
-- ✅ Complete user management (CRUD)
-- ✅ System-wide analytics
-- ✅ Emotion distribution reports
-- ✅ Role-based access control
-- ✅ Activity monitoring
+| Role | Email | Password | Access Highlights |
+|---|---|---|---|
+| **Admin** | `admin@mindcare.com` | `admin123` | User approvals, verification queue, campus emotion analytics, moderation |
+| **Counselor** | `maria.santos@mindcare.com` | `counselor123` | Student triage, chat with attachment streaming, appointment approvals |
+| **Counselor** | `john.reyes@mindcare.com` | `counselor123` | Counselor dashboard, tele-counseling video room, case notes |
+| **Student** | `juan.delacruz@student.msu.edu` | `student123` | MAGI AI companion, journaling, coping exercises, community circle |
+| **Student** | `maria.clara@student.msu.edu` | `student123` | Mood check-ins, appointment booking, confidential counselor chat |
 
 ---
 
-## 🎨 Design
+## 🔒 Security & Privacy
 
-### Purple Theme
-The system uses a **purple color palette** throughout, representing mental health awareness and creating a calming, supportive atmosphere.
-
-```css
-Primary: #9333ea (purple-600)
-Accent: #c084fc (purple-400)
-Background: #faf5ff (purple-50)
-```
-
-### Responsive Design
-- ✅ Mobile-friendly interface
-- ✅ Accessible forms
-- ✅ Intuitive navigation
-- ✅ Clear visual feedback
-
----
-
-## 🔧 Technology Stack
-
-| Component | Technology |
-|-----------|-----------|
-| **Backend** | Laravel 12 (PHP 8.2) |
-| **Database** | SQLite (MySQL/PostgreSQL ready) |
-| **Frontend** | Blade Templates, Custom CSS |
-| **Authentication** | Laravel Auth + Role Middleware |
-| **AI/ML** | Rule-based (ML-ready architecture) |
-| **Build Tool** | Vite |
-
----
-
-## 📊 System Architecture
-
-```
-┌─────────────────────────────────────────────┐
-│           MindCare Application              │
-├─────────────────────────────────────────────┤
-│                                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐ │
-│  │ Student  │  │Counselor │  │  Admin   │ │
-│  │  Portal  │  │  Portal  │  │  Portal  │ │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘ │
-│       │             │             │        │
-│  ┌────┴─────────────┴─────────────┴─────┐ │
-│  │      Laravel Controllers              │ │
-│  │  (Auth, Student, Counselor, Admin)    │ │
-│  └────┬──────────────────────────────────┘ │
-│       │                                     │
-│  ┌────┴──────────────────────────────────┐ │
-│  │         Models & Database             │ │
-│  │  (Users, Entries, Messages)           │ │
-│  └───────────────────────────────────────┘ │
-│                                             │
-│  ┌───────────────────────────────────────┐ │
-│  │      AI Emotion Detection             │ │
-│  │  (Rule-based → ML-ready)              │ │
-│  └───────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
-```
-
----
-
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md) | Detailed installation and configuration |
-| [QUICK_START.md](QUICK_START.md) | Fast setup guide for developers |
-| [TESTING_GUIDE.md](TESTING_GUIDE.md) | Comprehensive testing procedures |
-| [SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md) | Complete system documentation |
-| [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) | Production deployment guide |
-| [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) | Project completion summary |
-
----
-
-## 🔒 Security Features
-
-- ✅ **Authentication:** Secure login with bcrypt password hashing
-- ✅ **Authorization:** Role-based access control (RBAC)
-- ✅ **CSRF Protection:** All forms protected
-- ✅ **Data Privacy:** Anonymous entries, confidential messaging
-- ✅ **Input Validation:** Server-side validation on all inputs
-- ✅ **Session Security:** Secure session management
+- **Data Privacy**: Anonymous journaling mode, decoupled depression risk metrics, and student-controlled data visibility.
+- **Attachment Isolation**: Counselor chat file uploads are stored on a private, non-public storage disk streamed exclusively via authenticated routes.
+- **Institutional Domain Constraint**: Student registration enforces institutional domain verification (`@minsu.edu.ph`) with unique student ID safeguards.
+- **CSRF & Session Hardening**: Strict CSRF verification across all API endpoints, secure session cookie handling, and encrypted password storage via `bcrypt`.
+- **Administrative Protection**: Built-in safeguards preventing administrator self-deletion and orphan states.
 
 ---
 
 ## 🧪 Testing
 
-### Run Tests
+Execute the comprehensive feature and unit test suite:
+
 ```bash
-# Manual testing with provided accounts
-php artisan serve
+# Run full PHPUnit test suite
+php artisan test
 
-# Access test accounts
-# Admin: admin@mindcare.com / admin123
-# Counselor: counselor@mindcare.com / counselor123
-# Student: student@mindcare.com / student123
-```
-
-### Test Coverage
-- ✅ Authentication & Authorization
-- ✅ Student emotional entries
-- ✅ Counselor messaging
-- ✅ Admin user management
-- ✅ Emotion detection
-- ✅ Security controls
-
-> 📋 **Full testing guide:** See [TESTING_GUIDE.md](TESTING_GUIDE.md)
-
----
-
-## 🚀 Deployment
-
-### Quick Deploy
-```bash
-# 1. Set production environment
-cp .env.example .env
-# Edit .env: APP_ENV=production, APP_DEBUG=false
-
-# 2. Install and optimize
-composer install --optimize-autoloader --no-dev
-npm run build
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# 3. Run migrations
-php artisan migrate --force
-php artisan db:seed --force
-
-# 4. Set permissions
-chmod -R 775 storage bootstrap/cache
-```
-
-> 🔧 **Complete deployment guide:** See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)
-
----
-
-## 📈 System Statistics
-
-```
-✅ 24 Routes
-✅ 4 Controllers
-✅ 3 Models
-✅ 16 Views
-✅ 3 User Roles
-✅ 5 Emotion Types
-✅ 100% Functional
+# Test specific domains
+php artisan test --filter=StudentHeaderNavigationTest
+php artisan test --filter=CounselorDashboardTest
+php artisan test --filter=AccountVerificationFlowTest
+php artisan test --filter=CrisisAppointmentTest
 ```
 
 ---
 
-## 🤖 AI/ML Features
+## 📄 License & Academic Attribution
 
-### Real Supervised Machine Learning ✅
-- **Pre-trained Transformer Model** (DistilRoBERTa)
-- **94% Accuracy** on emotion classification
-- **Context-aware** text understanding
-- **7 Emotion Categories** (joy, sadness, anger, fear, surprise, disgust, neutral)
-- **Automatic Fallback** to rule-based detection
+This software is developed as an academic capstone project for **Mindoro State University (MinSU) - Bongabong Campus**.
 
-**Supported Emotions:**
-- 😊 **Happy** - Detected from expressions of joy and excitement
-- 😢 **Sad** - Identified from sadness and loneliness
-- 😰 **Anxious** - Recognized from worry and stress
-- 😠 **Angry** - Found in frustration and anger
-- 😐 **Neutral** - Default for balanced emotions
-
-> 📚 **Setup ML:** See [ML_SETUP_GUIDE.md](ML_SETUP_GUIDE.md) for installation instructions
-
----
-
-## 🔮 Future Enhancements
-
-### Phase 2
-- [ ] Advanced ML emotion detection
-- [ ] Email notifications
-- [ ] Appointment scheduling
-- [ ] Mood tracking charts
-- [ ] Resource library
-- [ ] Mobile app
-
-### Phase 3
-- [ ] Multilingual support (Filipino/English)
-- [ ] Video counseling
-- [ ] Peer support groups
-- [ ] Advanced analytics
-- [ ] Third-party integrations
-
----
-
-## 🤝 Contributing
-
-This is an academic capstone project for Mindoro State University. For improvements or suggestions:
-
-1. Review the codebase
-2. Follow Laravel conventions
-3. Test thoroughly
-4. Document changes
-5. Submit for review
-
----
-
-## 📞 Support
-
-### For Technical Issues
-- Check [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md)
-- Review Laravel logs in `storage/logs/`
-- Verify PHP and database configuration
-
-### For Mental Health Support
-- **Emergency:** Contact university counseling office directly
-- **Non-emergency:** Use the in-app counselor chat
-- **Crisis Hotline:** [National Mental Health Crisis Hotline]
-
----
-
-## 📄 License
-
-This project is developed for **Mindoro State University - Bongabong Campus** as a capstone project.
-
-**Academic Year:** 2025-2026  
-**Purpose:** Educational and institutional use  
-**Framework:** Laravel 12 (MIT License)
-
----
-
-## 🙏 Acknowledgments
-
-- **Mindoro State University** for project support
-- **University Guidance Office** for requirements and feedback
-- **Laravel Community** for excellent documentation
-- **Mental Health Advocates** for inspiration
-- **Students** who will benefit from this system
-
----
-
-## 📊 Project Status
-
-| Aspect | Status |
-|--------|--------|
-| **Development** | ✅ Complete |
-| **Testing** | ✅ Passed |
-| **Documentation** | ✅ Complete |
-| **Security** | ✅ Implemented |
-| **Deployment** | ✅ Ready |
+- **Academic Year:** 2025–2026
+- **Institutional Partner:** University Guidance and Counseling Office
+- **License:** [MIT License](LICENSE)
 
 ---
 
 <div align="center">
 
-## 💜 Your Mental Health Matters
-
-**MindCare is here to support you through your academic journey.**
-
-*Promoting emotional awareness, reducing stigma, and providing accessible mental health support.*
-
----
-
-Made with 💜 for Mindoro State University Students
-
-[Report Issue](mailto:admin@mindcare.com) • [Request Feature](mailto:admin@mindcare.com) • [Documentation](SYSTEM_OVERVIEW.md)
+**Made with 🌿 for Mindoro State University Students**  
+*Promoting mental wellness, emotional resilience, and accessible guidance.*
 
 </div>
