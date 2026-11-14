@@ -2054,8 +2054,7 @@
                     alert('Failed to remove conversation. Please try again.');
                 }
             });
-        }
-    } 
+    }
 </script>
 
 <script>
