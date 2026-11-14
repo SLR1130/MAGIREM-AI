@@ -27,6 +27,9 @@
         </div>
         <p class="magi-notice__status" data-notice-status role="status" aria-live="polite"></p>
         <div class="magi-notice__list" data-notice-list aria-busy="false"><div class="magi-notice__empty">Loading your notifications…</div></div>
+        <div class="magi-notice__footer">
+            <a href="{{ route($noticeRole . '.notifications.index') }}" class="magi-notice__view-all">View all notifications</a>
+        </div>
     </section>
 </div>
 @once

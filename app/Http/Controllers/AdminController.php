@@ -556,6 +556,23 @@ class AdminController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * View all notifications (paginated page)
+     */
+    public function allNotifications(Request $request)
+    {
+        $notifications = \App\Models\Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(30);
+
+        $unreadCount = \App\Models\Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return view('admin.notifications', compact('notifications', 'unreadCount'));
+    }
+
     /** Keep the legacy moderation URL on the single shared Community Circle feed. */
     public function communityModeration()
     {

@@ -182,6 +182,7 @@ Route::middleware(['auth', 'secure.auth'])->group(function () {
         Route::post('/api/notifications/{id}/read', [StudentController::class, 'markNotificationRead'])->name('notifications.read');
         Route::post('/api/notifications/read-all', [StudentController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
         Route::delete('/api/notifications/{id}', [StudentController::class, 'deleteNotification'])->name('notifications.delete');
+        Route::get('/notifications', [StudentController::class, 'allNotifications'])->name('notifications.index');
         
         // Counselor messaging API
         Route::get('/api/counselor/{counselorId}/messages', [StudentController::class, 'getCounselorMessages'])->name('counselor.messages');
@@ -235,6 +236,7 @@ Route::middleware(['auth', 'secure.auth'])->group(function () {
         Route::post('/api/notifications/{id}/read', [CounselorController::class, 'markNotificationRead'])->name('notifications.read');
         Route::post('/api/notifications/read-all', [CounselorController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
         Route::delete('/api/notifications/{id}', [CounselorController::class, 'deleteNotification'])->name('notifications.delete');
+        Route::get('/notifications', [CounselorController::class, 'allNotifications'])->name('notifications.index');
     });
 
     // Admin routes
@@ -280,6 +282,7 @@ Route::middleware(['auth', 'secure.auth'])->group(function () {
         Route::post('/api/notifications/{id}/read', [AdminController::class, 'markNotificationRead'])->name('notifications.read');
         Route::post('/api/notifications/read-all', [AdminController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
         Route::delete('/api/notifications/{id}', [AdminController::class, 'deleteNotification'])->name('notifications.delete');
+        Route::get('/notifications', [AdminController::class, 'allNotifications'])->name('notifications.index');
     });
 
     // Secure Counselor-Student Chat Attachment Access

@@ -265,10 +265,18 @@
             }
         } catch (error) {
             if (sequence !== refreshSequence || error.name === 'AbortError') return;
-            status.textContent = 'Could not refresh notifications. Please try again.';
+            showStatus('Could not refresh notifications. Please try again.', true);
             if (!loaded) { count.textContent = 'Updates unavailable'; list.replaceChildren(element('div', 'magi-notice__empty', 'Notifications could not be loaded.')); }
         } finally {
             if (sequence === refreshSequence) { controller = null; list.setAttribute('aria-busy', 'false'); }
+        }
+    }
+    let statusTimer = null;
+    function showStatus(msg, isError = true) {
+        window.clearTimeout(statusTimer);
+        status.textContent = msg;
+        if (msg) {
+            statusTimer = window.setTimeout(() => { status.textContent = ''; }, isError ? 6000 : 3000);
         }
     }
     async function mutate(url, method) {
@@ -278,13 +286,13 @@
         if (controller) controller.abort();
         controller = null;
         readAll.disabled = true;
-        status.textContent = '';
+        showStatus('');
         try {
             const data = await request(url, method);
             if (data.success !== true) throw new Error('Notification action failed');
             return true;
         } catch (_) {
-            status.textContent = 'Could not update this notification. Please try again.';
+            showStatus('Could not update this notification. Please try again.', true);
             return false;
         } finally { busy = false; readAll.disabled = unread === 0; }
     }

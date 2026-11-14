@@ -2006,6 +2006,23 @@ class StudentController extends Controller
     }
 
     /**
+     * View all notifications (paginated page)
+     */
+    public function allNotifications(Request $request)
+    {
+        $notifications = \App\Models\Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(30);
+
+        $unreadCount = \App\Models\Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return view('student.notifications', compact('notifications', 'unreadCount'));
+    }
+
+    /**
      * Show mental status dashboard
      */
     public function mentalStatus()

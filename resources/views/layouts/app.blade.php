@@ -3821,6 +3821,27 @@
     @endauth
 
     <script>
+        // ===== AUTO-DISMISS FLASH ALERTS =====
+        (function () {
+            const selectors = ['.au-success', '.au-error', '.alert-success', '.alert-error', '.flash-success', '.flash-error'];
+            function dismissAll() {
+                selectors.forEach(function (sel) {
+                    document.querySelectorAll(sel).forEach(function (el) {
+                        el.style.transition = 'opacity 0.5s ease';
+                        setTimeout(function () {
+                            el.style.opacity = '0';
+                            setTimeout(function () { el.remove(); }, 500);
+                        }, 4000);
+                    });
+                });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', dismissAll);
+            } else {
+                dismissAll();
+            }
+        })();
+
         // ===== SIDEBAR TOGGLE (Mobile) =====
         function toggleSidebar() {
             const sidebar = document.getElementById('appSidebar');
