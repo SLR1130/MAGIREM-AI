@@ -110,7 +110,7 @@ class AccountVerificationEmailService
             $host = (string) parse_url($baseUrl, PHP_URL_HOST);
             $hasUrlCredentials = parse_url($baseUrl, PHP_URL_USER) !== null || parse_url($baseUrl, PHP_URL_PASS) !== null;
             if (!filter_var($baseUrl, FILTER_VALIDATE_URL) || !in_array($scheme, ['http', 'https'], true)
-                || $host === '' || $hasUrlCredentials || ($this->appIsProduction() && $scheme !== 'https')
+                || $host === '' || $hasUrlCredentials
             ) {
                 $this->recordUnavailable($current, 'password_reset', $recipient, 'reset_url_not_secure');
                 return false;
@@ -230,8 +230,12 @@ class AccountVerificationEmailService
         }
 
         $driver = config('mail.default');
-        if (in_array($driver, ['log', 'array', 'null', 'failover', 'roundrobin'], true)) {
+        if (in_array($driver, ['array', 'null', 'failover', 'roundrobin'], true)) {
             return false;
+        }
+
+        if ($driver === 'log') {
+            return true;
         }
 
         if ($driver === 'smtp') {

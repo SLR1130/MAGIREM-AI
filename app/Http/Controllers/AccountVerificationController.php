@@ -182,9 +182,6 @@ class AccountVerificationController extends Controller
             $rules['alternative_review_confirmed'] = ['required', 'accepted'];
         }
         $validated = $request->validate($rules);
-        if (!$adminCreated && !$user->notification_email_verified_at) {
-            return back()->withErrors(['approval' => 'Verify the personal notification email before approval.']);
-        }
         if (!$adminCreated && !$user->verification_document_path && !$user->alternative_review_requested_at) {
             return back()->withErrors(['approval' => 'No school ID document or accessible alternative-review request is recorded.']);
         }
@@ -202,6 +199,12 @@ class AccountVerificationController extends Controller
             $locked->institutional_verified_at = now();
             $locked->approval_reviewer_id = $request->user()->id;
             $locked->approval_reviewed_at = now();
+
+            if (!$adminCreated && !$locked->notification_email_verified_at) {
+                $locked->notification_email_verified_at = now();
+                $locked->notification_email_confirmed_at = now();
+                $locked->notification_email_confirmed_by = $request->user()->id;
+            }
             $reviewNote = $adminCreated
                 ? 'Admin-created account; institutional identity and eligibility independently confirmed by an authorized reviewer. Verification basis: ' . trim($validated['verification_basis']) . '. Review note: ' . trim($validated['internal_review_reason'])
                 : 'Institutional identity, identification review, and eligibility independently confirmed through approved official procedures. ' . trim($validated['internal_review_reason']);

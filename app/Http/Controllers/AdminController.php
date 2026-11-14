@@ -215,26 +215,31 @@ class AdminController extends Controller
             });
 
             if ($approved) {
-                $invitation = app(AccountInvitationService::class)->issue(
-                    $user->fresh(),
-                    (int) $request->user()->id,
-                    $validated['invitation_method'],
-                );
-                if ($validated['invitation_method'] === 'in_person') {
-                    return response()->view('admin.account-verification.manual-invitation', [
-                        'applicant' => $user->fresh(),
-                        'handoffToken' => $invitation['handoff_token'],
-                        'activationUrl' => $invitation['activation_url'],
-                        'expiresAt' => $invitation['invitation']->expires_at,
-                    ])->header('Cache-Control', 'private, no-store, max-age=0')
-                        ->header('Pragma', 'no-cache')
-                        ->header('Referrer-Policy', 'no-referrer')
-                        ->header('X-Robots-Tag', 'noindex, nofollow');
+                try {
+                    $invitation = app(AccountInvitationService::class)->issue(
+                        $user->fresh(),
+                        (int) $request->user()->id,
+                        $validated['invitation_method'],
+                    );
+                    if ($validated['invitation_method'] === 'in_person') {
+                        return response()->view('admin.account-verification.manual-invitation', [
+                            'applicant' => $user->fresh(),
+                            'handoffToken' => $invitation['handoff_token'],
+                            'activationUrl' => $invitation['activation_url'],
+                            'expiresAt' => $invitation['invitation']->expires_at,
+                        ])->header('Cache-Control', 'private, no-store, max-age=0')
+                            ->header('Pragma', 'no-cache')
+                            ->header('Referrer-Policy', 'no-referrer')
+                            ->header('X-Robots-Tag', 'noindex, nofollow');
+                    }
+                    $message = $invitation['delivery_status'] === 'queued'
+                        ? 'Account approved. The one-time setup invitation is queued, not sent yet; a queue worker must process it. The owner must still set a password and verify Gmail before normal access.'
+                        : 'Account approved but remains access-restricted. No invitation was sent; use the reviewer page to retry or arrange a secure in-person handoff.';
+                    return redirect()->route('admin.users')->with($invitation['delivery_status'] === 'queued' ? 'success' : 'warning', $message);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('AdminController storeUser invitation error: ' . $e->getMessage(), ['userId' => $user->id]);
+                    return redirect()->route('admin.users')->with('warning', 'User created and approved, but invitation link could not be generated (' . $e->getMessage() . '). You can issue or resend an invitation from the user directory.');
                 }
-                $message = $invitation['delivery_status'] === 'queued'
-                    ? 'Account approved. The one-time setup invitation is queued, not sent yet; a queue worker must process it. The owner must still set a password and verify Gmail before normal access.'
-                    : 'Account approved but remains access-restricted. No invitation was sent; use the reviewer page to retry or arrange a secure in-person handoff.';
-                return redirect()->route('admin.users')->with($invitation['delivery_status'] === 'queued' ? 'success' : 'warning', $message);
             }
 
             $message = 'Account created in restricted pending status. An authorized reviewer must complete verification before an owner invitation can be issued.';

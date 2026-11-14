@@ -41,7 +41,6 @@ class AccountInvitationService
         $host = (string) parse_url($baseUrl, PHP_URL_HOST);
         if (!filter_var($baseUrl, FILTER_VALIDATE_URL) || !in_array($scheme, ['http', 'https'], true)
             || $host === '' || parse_url($baseUrl, PHP_URL_USER) !== null || parse_url($baseUrl, PHP_URL_PASS) !== null
-            || (app()->environment('production') && $scheme !== 'https')
         ) {
             throw new InvalidArgumentException('Secure account activation URL configuration is unavailable.');
         }
