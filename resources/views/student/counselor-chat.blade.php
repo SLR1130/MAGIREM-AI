@@ -2044,7 +2044,17 @@ async function deleteMessageForMe(messageId) {
 }
 
 async function unsendMessage(messageId) {
-    if (!confirm('Unsend this message for everyone? This cannot be undone.')) return;
+    const confirmed = typeof magiConfirm === 'function'
+        ? await magiConfirm({
+            title: 'Unsend Message',
+            text: 'Unsend this message for everyone? This cannot be undone.',
+            confirmButtonText: 'Unsend',
+            isDanger: true,
+            icon: 'warning'
+        })
+        : confirm('Unsend this message for everyone? This cannot be undone.');
+
+    if (!confirmed) return;
     
     const endpoint = `/student/api/messages/${messageId}/unsend`;
     

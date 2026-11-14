@@ -97,9 +97,9 @@
                                 </div>
                                 <div class="ca-actions"><button type="submit" class="ca-action confirm">Confirm appointment</button></div>
                             </form>
-                            <form action="{{ route('counselor.appointments.cancel', $appt->id) }}" method="POST">
+                            <form action="{{ route('counselor.appointments.cancel', $appt->id) }}" method="POST" data-confirm="Decline this appointment request?" data-confirm-title="Decline Request" data-confirm-btn="Decline" data-confirm-danger="true">
                                 @csrf
-                                <div class="ca-actions" style="margin-top:6px"><button type="submit" class="ca-action cancel" onclick="return confirm('Decline this request?')">Decline request</button></div>
+                                <div class="ca-actions" style="margin-top:6px"><button type="submit" class="ca-action cancel">Decline request</button></div>
                             </form>
                         </div>
                     </article>
@@ -142,9 +142,9 @@
                             <a href="{{ route('counselor.chat', $appt->student_id) }}" class="ca-action message" aria-label="Message student">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4-4 7-9 7-1.4 0-2.8-.25-4-.72L3 19l1.3-3.4A6.3 6.3 0 013 12c0-4 4-7 9-7s9 3 9 7z"/></svg>
                             </a>
-                            <form action="{{ route('counselor.appointments.cancel', $appt->id) }}" method="POST">
+                            <form action="{{ route('counselor.appointments.cancel', $appt->id) }}" method="POST" data-confirm="Cancel this confirmed appointment?" data-confirm-title="Cancel Appointment" data-confirm-btn="Cancel Appointment" data-confirm-danger="true">
                                 @csrf
-                                <button type="submit" class="ca-action cancel" onclick="return confirm('Cancel this appointment?')">Cancel</button>
+                                <button type="submit" class="ca-action cancel">Cancel</button>
                             </form>
                         </div>
                     </article>

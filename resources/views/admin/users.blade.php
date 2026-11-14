@@ -568,7 +568,10 @@
                                     @if($user->id !== auth()->id())
                                         <form method="POST"
                                               action="{{ route('admin.delete-user', $user->id) }}"
-                                              onsubmit="return confirm('Delete this user account? This action cannot be undone.');"
+                                              data-confirm="Delete this user account? This action cannot be undone."
+                                              data-confirm-title="Delete User"
+                                              data-confirm-btn="Delete Account"
+                                              data-confirm-danger="true"
                                               style="display:inline">
                                             @csrf
                                             @method('DELETE')

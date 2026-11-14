@@ -1906,8 +1906,17 @@
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatForm.dispatchEvent(new Event('submit', { cancelable: true })); }
     });
 
-    window.startNewConversation = function() {
-        if (confirm('Start a new conversation? Your current conversation will be saved in the sidebar.')) {
+    window.startNewConversation = async function() {
+        const confirmed = typeof magiConfirm === 'function'
+            ? await magiConfirm({
+                title: 'New Conversation',
+                text: 'Start a new conversation? Your current conversation will be saved in the sidebar.',
+                confirmButtonText: 'Start New',
+                icon: 'question'
+            })
+            : confirm('Start a new conversation? Your current conversation will be saved in the sidebar.');
+
+        if (confirmed) {
             // Do a full page navigation to create new conversation
             // This ensures the page reloads with the updated sidebar (filtering out hidden conversations)
             window.location.href = '{{ route("student.new-conversation") }}';
@@ -1916,47 +1925,80 @@
 
     window.loadConversation = function(sessionId) { window.location.href = '{{ route("student.ai-chat") }}/' + sessionId; }
 
-    window.endConversation = function() {
-        if (confirm('End this conversation and start fresh?\n\nThis conversation will be saved in your history.')) {
-            const token = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
-            
-            fetch('{{ route("student.end-conversation") }}', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ session_id: currentSessionId })
+    window.endConversation = async function() {
+        const confirmed = typeof magiConfirm === 'function'
+            ? await magiConfirm({
+                title: 'End Conversation',
+                text: 'End this conversation and start fresh?\n\nThis conversation will be saved in your history.',
+                confirmButtonText: 'End Chat',
+                isDanger: true,
+                icon: 'warning'
             })
-            .then(r => {
-                if (r.status === 419) {
+            : confirm('End this conversation and start fresh?\n\nThis conversation will be saved in your history.');
+
+        if (!confirmed) return;
+
+        const token = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+        
+        fetch('{{ route("student.end-conversation") }}', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ session_id: currentSessionId })
+        })
+        .then(r => {
+            if (r.status === 419) {
+                if (typeof magiAlert === 'function') {
+                    magiAlert('Session expired. Please refresh the page and try again.', 'error');
+                } else {
                     alert('Session expired. Please refresh the page and try again.');
-                    window.location.reload();
-                    return null;
                 }
-                return r.json();
-            })
-            .then(data => { 
-                if (data && data.success) { 
-                    window.location.href = '{{ route("student.ai-chat") }}'; 
-                } else if (data) {
+                setTimeout(() => window.location.reload(), 1500);
+                return null;
+            }
+            return r.json();
+        })
+        .then(data => { 
+            if (data && data.success) { 
+                window.location.href = '{{ route("student.ai-chat") }}'; 
+            } else if (data) {
+                if (typeof magiAlert === 'function') {
+                    magiAlert(data.message || 'Failed to end conversation', 'error');
+                } else {
                     alert('Error: ' + (data.message || 'Failed to end conversation'));
                 }
-            })
-            .catch(error => { 
-                console.error('Error:', error); 
+            }
+        })
+        .catch(error => { 
+            console.error('Error:', error); 
+            if (typeof magiAlert === 'function') {
+                magiAlert('Failed to end conversation. Please try again.', 'error');
+            } else {
                 alert('Failed to end conversation. Please try again.');
-            });
-        }
+            }
+        });
     }
 
-    window.hideConversation = function(event, sessionId) {
+    window.hideConversation = async function(event, sessionId) {
         event.stopPropagation(); // Prevent triggering loadConversation
         
-        if (confirm('Remove this conversation from your sidebar?\n\nIt will still be visible in your history/journal.')) {
-            const token = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+        const confirmed = typeof magiConfirm === 'function'
+            ? await magiConfirm({
+                title: 'Remove Conversation',
+                text: 'Remove this conversation from your sidebar?\n\nIt will still be visible in your history/journal.',
+                confirmButtonText: 'Remove',
+                isDanger: true,
+                icon: 'warning'
+            })
+            : confirm('Remove this conversation from your sidebar?\n\nIt will still be visible in your history/journal.');
+
+        if (!confirmed) return;
+
+        const token = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
             const conversationItem = document.querySelector(`[data-session-id="${sessionId}"]`);
             
             fetch(`/student/conversation/${sessionId}/hide`, {
@@ -1970,8 +2012,12 @@
             })
             .then(r => {
                 if (r.status === 419) {
-                    alert('Session expired. Please refresh and try again.');
-                    window.location.reload();
+                    if (typeof magiAlert === 'function') {
+                        magiAlert('Session expired. Please refresh and try again.', 'error');
+                    } else {
+                        alert('Session expired. Please refresh and try again.');
+                    }
+                    setTimeout(() => window.location.reload(), 1500);
                     return null;
                 }
                 return r.json();
@@ -1985,17 +2031,28 @@
                         conversationItem.remove();
                         // Show "No conversations" message if list is now empty
                         const listContainer = document.querySelector('.conversations-list');
-                        if (listContainer.children.length === 0) {
+                        if (listContainer && listContainer.children.length === 0) {
                             listContainer.innerHTML = '<div style="padding:0.75rem;text-align:center;color:var(--text-muted);font-size:0.78rem;">No conversations yet</div>';
                         }
                     }, 200);
+                    if (typeof magiToast === 'function') {
+                        magiToast('Conversation removed from sidebar');
+                    }
                 } else if (data) {
-                    alert('Error: ' + (data.message || 'Failed to hide conversation'));
+                    if (typeof magiAlert === 'function') {
+                        magiAlert(data.message || 'Failed to hide conversation', 'error');
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to hide conversation'));
+                    }
                 }
             })
             .catch(error => { 
                 console.error('Fetch error:', error);
-                alert('Failed to remove conversation. Please try again.');
+                if (typeof magiAlert === 'function') {
+                    magiAlert('Failed to remove conversation. Please try again.', 'error');
+                } else {
+                    alert('Failed to remove conversation. Please try again.');
+                }
             });
         }
     } 

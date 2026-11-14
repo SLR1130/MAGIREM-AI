@@ -1270,8 +1270,18 @@ document.addEventListener('DOMContentLoaded', function() {
     sendBtn.addEventListener('click', sendMessage);
 
     // Clear chat
-    clearChatBtn.addEventListener('click', function() {
-        if (confirm('Are you sure you want to clear the conversation?')) {
+    clearChatBtn.addEventListener('click', async function() {
+        const confirmed = typeof magiConfirm === 'function'
+            ? await magiConfirm({
+                title: 'Clear Conversation',
+                text: 'Are you sure you want to clear the conversation?',
+                confirmButtonText: 'Clear Chat',
+                isDanger: true,
+                icon: 'warning'
+            })
+            : confirm('Are you sure you want to clear the conversation?');
+
+        if (confirmed) {
             messagesContainer.innerHTML = `
                 <div class="message-group welcome-group">
                     <div class="ai-message-wrapper">

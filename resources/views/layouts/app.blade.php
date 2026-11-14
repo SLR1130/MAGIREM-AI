@@ -2894,6 +2894,326 @@
             }
         }
     </style>
+
+    <!-- MAGIREM In-App Modal & Notification System -->
+    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+    <script>
+        if (typeof Swal === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"><\/script>');
+        }
+    </script>
+    <style>
+        .swal2-container {
+            z-index: 100000 !important;
+            font-family: inherit !important;
+        }
+        .swal2-container.swal2-backdrop-show {
+            background: rgba(10, 36, 28, 0.45) !important;
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+        }
+        .magi-swal-popup {
+            border-radius: 24px !important;
+            padding: 26px 28px 24px !important;
+            background: #ffffff !important;
+            border: 1px solid rgba(16, 63, 50, 0.12) !important;
+            box-shadow: 0 24px 60px rgba(16, 63, 50, 0.18), 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+            max-width: 440px !important;
+            width: calc(100vw - 32px) !important;
+            box-sizing: border-box !important;
+        }
+        body.dusk-mode .magi-swal-popup {
+            background: #152a23 !important;
+            border-color: rgba(237, 245, 241, 0.12) !important;
+            color: #edf5f1 !important;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5) !important;
+        }
+        .magi-swal-title {
+            font-size: 1.25rem !important;
+            font-weight: 800 !important;
+            color: #103f32 !important;
+            letter-spacing: -0.015em !important;
+            padding: 8px 0 4px !important;
+            margin: 0 !important;
+        }
+        body.dusk-mode .magi-swal-title {
+            color: #edf5f1 !important;
+        }
+        .magi-swal-html {
+            font-size: 0.93rem !important;
+            line-height: 1.55 !important;
+            color: #52675e !important;
+            margin: 8px 0 4px !important;
+            padding: 0 !important;
+            white-space: pre-line !important;
+        }
+        body.dusk-mode .magi-swal-html {
+            color: #9fb6ab !important;
+        }
+        .magi-swal-actions {
+            display: flex !important;
+            gap: 10px !important;
+            margin-top: 22px !important;
+            width: 100% !important;
+            justify-content: flex-end !important;
+        }
+        .magi-swal-btn-confirm {
+            background: #103f32 !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 11px 22px !important;
+            font-size: 0.92rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1) !important;
+            box-shadow: 0 4px 14px rgba(16, 63, 50, 0.22) !important;
+            outline: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .magi-swal-btn-confirm:hover {
+            background: #174f3f !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 18px rgba(16, 63, 50, 0.3) !important;
+        }
+        .magi-swal-btn-danger {
+            background: #dc2626 !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 11px 22px !important;
+            font-size: 0.92rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1) !important;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25) !important;
+            outline: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .magi-swal-btn-danger:hover {
+            background: #b91c1c !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 18px rgba(220, 38, 38, 0.32) !important;
+        }
+        .magi-swal-btn-cancel {
+            background: #f1f5f3 !important;
+            color: #3f554b !important;
+            border: 1px solid rgba(16, 63, 50, 0.12) !important;
+            border-radius: 12px !important;
+            padding: 11px 20px !important;
+            font-size: 0.92rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.18s ease !important;
+            outline: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        body.dusk-mode .magi-swal-btn-cancel {
+            background: #1c362d !important;
+            color: #cde0d7 !important;
+            border-color: rgba(237, 245, 241, 0.14) !important;
+        }
+        .magi-swal-btn-cancel:hover {
+            background: #e4eee9 !important;
+            color: #103f32 !important;
+        }
+        body.dusk-mode .magi-swal-btn-cancel:hover {
+            background: #244439 !important;
+            color: #ffffff !important;
+        }
+        .swal2-icon {
+            margin: 4px auto 14px !important;
+            transform: scale(0.9) !important;
+        }
+        .swal2-icon.swal2-warning { border-color: #f59e0b !important; color: #f59e0b !important; }
+        .swal2-icon.swal2-question { border-color: #236b55 !important; color: #236b55 !important; }
+        .swal2-icon.swal2-success { border-color: #10b981 !important; color: #10b981 !important; }
+        .swal2-icon.swal2-error { border-color: #ef4444 !important; color: #ef4444 !important; }
+        .magi-toast-popup {
+            border-radius: 14px !important;
+            padding: 12px 18px !important;
+            font-size: 0.92rem !important;
+            border: 1px solid rgba(16, 63, 50, 0.12) !important;
+            box-shadow: 0 12px 30px rgba(16, 63, 50, 0.14) !important;
+        }
+        body.dusk-mode .magi-toast-popup {
+            background: #152a23 !important;
+            color: #edf5f1 !important;
+            border-color: rgba(237, 245, 241, 0.15) !important;
+        }
+    </style>
+    <script>
+        // Global MAGIREM UI Dialog System
+        window.magiConfirm = function(options) {
+            if (typeof options === 'string') {
+                options = { text: options };
+            }
+            options = options || {};
+            const isDanger = Boolean(options.isDanger);
+            return Swal.fire({
+                title: options.title || (isDanger ? 'Are you sure?' : 'Please Confirm'),
+                text: options.text || '',
+                html: options.html,
+                icon: options.icon || (isDanger ? 'warning' : 'question'),
+                showCancelButton: true,
+                confirmButtonText: options.confirmButtonText || (isDanger ? 'Yes, proceed' : 'Confirm'),
+                cancelButtonText: options.cancelButtonText || 'Cancel',
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'magi-swal-popup',
+                    title: 'magi-swal-title',
+                    htmlContainer: 'magi-swal-html',
+                    actions: 'magi-swal-actions',
+                    confirmButton: isDanger ? 'magi-swal-btn-danger' : 'magi-swal-btn-confirm',
+                    cancelButton: 'magi-swal-btn-cancel'
+                },
+                reverseButtons: true,
+                focusCancel: isDanger
+            }).then(function(result) {
+                return Boolean(result.isConfirmed);
+            });
+        };
+
+        window.magiAlert = function(text, type, title) {
+            type = type || 'info';
+            if (typeof text === 'object' && text !== null) {
+                const opt = text;
+                text = opt.text || opt.message || '';
+                type = opt.type || opt.icon || 'info';
+                title = opt.title || null;
+            }
+            const defaultTitles = {
+                success: 'Success',
+                error: 'Notice',
+                warning: 'Warning',
+                info: 'Information',
+                question: 'Confirm'
+            };
+            return Swal.fire({
+                title: title || defaultTitles[type] || 'Notice',
+                text: String(text || ''),
+                icon: type,
+                confirmButtonText: 'OK',
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'magi-swal-popup',
+                    title: 'magi-swal-title',
+                    htmlContainer: 'magi-swal-html',
+                    actions: 'magi-swal-actions',
+                    confirmButton: 'magi-swal-btn-confirm'
+                }
+            });
+        };
+
+        window.magiToast = function(title, icon) {
+            icon = icon || 'success';
+            return Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'magi-toast-popup'
+                },
+                didOpen: function(toast) {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            }).fire({
+                icon: icon,
+                title: title
+            });
+        };
+
+        // Override native window.alert with in-app modal
+        window.alert = function(message) {
+            window.magiAlert(message, 'info');
+        };
+
+        // Global interceptor for forms and buttons with data-confirm
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (!form || !form.dataset) return;
+            const confirmMsg = form.dataset.confirm;
+            if (confirmMsg && !form.dataset.confirmed) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                const isDanger = form.dataset.confirmDanger === 'true';
+                window.magiConfirm({
+                    title: form.dataset.confirmTitle || (isDanger ? 'Are you sure?' : 'Please Confirm'),
+                    text: confirmMsg,
+                    isDanger: isDanger,
+                    confirmButtonText: form.dataset.confirmBtn || (isDanger ? 'Yes, proceed' : 'Confirm')
+                }).then(function(confirmed) {
+                    if (confirmed) {
+                        form.dataset.confirmed = 'true';
+                        form.submit();
+                    }
+                });
+                return false;
+            }
+        }, true);
+
+        document.addEventListener('click', function(e) {
+            const submitBtn = e.target.closest('button[data-confirm][type="submit"], input[data-confirm][type="submit"]');
+            if (submitBtn && submitBtn.dataset.confirmed !== 'true') {
+                const form = submitBtn.form || submitBtn.closest('form');
+                if (form) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    const isDanger = submitBtn.dataset.confirmDanger === 'true';
+                    window.magiConfirm({
+                        title: submitBtn.dataset.confirmTitle || (isDanger ? 'Are you sure?' : 'Please Confirm'),
+                        text: submitBtn.dataset.confirm,
+                        isDanger: isDanger,
+                        confirmButtonText: submitBtn.dataset.confirmBtn || (isDanger ? 'Yes, proceed' : 'Confirm')
+                    }).then(function(confirmed) {
+                        if (confirmed) {
+                            submitBtn.dataset.confirmed = 'true';
+                            if (submitBtn.name) {
+                                const hidden = document.createElement('input');
+                                hidden.type = 'hidden';
+                                hidden.name = submitBtn.name;
+                                hidden.value = submitBtn.value;
+                                form.appendChild(hidden);
+                            }
+                            form.submit();
+                        }
+                    });
+                    return;
+                }
+            }
+
+            const trigger = e.target.closest('a[data-confirm], button[data-confirm]:not([type="submit"])');
+            if (!trigger || trigger.dataset.confirmed === 'true') return;
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const isDanger = trigger.dataset.confirmDanger === 'true';
+            window.magiConfirm({
+                title: trigger.dataset.confirmTitle || (isDanger ? 'Are you sure?' : 'Please Confirm'),
+                text: trigger.dataset.confirm,
+                isDanger: isDanger,
+                confirmButtonText: trigger.dataset.confirmBtn || (isDanger ? 'Yes, proceed' : 'Confirm')
+            }).then(function(confirmed) {
+                if (confirmed) {
+                    trigger.dataset.confirmed = 'true';
+                    if (trigger.tagName === 'A') {
+                        window.location.href = trigger.href;
+                    } else {
+                        trigger.click();
+                    }
+                }
+            });
+        }, true);
+    </script>
     @stack('head')
 </head>
 @php

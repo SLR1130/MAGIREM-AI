@@ -200,11 +200,11 @@
                 <button type="submit" class="action-button {{ $post->is_pinned ? 'reject-button' : 'approve-button' }}">{{ $post->is_pinned ? 'Unpin' : 'Pin to top' }}</button>
                 @if($post->is_pinned)<span class="badge badge-pinned">Currently pinned</span>@endif
             </form>
-            <form action="{{ route('admin.community-moderation.hide', $post->id) }}" method="POST" style="margin-top:12px">
+            <form action="{{ route('admin.community-moderation.hide', $post->id) }}" method="POST" style="margin-top:12px" data-confirm="Remove this post from the community feed? Its content and media will be retained for review." data-confirm-title="Remove Post" data-confirm-btn="Remove from Feed" data-confirm-danger="true">
                 @csrf
                 <label for="hide-reason-{{ $post->id }}">Reason for removal from the feed</label>
                 <input id="hide-reason-{{ $post->id }}" name="reason" type="text" maxlength="500" required style="display:block;width:100%;max-width:600px;padding:10px;margin:6px 0" placeholder="Brief moderation reason">
-                <button type="submit" class="action-button reject-button" onclick="return confirm('Remove this post from the community feed? Its content and media will be retained for review.')">Remove from feed</button>
+                <button type="submit" class="action-button reject-button">Remove from feed</button>
             </form>
         </div>
     @empty
