@@ -959,9 +959,11 @@ class CounselorController extends Controller
     {
         $notification = \App\Models\Notification::where('id', $id)
             ->where('user_id', Auth::id())
-            ->firstOrFail();
+            ->first();
 
-        $notification->delete();
+        if ($notification) {
+            $notification->delete();
+        }
 
         return response()->json(['success' => true]);
     }

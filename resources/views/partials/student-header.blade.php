@@ -374,8 +374,14 @@
             min-height: 48px;
         }
 
-        body.student-header-layout .content-wrapper {
-            padding: 16px 16px 96px; /* Extra bottom padding so dock never obscures content */
+        body.student-header-layout .content-wrapper,
+        body.student-header-layout .app-main,
+        body.student-header-layout .msc-home-page,
+        body.student-header-layout .msc-home-stage,
+        .journal-page,
+        .msa,
+        .community-container {
+            padding-bottom: 125px !important; /* Extra bottom padding so dock never obscures content */
         }
 
         /* Floating native mobile bottom icon dock */

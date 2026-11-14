@@ -439,21 +439,37 @@
 /* Mobile Iconized App Mode: Transforms navigation into sleek native mobile app icons */
 @media (max-width: 900px) {
     .msc-public-header {
-        width: calc(100% - 16px);
-        top: 8px;
-        margin: 8px auto 0;
-        padding: 6px 10px;
-        border-radius: 24px;
+        width: calc(100% - 20px);
+        max-width: 520px;
+        top: 10px;
+        margin: 10px auto 0;
+        padding: 5px 8px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, .95);
+        box-shadow: 0 12px 32px rgba(16, 63, 50, .10);
+        border: 1px solid rgba(16, 63, 50, .12);
     }
     .msc-public-header__inner {
-        min-height: 50px;
-        gap: 8px;
+        min-height: 46px;
+        gap: 6px;
+        justify-content: space-between;
+    }
+    .msc-brand__mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+    .msc-brand__copy {
+        display: none;
     }
     .msc-public-nav {
         display: flex !important;
         flex-direction: row !important;
-        gap: 4px;
-        padding: 3px;
+        gap: 3px;
+        padding: 2px;
+        background: transparent;
+        border: none;
         border-radius: 9999px;
     }
     .msc-public-nav a {
@@ -462,6 +478,18 @@
         width: 38px;
         justify-content: center;
         border-radius: 50%;
+        color: #236b55;
+        background: transparent;
+        box-shadow: none;
+    }
+    .msc-public-nav a.is-active {
+        background: #174c3b !important;
+        color: #f4c84e !important;
+        box-shadow: 0 4px 12px rgba(16, 63, 50, .22);
+    }
+    .msc-public-nav a.is-active .nav-icon-wrap {
+        color: #f4c84e !important;
+        background: transparent !important;
     }
     .msc-public-nav a .nav-label {
         display: none;
@@ -475,32 +503,46 @@
         width: 18px;
         height: 18px;
     }
+    .msc-public-actions {
+        gap: 6px;
+        flex-shrink: 0;
+    }
     .msc-public-actions .msc-home-btn {
         min-height: 38px;
-        padding: 0 12px;
+        padding: 0 14px;
+        border-radius: 9999px;
+        font-size: 12.5px;
+        font-weight: 750;
     }
     .msc-public-actions .msc-home-btn--outline {
         display: inline-flex !important;
         width: 38px;
+        height: 38px;
+        min-height: 38px;
         padding: 0;
         justify-content: center;
+        align-items: center;
         border-radius: 50%;
+        border: 1px solid rgba(16, 63, 50, .18);
+        background: #fff;
+        color: #103f32;
     }
     .msc-public-actions .msc-home-btn--outline .nav-label {
         display: none;
     }
-    .msc-public-actions .msc-home-btn--primary .btn-arrow {
-        display: none;
+    .msc-public-actions .msc-home-btn--outline .nav-icon-wrap {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
     }
-}
-
-@media (max-width: 600px) {
-    .msc-brand__copy { display: none; }
-    .msc-brand__mark { width: 38px; height: 38px; border-radius: 11px; }
     .msc-public-actions .msc-home-btn--primary {
-        padding: 0 10px;
-        font-size: 11.5px;
+        background: #103f32;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(16, 63, 50, .18);
+        white-space: nowrap;
     }
+    .msc-public-actions .msc-home-btn--primary .btn-arrow,
     .msc-public-actions .msc-home-btn--primary .nav-icon-wrap {
         display: none;
     }

@@ -4,6 +4,121 @@
 
 @section('content')
 @if(!auth()->check() || !auth()->user()->isStudent())
+    <style>
+    @media (max-width: 900px) {
+        .msc-public-header {
+            width: calc(100% - 20px) !important;
+            max-width: 520px !important;
+            top: 10px !important;
+            margin: 10px auto 0 !important;
+            padding: 5px 8px !important;
+            border-radius: 9999px !important;
+            background: rgba(255, 255, 255, .96) !important;
+            box-shadow: 0 12px 32px rgba(16, 63, 50, .10) !important;
+            border: 1px solid rgba(16, 63, 50, .12) !important;
+            position: sticky !important;
+            z-index: 1000 !important;
+        }
+        .msc-public-header__inner {
+            min-height: 46px !important;
+            gap: 6px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+        .msc-brand__mark {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 12px !important;
+            flex-shrink: 0 !important;
+        }
+        .msc-brand__copy { display: none !important; }
+        .msc-public-nav {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 4px !important;
+            padding: 2px !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 9999px !important;
+        }
+        .msc-public-nav a {
+            padding: 0 !important;
+            min-height: 38px !important;
+            width: 38px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 50% !important;
+            color: #236b55 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        .msc-public-nav a.is-active {
+            background: #174c3b !important;
+            color: #f4c84e !important;
+            box-shadow: 0 4px 12px rgba(16, 63, 50, .22) !important;
+        }
+        .msc-public-nav a.is-active .nav-icon-wrap {
+            color: #f4c84e !important;
+            background: transparent !important;
+        }
+        .msc-public-nav a .nav-label { display: none !important; }
+        .msc-public-nav a .nav-icon-wrap {
+            width: 34px !important;
+            height: 34px !important;
+            display: grid !important;
+            place-items: center !important;
+            background: transparent !important;
+        }
+        .msc-public-nav a .nav-icon-wrap svg {
+            width: 18px !important;
+            height: 18px !important;
+        }
+        .msc-public-actions {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            flex-shrink: 0 !important;
+        }
+        .msc-public-actions .msc-home-btn {
+            min-height: 38px !important;
+            padding: 0 14px !important;
+            border-radius: 9999px !important;
+            font-size: 12px !important;
+            font-weight: 750 !important;
+        }
+        .msc-public-actions .msc-home-btn--outline {
+            display: inline-flex !important;
+            width: 38px !important;
+            height: 38px !important;
+            min-height: 38px !important;
+            padding: 0 !important;
+            justify-content: center !important;
+            align-items: center !important;
+            border-radius: 50% !important;
+            border: 1px solid rgba(16, 63, 50, .18) !important;
+            background: #fff !important;
+            color: #103f32 !important;
+        }
+        .msc-public-actions .msc-home-btn--outline .nav-label { display: none !important; }
+        .msc-public-actions .msc-home-btn--outline .nav-icon-wrap {
+            width: 100% !important;
+            height: 100% !important;
+            display: grid !important;
+            place-items: center !important;
+        }
+        .msc-public-actions .msc-home-btn--primary {
+            background: #103f32 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(16, 63, 50, .18) !important;
+            white-space: nowrap !important;
+        }
+        .msc-public-actions .msc-home-btn--primary .btn-arrow,
+        .msc-public-actions .msc-home-btn--primary .msc-btn-arrow { display: none !important; }
+    }
+    </style>
     <div class="msc-public-page" id="mscPublicLanding">
         <header class="msc-public-header" data-public-header>
             <div class="msc-public-header__inner">

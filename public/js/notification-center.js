@@ -219,8 +219,19 @@
             remove.dataset.noticeId = String(item.id);
             remove.dataset.noticeAction = 'delete';
             remove.setAttribute('aria-label', `Delete notification: ${item.title || 'Update'}`);
-            remove.addEventListener('click', async () => {
-                if (await mutate(endpoint(root.dataset.deleteUrl, item.id), 'DELETE')) await refresh();
+            remove.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                row.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                row.style.opacity = '0.3';
+                row.style.pointerEvents = 'none';
+                const success = await mutate(endpoint(root.dataset.deleteUrl, item.id), 'DELETE');
+                if (success) {
+                    row.remove();
+                    await refresh();
+                } else {
+                    row.style.opacity = '1';
+                    row.style.pointerEvents = '';
+                }
             });
             row.append(main, remove); list.append(row);
         });
@@ -291,7 +302,8 @@
             const data = await request(url, method);
             if (data.success !== true) throw new Error('Notification action failed');
             return true;
-        } catch (_) {
+        } catch (err) {
+            console.error('[NOTIF_MUTATE_ERROR]', err);
             showStatus('Could not update this notification. Please try again.', true);
             return false;
         } finally { busy = false; readAll.disabled = unread === 0; }

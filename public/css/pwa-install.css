@@ -1,9 +1,9 @@
 .pwa-install[hidden], .pwa-install [hidden] { display: none !important; }
 .pwa-install {
     position: fixed;
-    z-index: 950;
+    z-index: 1040;
     left: 12px;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
     display: flex;
     gap: 12px;
     align-items: flex-start;
@@ -15,6 +15,11 @@
     color: var(--color-primary, #103f32);
     box-shadow: 0 12px 35px rgb(16 63 50 / 18%);
     font-family: inherit;
+}
+@media (min-width: 991px) {
+    .pwa-install {
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
 }
 .pwa-install__mark img { display: block; width: 44px; height: 44px; border-radius: 12px; }
 .pwa-install__body { min-width: 0; flex: 1; }
