@@ -251,6 +251,8 @@
     .message.ai .message-bubble li { margin:5px 0;padding-left:2px; }
     .message.ai .message-bubble strong { color:inherit;font-weight:800; }
     .message.ai .message-bubble em { color:#5a7066; }
+    /* Hide persisted AI bubbles until JS decodes them — prevents blank flash */
+    .assistant-message[data-ai-message] { visibility:hidden; min-height:48px; }
     .message.user .message-bubble { border-color:transparent;border-radius:15px 15px 5px 15px;background:var(--mc-forest);color:#fff;box-shadow:0 10px 26px rgba(16,63,50,.14); }
     .message-meta { display:flex;align-items:center;gap:6px;margin-top:6px;color:#91a29a;font-size:8.5px; }
     .message.user .message-meta { justify-content:flex-end; }
@@ -1657,8 +1659,10 @@
 
     function renderPersistedAssistantMessages() {
         document.querySelectorAll('.assistant-message[data-ai-message]').forEach(bubble => {
-            bubble.innerHTML = renderAssistantMessage(decodeStoredAssistantMessage(bubble.dataset.aiMessage));
+            const decoded = decodeStoredAssistantMessage(bubble.dataset.aiMessage);
+            bubble.innerHTML = decoded ? renderAssistantMessage(decoded) : '<p style="color:#91a29a;font-style:italic;">(Response unavailable)</p>';
             bubble.removeAttribute('data-ai-message');
+            bubble.style.visibility = 'visible'; // un-hide after decode
         });
     }
     // Keep the browser deadline aligned with the bounded Laravel-to-Flask timeout.
@@ -1907,14 +1911,12 @@
     });
 
     window.startNewConversation = async function() {
-        const confirmed = typeof magiConfirm === 'function'
-            ? await magiConfirm({
+        const confirmed = await (window.magiConfirm ? magiConfirm({
                 title: 'New Conversation',
                 text: 'Start a new conversation? Your current conversation will be saved in the sidebar.',
                 confirmButtonText: 'Start New',
                 icon: 'question'
-            })
-            : confirm('Start a new conversation? Your current conversation will be saved in the sidebar.');
+            }) : Promise.resolve(window.confirm('Start a new conversation? Your current conversation will be saved in the sidebar.')));
 
         if (confirmed) {
             // Do a full page navigation to create new conversation
@@ -1926,15 +1928,13 @@
     window.loadConversation = function(sessionId) { window.location.href = '{{ route("student.ai-chat") }}/' + sessionId; }
 
     window.endConversation = async function() {
-        const confirmed = typeof magiConfirm === 'function'
-            ? await magiConfirm({
+        const confirmed = await (window.magiConfirm ? magiConfirm({
                 title: 'End Conversation',
                 text: 'End this conversation and start fresh?\n\nThis conversation will be saved in your history.',
                 confirmButtonText: 'End Chat',
                 isDanger: true,
                 icon: 'warning'
-            })
-            : confirm('End this conversation and start fresh?\n\nThis conversation will be saved in your history.');
+            }) : Promise.resolve(window.confirm('End this conversation and start fresh?\n\nThis conversation will be saved in your history.')));
 
         if (!confirmed) return;
 
@@ -1986,15 +1986,13 @@
     window.hideConversation = async function(event, sessionId) {
         event.stopPropagation(); // Prevent triggering loadConversation
         
-        const confirmed = typeof magiConfirm === 'function'
-            ? await magiConfirm({
+        const confirmed = await (window.magiConfirm ? magiConfirm({
                 title: 'Remove Conversation',
                 text: 'Remove this conversation from your sidebar?\n\nIt will still be visible in your history/journal.',
                 confirmButtonText: 'Remove',
                 isDanger: true,
                 icon: 'warning'
-            })
-            : confirm('Remove this conversation from your sidebar?\n\nIt will still be visible in your history/journal.');
+            }) : Promise.resolve(window.confirm('Remove this conversation from your sidebar?\n\nIt will still be visible in your history/journal.')));
 
         if (!confirmed) return;
 
