@@ -295,39 +295,11 @@
     @keyframes mc-chip { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
     @keyframes spin { to{transform:rotate(360deg)} }
 
-    @media(max-width:1120px){
-        .chat-wrapper.msc-chat{grid-template-columns:250px minmax(0,1fr)}
-        .messages-container{width:min(820px,calc(100% - 32px))}
-    }
-    @media(max-width:900px){
-        body:has(.msc-chat) .app-main{overflow:auto}
-        .chat-wrapper.msc-chat{grid-template-columns:1fr;height:calc(100dvh - 64px)}
-        .conversation-sidebar{display:none}
-        .chat-header{padding-inline:16px}
-        .messages-container{width:min(760px,calc(100% - 26px));padding-top:20px}
-        .input-area{padding-inline:12px}
-    }
-    @media(max-width:560px){
-        .chat-wrapper.msc-chat{height:100dvh;min-height:520px}
-        .chat-header{min-height:64px;padding:9px 11px}
-        .header-title h1{font-size:12px}.header-title p{font-size:8.5px}
-        .end-conversation-btn{width:34px;padding:0;justify-content:center}.end-conversation-btn{font-size:0}.end-conversation-btn svg{width:15px;height:15px}
-        .status-indicator span:last-child{display:none}
-        .messages-container{width:calc(100% - 20px);padding-bottom:20px}
-        .message-content{max-width:86%}
-        .message-avatar{width:28px;height:28px}
-        .message-bubble{font-size:10.5px;padding:11px 12px}
-        .quick-actions{justify-content:flex-start;flex-wrap:nowrap;overflow:auto;padding-bottom:4px}
-        .quick-btn{white-space:nowrap}
-        .input-area{padding:8px 9px 10px}
-        .input-hint{display:none}
-    }
-
     body.dusk-mode .chat-wrapper.msc-chat {
         --mc-ivory:#0f1e19;--mc-paper:#152a23;--mc-white:#152a23;--mc-text:#edf5f1;--mc-muted:#9fb6ab;--mc-line:rgba(237,245,241,.09);--mc-line-strong:rgba(237,245,241,.15);
         background:radial-gradient(circle at 88% 0%,rgba(77,157,123,.14),transparent 26rem),#0f1e19;
     }
-    body.dusk-mode .conversation-sidebar,body.dusk-mode .chat-header{background:rgba(21,42,35,.9);}
+    body.dusk-mode .conversation-sidebar,body.dusk-mode .chat-header{background:rgba(21,42,35,.95);}
     body.dusk-mode .chat-main,body.dusk-mode .input-area{background:rgba(15,30,25,.92)}
     body.dusk-mode .message-bubble,body.dusk-mode .input-container,body.dusk-mode .welcome-card,body.dusk-mode .typing-content{background:#152a23;color:#e8f3ee}
     body.dusk-mode .sb-user-name,body.dusk-mode .header-title h1,body.dusk-mode .welcome-card h2{color:#edf5f1}
@@ -338,12 +310,8 @@
         .msc-chat *{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
     }
 
-
     /* ======================================================================
-       CLEAN CHAT COMPOSITION V2
-       The application shell already owns navigation. The old always-visible
-       conversation rail created a double-sidebar layout, so it is now an
-       on-demand drawer while the conversation becomes the visual focus.
+       RESPONSIVE CHAT LAYOUT: VISIBLE ON DESKTOP, DRAWER OVERLAY ON MOBILE
        ====================================================================== */
     body:has(.msc-chat) .content-wrapper {
         max-width:none !important;
@@ -352,33 +320,123 @@
         margin:0 !important;
     }
 
-    .chat-wrapper.msc-chat {
-        position:relative;
-        display:block;
-        height:100dvh;
-        min-height:620px;
-        background:
-            radial-gradient(circle at 92% 4%, rgba(216,235,226,.6), transparent 28rem),
-            linear-gradient(180deg,#fbfcfa 0%,#f6f9f7 100%);
+    /* DESKTOP (>= 992px): 2-Column Side-by-Side */
+    @media (min-width: 992px) {
+        .chat-wrapper.msc-chat {
+            display: grid !important;
+            grid-template-columns: 295px minmax(0, 1fr) !important;
+            width: 100% !important;
+            height: 100dvh !important;
+            min-height: 580px !important;
+            overflow: hidden !important;
+            position: relative;
+            background:
+                radial-gradient(circle at 92% 4%, rgba(216,235,226,.6), transparent 28rem),
+                linear-gradient(180deg,#fbfcfa 0%,#f6f9f7 100%);
+            transition: grid-template-columns .3s cubic-bezier(.22,1,.36,1);
+        }
+
+        .chat-wrapper.rail-collapsed {
+            grid-template-columns: 0px minmax(0, 1fr) !important;
+        }
+
+        .conversation-sidebar {
+            position: relative !important;
+            inset: auto !important;
+            width: 295px !important;
+            height: 100% !important;
+            min-width: 0 !important;
+            transform: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            border-right: 1px solid var(--mc-line) !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: rgba(255,255,255,.94) !important;
+            backdrop-filter: blur(18px) !important;
+            -webkit-backdrop-filter: blur(18px) !important;
+            z-index: 20 !important;
+            transition: transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease;
+        }
+
+        .chat-wrapper.rail-collapsed .conversation-sidebar {
+            transform: translateX(-100%) !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .chat-rail-overlay {
+            display: none !important;
+        }
+
+        .rail-close {
+            display: none !important;
+        }
     }
 
-    .conversation-sidebar {
-        position:absolute;
-        inset:0 auto 0 0;
-        z-index:70;
-        width:min(340px,calc(100% - 28px));
-        min-width:0;
-        transform:translateX(calc(-100% - 24px));
-        transition:transform .34s var(--mc-ease);
-        border-right:1px solid var(--mc-line);
-        border-radius:0 24px 24px 0;
-        background:rgba(255,255,255,.97);
-        box-shadow:24px 0 70px rgba(16,63,50,.15);
-        backdrop-filter:blur(22px);
-        -webkit-backdrop-filter:blur(22px);
+    /* MOBILE / TABLET (< 992px): Smooth Drawer Overlay */
+    @media (max-width: 991.98px) {
+        .chat-wrapper.msc-chat {
+            display: flex !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            height: 100dvh !important;
+            min-height: 500px !important;
+            overflow: hidden !important;
+            position: relative;
+            background:
+                radial-gradient(circle at 92% 4%, rgba(216,235,226,.6), transparent 28rem),
+                linear-gradient(180deg,#fbfcfa 0%,#f6f9f7 100%);
+        }
+
+        .conversation-sidebar {
+            position: fixed !important;
+            inset: 0 auto 0 0 !important;
+            z-index: 1050 !important;
+            width: min(320px, 86vw) !important;
+            height: 100dvh !important;
+            min-width: 0 !important;
+            transform: translateX(-100%) !important;
+            transition: transform .32s cubic-bezier(.22,1,.36,1) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            border-right: 1px solid var(--mc-line) !important;
+            border-radius: 0 24px 24px 0 !important;
+            box-shadow: 20px 0 60px rgba(16,63,50,.24) !important;
+            background: rgba(255,255,255,.98) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+        }
+
+        .chat-wrapper.rail-open .conversation-sidebar {
+            transform: translateX(0) !important;
+        }
+
+        .chat-rail-overlay {
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 1040 !important;
+            background: rgba(8,29,22,.36) !important;
+            backdrop-filter: blur(3px) !important;
+            -webkit-backdrop-filter: blur(3px) !important;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease !important;
+            display: block !important;
+        }
+
+        .chat-wrapper.rail-open .chat-rail-overlay {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .rail-close {
+            display: grid !important;
+        }
     }
-    .chat-wrapper.rail-open .conversation-sidebar { transform:translateX(0); }
-    .conversation-sidebar .sb-profile { display:none; }
 
     .rail-head {
         height:72px;
@@ -801,7 +859,7 @@
                 <a href="{{ route('home') }}" class="ai-back-link" aria-label="Back to {{ config('branding.name') }} home">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m15 18-6-6 6-6"/></svg><span>{{ config('branding.name') }}</span>
                 </a>
-                <button type="button" class="history-btn" onclick="toggleChatRail(true)" aria-label="Open conversation history">
+                <button type="button" class="history-btn" onclick="toggleChatRail()" aria-label="Toggle conversation history">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8m0-5v5h5M12 7v5l3 2"/></svg>
                     <span>History</span>
                 </button>
@@ -1048,16 +1106,27 @@
         }
     }
 
-    function toggleChatRail(forceOpen = null) {
+    function toggleChatRail(forceState = null) {
         const wrapper = document.querySelector('.chat-wrapper.msc-chat');
         if (!wrapper) return;
-        const shouldOpen = forceOpen === null ? !wrapper.classList.contains('rail-open') : !!forceOpen;
-        wrapper.classList.toggle('rail-open', shouldOpen);
-        document.body.style.overflow = shouldOpen && window.innerWidth <= 900 ? 'hidden' : '';
+        const isDesktop = window.innerWidth >= 992;
+        if (isDesktop) {
+            if (forceState === true) {
+                wrapper.classList.remove('rail-collapsed');
+            } else if (forceState === false) {
+                wrapper.classList.add('rail-collapsed');
+            } else {
+                wrapper.classList.toggle('rail-collapsed');
+            }
+        } else {
+            const shouldOpen = forceState === null ? !wrapper.classList.contains('rail-open') : !!forceState;
+            wrapper.classList.toggle('rail-open', shouldOpen);
+            document.body.style.overflow = shouldOpen ? 'hidden' : '';
+        }
     }
 
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') toggleChatRail(false);
+        if (e.key === 'Escape' && window.innerWidth < 992) toggleChatRail(false);
     });
 
     document.addEventListener('DOMContentLoaded', function() {
