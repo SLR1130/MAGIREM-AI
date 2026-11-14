@@ -58,31 +58,29 @@ class GoogleAuthController extends Controller
             // Update google_id if not set yet
             if (!$user->google_id) {
                 $user->google_id = $googleId;
-                $user->google_avatar = $googleAvatar;
+                if ($googleAvatar && !$user->profile_picture) {
+                    $user->google_avatar = $googleAvatar;
+                }
                 $user->save();
             }
 
-            // Check approval status
-            $status = $user->account_status ?? null;
-            $approved = in_array($status, ['approved', 'active', null], true)
-                && $user->role !== null;
-
-            // Check if student is properly approved
-            if ($user->isStudent()) {
-                $isApproved = !empty($user->approved_at) || $status === 'approved';
-                if (!$isApproved) {
-                    return redirect()->route('account.status')
-                        ->with('google_pending', true)
-                        ->with('info', 'Your account is still pending admin verification. We will notify you at ' . $googleEmail . ' once it is approved.');
-                }
-            }
-
-            // Log in the user
+            // Always authenticate the user session first
             Auth::login($user, true);
             $request->session()->regenerate();
 
-            // Redirect based on role
-            return $this->redirectAfterLogin($user);
+            // If account is still pending verification or onboarding
+            if (!$user->isApproved() || $user->requiresOwnerOnboarding()) {
+                return redirect()->route('account.status');
+            }
+
+            // Redirect approved user directly to their respective workspace/home
+            if ($user->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->isCounselor()) {
+                return redirect()->route('counselor.dashboard');
+            } else {
+                return redirect()->route('home');
+            }
         }
 
         // ── 3. User NOT found → store Google data in session, redirect to register ──
