@@ -63,6 +63,18 @@
       "direction": "Open Notebook",
       "date": "2026-11-12",
       "rationale": "A writing-first Blade layout with the existing illustrated journal asset, warm paper typography, optional prompts, and compact recent reflections."
+    },
+    {
+      "scope": "community.post-studio.mobile",
+      "direction": "Canvas-first mobile editor",
+      "date": "2026-11-15",
+      "rationale": "Use a centered, responsive canvas with a fixed bottom tool navigation, compact top actions, and a contextual scrollable text-formatting drawer for font, size, color, alignment, and background. This Canva-inspired workflow adapts the interaction pattern without importing or reproducing Canva assets."
+    },
+    {
+      "scope": "community.feed.mobile",
+      "direction": "Compact post actions with an expandable side navigation",
+      "date": "2026-11-16",
+      "rationale": "Use icon-and-count reaction controls, an unobtrusive report and post-options affordance, more breathing room for captions, an explicit anonymous-post choice in the Post menu, and a left-side mobile navigation drawer so a fixed bottom dock does not obscure the feed."
     }
   ],
   "evidence": [
