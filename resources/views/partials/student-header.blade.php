@@ -737,35 +737,35 @@
 
 {{-- Mobile Native App Icon Dock ("like a real mobile app in mobile full icons") --}}
 <nav class="student-mobile-dock" id="studentMobileDock" aria-label="Mobile navigation">
-    <a href="{{ route('home') }}" class="dock-item {{ request()->routeIs('home') ? 'is-active' : '' }}" title="Home">
+    <a href="{{ route('home') }}" class="dock-item {{ request()->routeIs('home') ? 'is-active' : '' }}" title="Home" aria-label="Home">
         <span class="dock-icon">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         </span>
         <span class="dock-text">Home</span>
     </a>
 
-    <a href="{{ route('student.ai-chat') }}" class="dock-item dock-item--ai {{ request()->routeIs('student.ai-chat', 'student.ai-companion') ? 'is-active' : '' }}" title="AI Companion">
+    <a href="{{ route('student.ai-chat') }}" class="dock-item dock-item--ai {{ request()->routeIs('student.ai-chat', 'student.ai-companion') ? 'is-active' : '' }}" title="AI Companion" aria-label="MAGI AI">
         <span class="dock-icon">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
         </span>
         <span class="dock-text">MAGI</span>
     </a>
 
-    <a href="{{ route('student.journal') }}" class="dock-item {{ request()->routeIs('student.journal', 'student.entries', 'student.create-entry') ? 'is-active' : '' }}" title="Journal">
+    <a href="{{ route('student.journal') }}" class="dock-item {{ request()->routeIs('student.journal', 'student.entries', 'student.create-entry') ? 'is-active' : '' }}" title="Journal" aria-label="Journal">
         <span class="dock-icon">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
         </span>
         <span class="dock-text">Journal</span>
     </a>
 
-    <a href="{{ route('student.appointments') }}" class="dock-item {{ request()->routeIs('student.appointments', 'student.request-appointment', 'student.counseling-requests') ? 'is-active' : '' }}" title="Appointments">
+    <a href="{{ route('student.appointments') }}" class="dock-item {{ request()->routeIs('student.appointments', 'student.request-appointment', 'student.counseling-requests') ? 'is-active' : '' }}" title="Appointments" aria-label="Appointments">
         <span class="dock-icon">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </span>
         <span class="dock-text">Appts</span>
     </a>
 
-    <a href="{{ route('student.community') }}" class="dock-item {{ request()->routeIs('student.community') ? 'is-active' : '' }}" title="Community">
+    <a href="{{ route('student.community') }}" class="dock-item {{ request()->routeIs('student.community') ? 'is-active' : '' }}" title="Community" aria-label="Community Circle">
         <span class="dock-icon">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
         </span>

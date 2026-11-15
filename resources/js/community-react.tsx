@@ -770,18 +770,32 @@ function CommunityMobileNavigation() {
     const [open, setOpen] = useState(false);
     useEffect(() => {
         document.body.classList.toggle('community-drawer-open', open);
-        return () => document.body.classList.remove('community-drawer-open');
+        const dock = document.getElementById('studentMobileDock');
+        dock?.setAttribute('aria-hidden', String(!open));
+        if (dock) dock.inert = !open;
+        return () => {
+            document.body.classList.remove('community-drawer-open');
+            if (dock) {
+                dock.removeAttribute('aria-hidden');
+                dock.inert = false;
+            }
+        };
     }, [open]);
     useEffect(() => {
         if (!open) return;
         const dock = document.getElementById('studentMobileDock');
+        const toggle = document.querySelector('.mc-community-nav-toggle');
         const closeFromNav = (event: MouseEvent) => { if (event.target instanceof Element && event.target.closest('a,button')) setOpen(false); };
+        const closeOutside = (event: PointerEvent) => {
+            if (event.target instanceof Node && !dock?.contains(event.target) && !toggle?.contains(event.target)) setOpen(false);
+        };
         const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false); };
         dock?.addEventListener('click', closeFromNav);
+        document.addEventListener('pointerdown', closeOutside);
         document.addEventListener('keydown', closeOnEscape);
-        return () => { dock?.removeEventListener('click', closeFromNav); document.removeEventListener('keydown', closeOnEscape); };
+        return () => { dock?.removeEventListener('click', closeFromNav); document.removeEventListener('pointerdown', closeOutside); document.removeEventListener('keydown', closeOnEscape); };
     }, [open]);
-    return <>{open && <button type="button" className="mc-community-nav-backdrop" aria-label="Close Community navigation" onClick={() => setOpen(false)} />}<button type="button" className="mc-community-nav-toggle" aria-label={open ? 'Close Community navigation' : 'Open Community navigation'} aria-expanded={open} aria-controls="studentMobileDock" onClick={() => setOpen(value => !value)}>{open ? <X size={20} /> : <Menu size={20} />}</button></>;
+    return <button type="button" className="mc-community-nav-toggle" aria-label={open ? 'Close Community navigation' : 'Open Community navigation'} aria-expanded={open} aria-controls="studentMobileDock" onClick={() => setOpen(value => !value)}>{open ? <X size={20} /> : <Menu size={20} />}</button>;
 }
 
 function CommunityPage({ initialUrl }: { initialUrl: string }) {

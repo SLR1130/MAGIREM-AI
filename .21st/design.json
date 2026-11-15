@@ -72,9 +72,9 @@
     },
     {
       "scope": "community.feed.mobile",
-      "direction": "Compact post actions with an expandable side navigation",
+      "direction": "Compact post actions with a horizontal, staggered icon dock",
       "date": "2026-11-16",
-      "rationale": "Use icon-and-count reaction controls, an unobtrusive report and post-options affordance, more breathing room for captions, an explicit anonymous-post choice in the Post menu, and a left-side mobile navigation drawer so a fixed bottom dock does not obscure the feed."
+      "rationale": "Use icon-and-count reaction controls, an unobtrusive report and post-options affordance, more breathing room for captions, an explicit anonymous-post choice in the Post menu, and a compact horizontal icon dock that unfolds one item at a time from the Community page's left-side menu button."
     }
   ],
   "evidence": [
