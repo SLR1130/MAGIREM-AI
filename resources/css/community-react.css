@@ -442,6 +442,12 @@ body.community-react-ready #community-legacy-fallback { display: none !important
 @media(max-width:680px){.mc-moderation-toolbar{padding:13px}.mc-moderation-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.mc-moderation-filters .mc-chip{justify-content:center;text-align:center}.mc-moderation-actions{gap:5px}.mc-moderation-actions button{flex:1;justify-content:center}}
 
 @media(max-width:850px){
+    .mc-main{display:flex;flex-direction:column}
+    .mc-main>.mc-notice{order:0}
+    .mc-main>.mc-toolbar,.mc-main>.mc-topic-row{order:1}
+    .mc-main>.mc-header{order:2}
+    .mc-main>.mc-moderation-toolbar{order:3}
+    .mc-main>.mc-feed,.mc-main>.mc-muted{order:4}
     .mc-header-actions{display:none}
     .mc-rail{display:flex;flex-flow:row nowrap;align-items:center;gap:6px;width:100%;min-width:0;max-width:100%;margin:0 0 10px;padding:6px 8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none}
     .mc-rail::-webkit-scrollbar,.mc-topic-row::-webkit-scrollbar{display:none}

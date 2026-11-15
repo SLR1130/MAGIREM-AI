@@ -235,6 +235,8 @@
     }
     @media(prefers-reduced-motion:reduce){.support-directory-chevron{transition:none}}
     @media(max-width:620px){.wellness-hero-art{inset:0 0 0 48%}}
+    .wellness-provider-fallback{display:inline-flex;align-items:center;gap:.3rem;margin-left:.45rem;color:#145544;font-size:.8rem;font-weight:800;text-decoration:underline;text-underline-offset:2px}
+    @media(max-width:620px){.article-card{min-height:0}.article-card-main{padding:.75rem .8rem 0}.article-card .resource-actions{padding:.2rem .8rem .8rem}.article-card .resource-description{-webkit-line-clamp:4}.article-card h3{font-size:.96rem}.article-card .article-read-cue{padding-top:.6rem;font-size:.74rem}.result-group-heading h3{font-size:1.1rem}}
 </style>
 
 <div class="wellness-hub" data-wellness-hub>
@@ -423,7 +425,7 @@
                 @endforeach
             </div>
             <div class="wellness-status" data-video-status>
-                @foreach($providerErrors['videos'] as $error)<p class="wellness-status {{ str_contains($error, 'unavailable') ? 'notice' : 'error' }}">{{ $error }}</p>@endforeach
+                @foreach($providerErrors['videos'] as $error)<p class="wellness-status {{ str_contains($error, 'unavailable') ? 'notice' : 'error' }}">{{ $error }}@if(str_contains($error, 'YOUTUBE_DATA_API_KEY') && $searchQuery !== '') <a class="wellness-provider-fallback" href="https://www.youtube.com/results?search_query={{ rawurlencode($searchQuery) }}" target="_blank" rel="noopener noreferrer">Search this on YouTube <span aria-hidden="true">&rarr;</span></a>@endif</p>@endforeach
                 @if($includeVideos && $videoResultCount === 0 && empty($providerErrors['videos']))<p class="wellness-status">YouTube returned no embeddable videos for this search.</p>@endif
             </div>
         </section>
@@ -1002,7 +1004,21 @@
         videoGrid.replaceChildren(); videoStatus.replaceChildren();
         if (videosCount) videoItems.forEach((item) => videoGrid.append(resourceCard(item, 'videos')));
         wireImageFallbacks(publicGrid); wireImageFallbacks(videoGrid);
-        (data.provider_errors?.videos || []).forEach((message) => videoStatus.append(text('p', message, ['wellness-status', message.toLowerCase().includes('unavailable') ? 'notice' : 'error'])));
+        (data.provider_errors?.videos || []).forEach((message) => {
+            const status = text('p', message, ['wellness-status', message.toLowerCase().includes('unavailable') ? 'notice' : 'error']);
+            if (message.includes('YOUTUBE_DATA_API_KEY') && data.query) {
+                const searchUrl = new URL('https://www.youtube.com/results');
+                searchUrl.searchParams.set('search_query', data.query);
+                const link = document.createElement('a');
+                link.className = 'wellness-provider-fallback';
+                link.href = searchUrl.toString();
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = 'Search this on YouTube →';
+                status.append(document.createTextNode(' '), link);
+            }
+            videoStatus.append(status);
+        });
         if (data.videos_requested && videosCount === 0 && !(data.provider_errors?.videos || []).length) videoStatus.append(text('p', 'YouTube returned no embeddable videos for this search.', ['wellness-status']));
         const webState = document.querySelector('[data-web-provider-state]');
         const videoState = document.querySelector('[data-video-provider-state]');

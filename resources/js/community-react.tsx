@@ -15,7 +15,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import {
     AlignCenter, AlignLeft, AlignRight, ArrowUpRight, Bold, Brain, BookOpen, Brush, Check, ChevronDown, ChevronRight, CircleHelp, Eye, FileImage,
     Flag, Heart, HeartHandshake, Heading2, ImagePlus, Italic, Layers, Lightbulb, List, ListOrdered, LoaderCircle, Lock,
-    EyeOff, Menu, MessageCircle, MoreHorizontal, Pencil, Pin, Plus, Redo2, RotateCcw, Search, Send, ShieldCheck,
+    Ear, EyeOff, Menu, MessageCircle, MoreHorizontal, Pencil, Pin, Plus, Redo2, RotateCcw, Search, Send, ShieldCheck,
     Highlighter, SlidersHorizontal, Smile, Sparkles, Sprout, Strikethrough, ThumbsUp, Trash2, Underline, Undo2, Users, Video, X,
 } from 'lucide-react';
 import '@uppy/core/css/style.min.css';
@@ -69,7 +69,7 @@ const reactionMeta: { key: Reaction; label: string; icon: React.ReactNode }[] = 
     { key: 'like', label: 'Like', icon: <ThumbsUp size={14} /> },
     { key: 'heart', label: 'Heart', icon: <Heart size={14} /> },
     { key: 'support', label: 'Support', icon: <Sparkles size={14} /> },
-    { key: 'heard', label: 'Heard', icon: <MessageCircle size={14} /> },
+    { key: 'heard', label: 'Heard', icon: <Ear size={14} /> },
 ];
 const reportReasons = ['harassment', 'discrimination', 'harmful', 'privacy', 'spam', 'other'];
 const postStyles: PostStyle[] = [

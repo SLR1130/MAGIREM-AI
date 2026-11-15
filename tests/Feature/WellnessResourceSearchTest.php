@@ -389,6 +389,8 @@ class WellnessResourceSearchTest extends TestCase
             ->assertOk()
             ->assertSee('YOUTUBE_DATA_API_KEY is not configured')
             ->assertSee('Videos &amp; Podcasts', false)
+            ->assertSee('Search this on YouTube')
+            ->assertSee('https://www.youtube.com/results?search_query=sleep')
             ->assertDontSee('<button class="resource-link play-video"', false);
         Http::assertNothingSent();
     }
