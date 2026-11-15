@@ -161,8 +161,12 @@ body.admin-layout {
     .adm-head, .au-head, .ar-head, .avi-head, .avd-head, .acu-header { align-items:flex-start; flex-direction:column; }
     .adm-stats, .au-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .adm-stats .adm-stat:last-child { grid-column:1 / -1; }
-    .adm-tabs, .ar-tabs, .au-tabs, .avi-tabs { flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-inline:contain; }
-    .adm-tab, .ar-tab, .au-tab, .avi-tab { flex:0 0 auto; }
+    .adm-tabs, .ar-tabs, .au-tabs { flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-inline:contain; }
+    .adm-tab, .ar-tab, .au-tab { flex:0 0 auto; }
+    .avi nav.avi-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; min-width:0; overflow:visible; }
+    .avi nav.avi-tabs[aria-label="Filter by account creation workflow"] { grid-template-columns:minmax(0,1fr); }
+    .avi .avi-tab { min-width:0; justify-content:space-between; flex-wrap:wrap; white-space:normal; overflow-wrap:anywhere; }
+    .avi .avi-tab b { flex:0 0 auto; margin-left:6px; }
     .au-table th:nth-child(3), .au-table td:nth-child(3) { display:table-cell; }
     .avi-filter { grid-template-columns:1fr; }
     .avi-filter .wide { grid-column:auto; }

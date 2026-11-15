@@ -15,6 +15,10 @@ function value(parent, selector, property) {
 }
 
 const phone = media(700);
+const tablet = media(760);
+assert.equal(value(tablet, '.avi nav.avi-tabs', 'display'), 'grid');
+assert.equal(value(tablet, '.avi nav.avi-tabs', 'overflow'), 'visible');
+assert.equal(value(tablet, '.avi nav.avi-tabs[aria-label="Filter by account creation workflow"]', 'grid-template-columns'), 'minmax(0,1fr)');
 assert.equal(value(phone, '.admin-users .au-summary', 'grid-template-columns'), 'repeat(2,minmax(0,1fr))');
 assert.equal(value(phone, 'body.admin-layout .avi .avi-counts', 'grid-template-columns'), 'repeat(3,minmax(0,1fr))');
 assert.equal(value(media(360), 'body.admin-layout .avi .avi-counts', 'grid-template-columns'), 'repeat(2,minmax(0,1fr))');
