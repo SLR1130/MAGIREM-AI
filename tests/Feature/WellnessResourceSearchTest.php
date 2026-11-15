@@ -113,7 +113,7 @@ class WellnessResourceSearchTest extends TestCase
             ['Content-Type' => 'application/xml']
         )]);
         Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep'));
-        $html = $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1]))->assertOk()->getContent();
+        $html = $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1, 'research' => 0]))->assertOk()->getContent();
         $dom = new \DOMDocument();
         $previous = libxml_use_internal_errors(true);
         $dom->loadHTML($html);
@@ -221,8 +221,16 @@ class WellnessResourceSearchTest extends TestCase
     {
         $student = $this->student();
         Resource::create(['title' => 'Sleep routine guide', 'description' => 'Local sleep information.', 'category' => 'sleep', 'content' => 'Synthetic content.', 'is_active' => true]);
-        Http::fake(['https://wsearch.nlm.nih.gov/*' => Http::response('<nlmSearchResult><list><document url="https://medlineplus.gov/sleep"><content name="title">Sleep</content><content name="snippet">A provider summary.</content></document></list></nlmSearchResult>', 200)]);
+        Http::fake([
+            'https://wsearch.nlm.nih.gov/*' => Http::response('<nlmSearchResult><list><document url="https://medlineplus.gov/sleep"><content name="title">Sleep</content><content name="snippet">A provider summary.</content></document></list></nlmSearchResult>', 200),
+            'https://www.ebi.ac.uk/europepmc/webservices/rest/search*' => Http::response([
+                'resultList' => ['result' => [
+                    ['source' => 'PMC', 'pmcid' => 'PMC998877', 'title' => 'Open sleep research article', 'abstractText' => 'A source-provided open research abstract.', 'license' => 'CC BY 4.0', 'authorString' => 'A. Researcher', 'journalTitle' => 'Student Health Research', 'pubYear' => '2026'],
+                ]],
+            ]),
+        ]);
         \Illuminate\Support\Facades\Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep'));
+        \Illuminate\Support\Facades\Cache::forget('wellness:europe-pmc:reader-v2:' . sha1('sleep'));
 
         $this->actingAs($student)->getJson(route('student.resources.search', ['q' => 'sleep']))
             ->assertOk()
@@ -236,9 +244,11 @@ class WellnessResourceSearchTest extends TestCase
             ->assertOk()
             ->assertJsonPath('public_requested', true)
             ->assertJsonPath('public.0.provider', 'MedlinePlus')
-            ->assertJsonPath('counts.web', 1)
-            ->assertJsonPath('counts.all', 2);
-        Http::assertSent(fn ($request) => $request['term'] === 'sleep');
+            ->assertJsonFragment(['provider' => 'Europe PMC', 'title' => 'Open sleep research article'])
+            ->assertJsonPath('counts.web', 2)
+            ->assertJsonPath('counts.all', 3);
+        Http::assertSent(fn ($request) => str_contains($request->url(), 'wsearch.nlm.nih.gov') && $request['term'] === 'sleep');
+        Http::assertSent(fn ($request) => str_contains($request->url(), '/search') && $request['query'] === 'sleep');
     }
 
     public function test_local_title_match_ranks_before_broad_description_match(): void
@@ -311,7 +321,7 @@ class WellnessResourceSearchTest extends TestCase
 
         Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep'));
         $this->actingAs($student)
-            ->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1]))
+            ->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1, 'research' => 0]))
             ->assertOk()
             ->assertSee('Trusted web articles')
             ->assertSee('Sleep health')
@@ -333,7 +343,7 @@ class WellnessResourceSearchTest extends TestCase
         Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep'));
 
         $this->actingAs($student)
-            ->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1]))
+            ->get(route('student.resources', ['q' => 'sleep', 'public_sources' => 1, 'research' => 0]))
             ->assertOk()
             ->assertSee('2 resources')
             ->assertSee('Sleep health article')
@@ -544,7 +554,7 @@ class WellnessResourceSearchTest extends TestCase
         )]);
         Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep reader ui'));
 
-        $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep reader ui', 'public_sources' => 1]))
+        $this->actingAs($student)->get(route('student.resources', ['q' => 'sleep reader ui', 'public_sources' => 1, 'research' => 0]))
             ->assertOk()
             ->assertSee('data-open-article', false)
             ->assertSee('id="article-reader"', false)

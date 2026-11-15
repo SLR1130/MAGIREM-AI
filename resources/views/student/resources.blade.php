@@ -261,7 +261,7 @@
         </div>
         <div class="wellness-search-options">
             <div class="wellness-opt-ins">
-                <label class="public-source-toggle"><input type="checkbox" name="public_sources" value="1" data-public-sources {{ $includePublicSources ? 'checked' : '' }}><span><strong>Web articles</strong><small>MedlinePlus and eligible research</small></span></label>
+                <label class="public-source-toggle"><input type="checkbox" name="public_sources" value="1" data-public-sources {{ $includePublicSources ? 'checked' : '' }}><span><strong>Web articles</strong><small>MedlinePlus health guides and Europe PMC research</small></span></label>
                 <label class="public-source-toggle"><input type="checkbox" name="videos" value="1" data-video-sources {{ $includeVideos ? 'checked' : '' }}><span><strong>Videos</strong><small>YouTube @if(empty(config('services.wellness_resources.youtube.api_key'))) not configured @elseif(!config('services.wellness_resources.youtube.enabled')) unavailable @else available @endif</small></span></label>
                 <span class="wellness-search-privacy">Only your submitted search terms are shared—not chats or journal entries.</span>
             </div>
@@ -946,8 +946,8 @@
         query ? url.searchParams.set('q', query) : url.searchParams.delete('q');
         category ? url.searchParams.set('category', category) : url.searchParams.delete('category');
         includePublic ? url.searchParams.set('public_sources', '1') : url.searchParams.delete('public_sources');
+        includePublic ? url.searchParams.set('research', '1') : url.searchParams.delete('research');
         includeVideos ? url.searchParams.set('videos', '1') : url.searchParams.delete('videos');
-        url.searchParams.delete('research');
         (push ? window.history.pushState : window.history.replaceState).call(window.history, {}, '', url);
     }
     function updateCategoryUI() { document.querySelectorAll('[data-category]').forEach((node) => node.classList.toggle('active', (node.dataset.category || '') === category)); }
@@ -1057,7 +1057,7 @@
     async function search({includePublic = false, includeVideos = false, historyMode = 'replace', preserveOptIns = false} = {}) {
         clearTimeout(debounceTimer); const sequence = ++requestSequence;
         if (pendingController) pendingController.abort(); pendingController = new AbortController();
-        const params = new URLSearchParams(); if (input.value.trim()) params.set('q', input.value.trim()); if (category) params.set('category', category); if (includePublic && input.value.trim()) params.set('public_sources', '1'); if (includeVideos && input.value.trim()) params.set('videos', '1');
+        const params = new URLSearchParams(); if (input.value.trim()) params.set('q', input.value.trim()); if (category) params.set('category', category); if (includePublic && input.value.trim()) { params.set('public_sources', '1'); params.set('research', '1'); } if (includeVideos && input.value.trim()) params.set('videos', '1');
         const sources = ['MAGIREM AI library'];
         if (includePublic && input.value.trim()) sources.push('trusted web articles');
         if (includeVideos && input.value.trim()) sources.push('videos and podcasts');

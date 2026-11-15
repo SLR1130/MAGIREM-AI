@@ -1128,6 +1128,7 @@ class StudentController extends Controller
             'urls' => [
                 'post' => route('student.community.post'),
                 'report' => route('student.community.report'),
+                'delete_base' => url('/student/community'),
                 'resource_base' => url('/student/community/resources'),
                 'image_base' => url('/student/community'),
                 'reaction_base' => url('/student/community'),
@@ -1442,7 +1443,7 @@ class StudentController extends Controller
         // the application unless the student explicitly enables this setting.
         $includePublicSources = request()->boolean('public_sources');
         $includeVideos = request()->boolean('videos');
-        $includeResearch = $includePublicSources && request()->boolean('research');
+        $includeResearch = $includePublicSources && request()->boolean('research', true);
         $page = max(1, (int) request()->query('resource_page', request()->query('page', 1)));
         $searchData = $resourceSearch->search($searchQuery, $page, $includePublicSources, $category, $includeResearch, $includeVideos);
         $resources = $searchData['local'];
@@ -1526,7 +1527,7 @@ class StudentController extends Controller
         $category = trim((string) ($validated['category'] ?? '')) ?: null;
         $includePublicSources = $request->boolean('public_sources');
         $includeVideos = $request->boolean('videos');
-        $includeResearch = $includePublicSources && $request->boolean('research');
+        $includeResearch = $includePublicSources && $request->boolean('research', true);
         $searchData = $resourceSearch->search(
             $query,
             max(1, (int) ($validated['page'] ?? 1)),

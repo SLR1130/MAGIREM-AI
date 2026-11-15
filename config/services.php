@@ -91,7 +91,7 @@ return [
             'rate_limit' => env('WELLNESS_MEDLINEPLUS_RATE_LIMIT', 10),
         ],
         'europe_pmc' => [
-            'enabled' => env('WELLNESS_EUROPE_PMC_ENABLED', false),
+            'enabled' => env('WELLNESS_EUROPE_PMC_ENABLED', true),
             'endpoint' => env('WELLNESS_EUROPE_PMC_ENDPOINT', 'https://www.ebi.ac.uk/europepmc/webservices/rest/search'),
             'cache_ttl' => env('WELLNESS_EUROPE_PMC_CACHE_TTL', 21600),
             'rate_limit' => env('WELLNESS_EUROPE_PMC_RATE_LIMIT', 10),
