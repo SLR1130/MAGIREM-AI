@@ -112,7 +112,9 @@ class WellnessResourceSearchService
             }
         }
 
-        $remote = $this->deduplicatePublicResults($this->rankPublicResults($remote, $providerQuery));
+        $remote = $this->balancePublicResults(
+            $this->deduplicatePublicResults($this->rankPublicResults($remote, $providerQuery))
+        );
 
         return [
             'query' => $cleanQuery,
@@ -534,6 +536,26 @@ class WellnessResourceSearchService
             ->values();
     }
 
+    protected function balancePublicResults(Collection $results): Collection
+    {
+        $byProvider = $results->groupBy('provider')->map(fn (Collection $items) => $items->values());
+        $balanced = collect();
+        $index = 0;
+
+        do {
+            $added = false;
+            foreach ($byProvider as $items) {
+                if ($items->has($index)) {
+                    $balanced->push($items->get($index));
+                    $added = true;
+                }
+            }
+            $index++;
+        } while ($added);
+
+        return $balanced;
+    }
+
     protected function http(string $endpoint)
     {
         return Http::accept(str_contains($endpoint, 'wsearch') ? 'application/xml' : 'application/json')
@@ -606,4 +628,3 @@ class WellnessResourceSearchService
             && in_array(strtolower((string) ($parsed['host'] ?? '')), $hosts, true);
     }
 }
-

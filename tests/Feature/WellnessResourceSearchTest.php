@@ -543,6 +543,40 @@ class WellnessResourceSearchTest extends TestCase
         Http::assertSent(fn ($request) => str_contains($request->url(), '/search') && $request['resultType'] === 'core');
     }
 
+    public function test_combined_web_search_keeps_results_from_both_public_providers(): void
+    {
+        config([
+            'services.wellness_resources.max_results' => 4,
+            'services.wellness_resources.medlineplus.enabled' => true,
+            'services.wellness_resources.europe_pmc.enabled' => true,
+        ]);
+        $medlineDocuments = '';
+        $europeResults = [];
+        for ($index = 1; $index <= 4; $index++) {
+            $medlineDocuments .= '<document url="https://medlineplus.gov/sleep-' . $index . '.html"><content name="title">Sleep guide ' . $index . '</content><content name="snippet">Sleep health information.</content></document>';
+            $europeResults[] = [
+                'source' => 'PMC',
+                'pmcid' => 'PMC' . (900000 + $index),
+                'title' => 'Sleep research article ' . $index,
+                'abstractText' => 'Open research on sleep.',
+                'license' => 'CC BY 4.0',
+                'journalTitle' => 'Sleep Research',
+            ];
+        }
+        Http::fake([
+            'https://wsearch.nlm.nih.gov/*' => Http::response('<nlmSearchResult><list>' . $medlineDocuments . '</list></nlmSearchResult>', 200, ['Content-Type' => 'application/xml']),
+            'https://www.ebi.ac.uk/europepmc/webservices/rest/search*' => Http::response(['resultList' => ['result' => $europeResults]]),
+        ]);
+        Cache::forget('wellness:medlineplus:reader-v2:' . sha1('sleep research'));
+        Cache::forget('wellness:europe-pmc:reader-v2:' . sha1('sleep research'));
+
+        $results = app(WellnessResourceSearchService::class)->search('sleep research', 1, true, null, true)['remote'];
+
+        $this->assertCount(4, $results);
+        $this->assertSame(2, $results->where('provider', 'MedlinePlus')->count());
+        $this->assertSame(2, $results->where('provider', 'Europe PMC')->count());
+    }
+
     public function test_article_card_opens_reader_and_keeps_original_source_action(): void
     {
         $student = $this->student();
